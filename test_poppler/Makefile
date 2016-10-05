@@ -7,4 +7,5 @@ main.o: main.cpp
 parser.o: parser.cpp
 	g++ -c parser.cpp
 
-clean: rm -rf *.o main
+clean: 
+	rm -rf *.o main
