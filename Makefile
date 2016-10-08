@@ -1,6 +1,6 @@
 CC=g++
-CFLAGS=-c -Wall 
-LDFLAGS= -lcurl
+CFLAGS=-c -std=c++11 -Wall -Wextra -Wpedantic
+LDFLAGS= -lcurl -lpoppler-cpp
 
 SRC=src
 BIN=bin
