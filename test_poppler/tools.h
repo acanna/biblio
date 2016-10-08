@@ -6,9 +6,7 @@
 #include <string>
 #include <sstream>
 
-using namespace std;
-
-vector<string> split(string str, char delimiter);
-string trim(string);
+std::vector<std::string> split(std::string str, char delimiter);
+std::string trim(std::string);
 
 #endif

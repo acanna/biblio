@@ -7,23 +7,23 @@
 #include <poppler/cpp/poppler-document.h>
 #include <poppler/cpp/poppler-page.h>
 
-using namespace std;
+//using namespace std;
 
 class parser{
 	poppler::document * doc;
-	vector<string> fst_page;
+	std::vector<std::string> fst_page;
 	//vector<string> prep_lines;
 	//bool prep;
 	public:
-		parser(string);
-		vector<string> parse();
-		vector<string> get_fst_page();
+		parser(const std::string &);
+		std::vector<std::string> parse() const;
+		std::vector<std::string> get_fst_page() const;
 		//void prep_lns();
-		list<string> get_authors();
-		list<string> get_title();
-		vector<poppler::font_info> get_doc_fonts();
+		std::list<std::string> get_authors() ;
+		std::list<std::string> get_title() ;
+		std::vector<poppler::font_info> get_doc_fonts() const;
 		//string toc_title();
-		string get_metadata();
+		std::string get_metadata() const;
 };
 
 #endif

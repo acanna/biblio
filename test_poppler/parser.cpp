@@ -6,13 +6,13 @@
 
 using namespace std;
 
-parser::parser(string file_name){
+parser::parser(const string & file_name){
 	this->doc = poppler::document::load_from_file(file_name);
 	this->fst_page = split(this->doc->create_page(0)->text().to_latin1(),'\n');
 	//this->prep = false;
 }
 
-vector<string> parser::parse(){
+vector<string> parser::parse() const{
 	vector<string> parsed_text, parsed_page;
 	const int pagesNbr = this->doc->pages();
 	for (int i = 0; i < pagesNbr; ++i){
@@ -23,7 +23,7 @@ vector<string> parser::parse(){
 	return parsed_text;
 }
 
-vector<string> parser::get_fst_page(){
+vector<string> parser::get_fst_page() const{
 	return this->fst_page;
 }
 /*
@@ -90,7 +90,7 @@ void parser::prep_lns(){
 }
 */
 
-list<string> parser::get_authors(){
+list<string> parser::get_authors() {
 	list<string> authors;
 	int n = this->fst_page.size(), firstl = 0, lastl = n - 1, contactsl = n - 1, abstractl = n - 1;
 	bool contacts = false;
@@ -176,12 +176,12 @@ list<string> parser::get_authors(){
 	return authors;
 }
 */
-list<string> parser::get_title(){
+list<string> parser::get_title() {
 	return get_authors();
 }
 
 
-vector<poppler::font_info> parser::get_doc_fonts(){
+vector<poppler::font_info> parser::get_doc_fonts() const{
 	vector<poppler::font_info> fonts = doc->fonts();
 	return fonts;
 }
@@ -191,7 +191,7 @@ string parser::toc_title(){
 }
 */
 
-string parser::get_metadata(){
+string parser::get_metadata() const{
 	return doc->metadata().to_latin1();
 }
 

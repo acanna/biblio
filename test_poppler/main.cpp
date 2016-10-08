@@ -11,11 +11,11 @@ int main(int argc, char ** argv)
 	if (argc > 1){
 		try{
 		file_name = string(argv[1]);
-		pr = new parser("../articles/" + file_name + ".pdf");
+		pr = new parser(file_name);
 		} catch(...) {}
 	} else {		
 		cin >> file_name;
-		pr = new parser("../articles/" + file_name + ".pdf");
+		pr = new parser(file_name);
     }
     /*
 	vector<poppler::font_info> fonts = pr->get_doc_fonts();
@@ -36,4 +36,6 @@ int main(int argc, char ** argv)
     for (list<string>::const_iterator it = auths.begin(); it != auths.end(); ++it){
     	cout << *it << endl;
     }
+    
+    delete pr;
 }
