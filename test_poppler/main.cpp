@@ -1,16 +1,39 @@
 #include <iostream>
+#include <list>
 #include "parser.h"
-#include <poppler/cpp/poppler-document.h>
-#include <poppler/cpp/poppler-page.h>
+
 using namespace std;
 
-int main()
+int main(int argc, char ** argv)
 {
-    string file_name;
-    cin >> file_name;
-    poppler::document *doc = poppler::document::load_from_file("./articles/" + file_name);
-    const int pagesNbr = doc->pages();
-
-    for (int i = 0; i < pagesNbr; ++i)
-        cout << doc->create_page(i)->text().to_latin1().c_str() << endl;
+	parser * pr;
+	string file_name; 
+	if (argc > 1){
+		try{
+		file_name = string(argv[1]);
+		pr = new parser("../articles/" + file_name + ".pdf");
+		} catch(...) {}
+	} else {		
+		cin >> file_name;
+		pr = new parser("../articles/" + file_name + ".pdf");
+    }
+    /*
+	vector<poppler::font_info> fonts = pr->get_doc_fonts();
+	cout << "metadata" << endl;
+	cout << pr->get_metadata() << endl;
+	
+    cout << "fonts" << endl;
+	int k = fonts.size();
+	for(int i = 0; i < k; ++i)
+        cout << fonts[i].name()<< " " << fonts[i].type() << endl;
+        
+	cout << "fst_page" << endl;
+	int n = lines.size();
+    for(int i = 0; i < n; ++i)
+        cout << lines[i] << endl;
+    */
+    list<string> auths = pr->get_authors();
+    for (list<string>::const_iterator it = auths.begin(); it != auths.end(); ++it){
+    	cout << *it << endl;
+    }
 }
