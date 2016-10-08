@@ -11,7 +11,7 @@ parser::parser(const string & file_name){
 		this->doc = poppler::document::load_from_file(file_name);
 		this->fst_page = split(this->doc->create_page(0)->text().to_latin1(),'\n');
 	} catch(...) {
-		fst_page = vector<string>(0);
+		fst_page = new vector<string>();
 	}
 }
 
