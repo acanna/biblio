@@ -19,7 +19,9 @@ Parser::Parser(const string & file_name){
 	fst_page = split(doc->create_page(0)->text().to_latin1(),'\n');
 	
 	vector<string> modified;
-	int n = fst_page.size(), firstl = 0, lastl = n - 1, contactsl = n - 1, abstractl = n - 1;
+	int n = fst_page.size();
+	n = min(n,10);
+	int firstl = 0, lastl = n - 1, contactsl = n - 1, abstractl = n - 1;
 	bool contacts = false;
 	string pt_year = "\\b(19|20)\\d{2}\\b";
 	string pt_pages = "\\b\\d+-\\d+\\b";
@@ -74,7 +76,6 @@ Parser::Parser(const string & file_name){
 	else if (abstractl < n - 1) {
 		lastl = abstractl - 1;
 	}
-	lastl = min(lastl,10);
 	for (int i = firstl; i <= lastl; ++i) {
 		if (regex_search(fst_page[i],re_date) || regex_search(fst_page[i],re_dept)) {
 			continue;
