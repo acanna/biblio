@@ -1,26 +1,24 @@
 #include <iostream>
-#include <list>
+//#include <list>
 #include "DBLPManager.h"
 #include "ArticleInfo.h"
-#include "parser.h"
+#include "Parser.h"
 
 using namespace std;
 
 int main (int argc, char ** argv) {
 	list<string> auths;
 	DBLPManager dblp;
-	int result_size = 0;
-	if (argv[1] == "A") {
-		parser * pr;
+	unsigned int result_size = 0;
+	if (string(argv[1]).string::compare("A") == 0) {
+		Parser * pr;
 		string file_name; 
-		if (argc > 2){
-			try {
-				file_name = string(argv[2]);
-				pr = new parser(file_name);
-			} catch(...) {}
+		if (argc > 2) {
+			file_name = string(argv[2]);
+			pr = new Parser(file_name);
 		} else {
 			cin >> file_name;
-			pr = new parser(file_name);
+			pr = new Parser(file_name);
 		}
 		auths = pr->get_authors();
 		cout << "------------------parser-----------------" << endl;
@@ -37,8 +35,8 @@ int main (int argc, char ** argv) {
 		}
 		delete pr;
 	}
-	else if (argv[1] == "Y"){
-		for (int i = 2; i < argc; i++) {			
+	else if (string(argv[1]).string::compare("Y") == 0) {
+		for (int i = 2; i < argc; i++) {
 			vector <ArticleInfo> result = dblp.publicationRequest(string(argv[i]));
 			result_size = result.size();
 			for (unsigned int k = 0; k < result_size; ++k) {

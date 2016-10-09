@@ -5,7 +5,7 @@ LDFLAGS = -lcurl -lpoppler-cpp
 SRC = src
 BIN = bin
 
-FILES = main.cpp DBLPManager.cpp ArticleInfo.cpp jsoncpp.cpp parser.cpp tools.cpp
+FILES = DBLPManager.cpp ArticleInfo.cpp jsoncpp.cpp tools.cpp Parser.cpp main.cpp 
 
 SOURCES = $(addprefix $(SRC)/, $(FILES))
 OBJECTS = $(addprefix $(BIN)/, $(FILES:.cpp=.o))
@@ -17,7 +17,13 @@ all: $(EXECUTABLE)
 $(EXECUTABLE): $(OBJECTS) 
 	$(CC) $(OBJECTS) -o $@ $(LDFLAGS) 
 
-parser.o: tools.o
+$(BIN)/Parser.o: $(BIN)/tools.o
+
+$(BIN)/jsoncpp.o: $(SRC)/jsoncpp.cpp
+	$(CC) $(CFLAGS) $< -o $@
+
+$(BIN)/main.o: $(SRC)/main.cpp
+	$(CC) $(CFLAGS) $< -o $@
 
 $(BIN)/%.o: $(SRC)/%.cpp $(SRC)/%.h
 	$(CC) $(CFLAGS) $< -o $@
