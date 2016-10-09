@@ -25,6 +25,23 @@ int main (int argc, char ** argv) {
 		for (list<string>::const_iterator it = auths.begin(); it != auths.end(); ++it) {
 			cout << *it << endl;
 		}
+		delete pr;
+	}
+	else if (string(argv[1]).string::compare("B") == 0) {
+		Parser * pr;
+		string file_name; 
+		if (argc > 2) {
+			file_name = string(argv[2]);
+			pr = new Parser(file_name);
+		} else {
+			cin >> file_name;
+			pr = new Parser(file_name);
+		}
+		auths = pr->get_authors();
+		cout << "------------------parser-----------------" << endl;
+		for (list<string>::const_iterator it = auths.begin(); it != auths.end(); ++it) {
+			cout << *it << endl;
+		}
 		cout << "------------------dblp-----------------" << endl;
 		for (list<string>::const_iterator it = auths.begin(); it != auths.end(); ++it) {
 			vector <ArticleInfo> result = dblp.publicationRequest(*it);
