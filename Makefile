@@ -17,6 +17,8 @@ all: $(EXECUTABLE)
 $(EXECUTABLE): $(OBJECTS) 
 	$(CC) $(OBJECTS) -o $@ $(LDFLAGS) 
 
+parser.o: tools.cpp
+
 $(BIN)/%.o: $(SRC)/%.cpp $(SRC)/%.h
 	$(CC) $(CFLAGS) $< -o $@
 
