@@ -22,7 +22,7 @@ parser.o: tools.o
 $(BIN)/%.o: $(SRC)/%.cpp $(SRC)/%.h
 	$(CC) $(CFLAGS) $< -o $@
 
-test: 
+test:
 
 clean:
 	rm -f $(OBJECTS) $(EXECUTABLE)
