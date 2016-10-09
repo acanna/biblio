@@ -38,7 +38,11 @@ Parser::Parser(const string & file_name){
 	string frmt_join_word = "$1$2";
 	regex re_sep_word("\\b([b-zB-Z])\\s(\\w+)\\b");
 	string frmt_num_word = "$1";
-	regex re_num_word("\\b(\\w+)[0-9]+\\b");
+	regex re_num_word("\\b([a-zA-Z]+)[0-9]+\\b");
+	string frmt_email = " ";
+	regex re_email("\\b(email|Email|EMAIL)?:?\\s*[\\w\\.,]*@[\\w\\.]*\\s*\\b");
+	regex re_date("\\b(\\d{2}\\s+\\w+|\\w+\\s+\\d{2}(|,))\\s+(19|20)\\d{2}\\b");
+	regex re_dept("\\b(Dept|DEPT)\\.\\b");
 	string formatted = "";
 	for (int i = 0; i < n; ++i) {
 		formatted = regex_replace(fst_page[i],re_frmt,frmt_str);
@@ -72,6 +76,13 @@ Parser::Parser(const string & file_name){
 	}
 	lastl = min(lastl,10);
 	for (int i = firstl; i <= lastl; ++i) {
+		if (regex_search(fst_page[i],re_date) || regex_search(fst_page[i],re_dept)) {
+			continue;
+		}
+		formatted = regex_replace(fst_page[i],re_email,frmt_email);
+		formatted = regex_replace(formatted,re_space,frmt_space);
+		formatted = regex_replace(formatted,re_trim,frmt_trim);
+		fst_page[i] = formatted;
 		if (fst_page[i].size() < 4) {
 			continue;
 		}
