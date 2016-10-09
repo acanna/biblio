@@ -5,7 +5,7 @@ LDFLAGS= -lcurl -lpoppler-cpp
 SRC=src
 BIN=bin
 
-FILES=main.cpp DBLPManager.cpp ArticleInfo.cpp jsoncpp.cpp
+FILES=main.cpp DBLPManager.cpp ArticleInfo.cpp jsoncpp.cpp parser.cpp tools.cpp
 
 SOURCES=$(addprefix $(SRC)/, $(FILES))
 OBJECTS=$(addprefix $(BIN)/, $(FILES:.cpp=.o))
