@@ -1,6 +1,8 @@
 #include "ArticleInfo.h"
+using std::vector;
+using std::string;
 
-ArticleInfo::ArticleInfo(Json::Value info) {
+ArticleInfo::ArticleInfo(Json::Value const & info) {
 	this->title = info["title"].asString();
 	Json::Value authorsList = info["authors"].get("author", "");
 	if (authorsList.size() > 0) {
@@ -17,10 +19,38 @@ ArticleInfo::ArticleInfo(Json::Value info) {
 	this->year = info["year"].asString();
 	this->type = info["type"].asString();
 	this->url = info["url"].asString();
-
 } 
 
-ArticleInfo::ArticleInfo(string title, vector <string> authors, string venue, string volume, 
+string ArticleInfo::get_title(){
+	return title;	
+}
+
+vector <string> ArticleInfo::get_authors(){
+	return authors;	
+}
+string ArticleInfo::get_venue(){
+	return venue;	
+}
+string ArticleInfo::get_volume(){
+	return volume;	
+}
+string ArticleInfo::get_number(){
+	return number;	
+}
+string ArticleInfo::get_pages(){
+	return pages;	
+}
+string ArticleInfo::get_year(){
+	return year;	
+}
+string ArticleInfo::get_type(){
+	return type;	
+}
+string ArticleInfo::get_url(){
+	return url;	
+}
+
+/*ArticleInfo::ArticleInfo(string title, vector <string> authors, string venue, string volume, 
 string number, string pages, string year, string type, string url){
 	this->title = title;
 	this->authors = authors;
@@ -31,9 +61,9 @@ string number, string pages, string year, string type, string url){
 	this->year = year;
 	this->type = type;
 	this->url = url;
-}
+}*/
 
-string ArticleInfo::to_String(){
+string ArticleInfo::to_string(){
 	string output = "\n Title: \t" +this->title;
 	output += "\n Authors: ";
 	for (unsigned int i = 0; i < authors.size(); i++) {

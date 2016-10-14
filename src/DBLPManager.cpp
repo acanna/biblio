@@ -1,5 +1,7 @@
 #include "DBLPManager.h"
 
+using namespace std;
+
 char buffer[MAX_BUF + 1];
 int bufferIndex;
 
@@ -19,39 +21,52 @@ size_t writeData (void * webBuffer, size_t size, size_t nmemb, void *userp) {
 DBLPManager::DBLPManager(){
 	curl = curl_easy_init();
 	if (!curl) {
-		std::cout << "Error by CURL initialization \n"; 
-		return;
+		throw runtime_error("DBLP: CURL initialization failed");
 	}	
-
+	
 	curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void*)& errorCode);
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeData);
-//	std::cout << "Initialization successfully completed \n";	
-
 }
 
 DBLPManager::~DBLPManager(){
 	curl_easy_cleanup(curl);
 }
 
-vector <ArticleInfo> DBLPManager::publicationRequest(string query){
+vector <ArticleInfo> DBLPManager::publicationRequest(const string & query){
 	CURLcode result;
 	errorCode = 0;
 	bufferIndex = 0;
-
+ 
 	string request = URL + query;
-	std::cout << "Request:" << request <<"\n";
-	curl_easy_setopt(curl, CURLOPT_URL, request.c_str());
-
-	result = curl_easy_perform(curl);
-
-//	std::cout << result << " "<< errorCode << "\n";			
+	curl_easy_setopt(curl, CURLOPT_URL, request.c_str());		
 	
+	result = curl_easy_perform(curl);
 	vector <ArticleInfo> articles; 	
-	if (result == 0) {
-		articles = parseResponse();
+	if (result != CURLE_OK) {
+		string what = "";
+		switch(result){
+			case 1:
+				what = "DBLP: Unsupported protocol";
+				break;
+			case 2:
+				what = "DBLP: CURL initialization failed"; 
+				break;
+			case 3:
+				what = "DBLP: Wrong URL formatting";
+				break;
+			case 6:
+				what = "DBLP: Given remote host was not resolved";
+				break;
+			case 7:
+				what = "DBLP: Failed to connect to host or proxy";
+				break;
+			default:
+				what = "DBLP: Failed to perform query";
+		}			
+		throw runtime_error(what);	
 	}
+	articles = parseResponse();
 	return articles;
-
 }
 
 vector <ArticleInfo> DBLPManager::parseResponse() {
@@ -60,10 +75,11 @@ vector <ArticleInfo> DBLPManager::parseResponse() {
 
 	bool parsingSuccessful = reader.parse(buffer, root);
 	vector <ArticleInfo> articles; 	
-
+	 
 	if (!parsingSuccessful) {
-	        std::cout  << "Failed to parse " << reader.getFormattedErrorMessages() <<"\n";
-	        return articles;
+
+	        string what = "DBLP: Parser error: " + reader.getFormattedErrorMessages();
+		throw runtime_error(what);
 	}
 	
 	Json::Value hits = root["result"]["hits"]["hit"];
