@@ -7,20 +7,21 @@
 using namespace std;
 
 Parser::Parser(const string & file_name){
-	/*
-	try{
-		doc = poppler::document::load_from_file(file_name);
-		fst_page = split(this->doc->create_page(0)->text().to_latin1(),'\n');
-	} catch(...) {}
-	*/
-	// TODO: add throw
-	
-	doc = poppler::document::load_from_file(file_name);
-	fst_page = split(doc->create_page(0)->text().to_latin1(),'\n');
+	try {
+		try {
+			doc = poppler::document::load_from_file(file_name);
+			fst_page = split(doc->create_page(0)->text().to_latin1(),'\n');
+		} catch(...) {
+			cout << "\nCought!\n";
+			throw NULL;
+		}
+	} catch (...) {
+		cout << "My exception cought!\n";
+	}
 	
 	vector<string> modified;
 	int n = fst_page.size();
-	n = min(n,10);
+	n = min(n, 10);
 	int firstl = 0, lastl = n - 1, contactsl = n - 1, abstractl = n - 1;
 	bool contacts = false;
 	string pt_year = "\\b(19|20)\\d{2}\\b";

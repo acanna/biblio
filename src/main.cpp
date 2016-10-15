@@ -25,6 +25,7 @@ int main (int argc, char ** argv) {
 		for (list<string>::const_iterator it = auths.begin(); it != auths.end(); ++it) {
 			cout << *it << endl;
 		}
+		cout << "------------------end-parser-----------------" << endl;
 		delete pr;
 	}
 	else if (string(argv[1]).string::compare("B") == 0) {
