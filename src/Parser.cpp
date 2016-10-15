@@ -3,19 +3,45 @@
 #include <regex>
 #include "Parser.h"
 #include "tools.h"
+#include <fstream>
+#include <cstdint>
 
 using namespace std;
+using namespace poppler;
 
 Parser::Parser(const string & file_name){
-	doc = poppler::document::load_from_file(file_name);
 	try {
-		if (doc != NULL) {
-			fst_page = split(doc->create_page(0)->text().to_latin1(),'\n');
-		} else {
-			fst_page = {};
-			throw runtime_error("Document is set empy.");
-		}
+		doc = poppler::document::load_from_file(file_name);
 	} catch(...) {}
+	if (doc != NULL) {
+		fst_page = split(doc->create_page(0)->text().to_latin1(),'\n');
+	} else {
+		fst_page = {};
+		throw runtime_error("Document is set empy.");
+	}
+	page_renderer renderer;	
+	renderer.set_render_hint(page_renderer::text_antialiasing);
+	image myimage = renderer.render_page(doc->create_page(0));
+	width = myimage.width();
+	height = myimage.height();
+	ibytes = myimage.data();
+	ofstream out("image_bytes.txt");
+	int hbeg = height / 10;
+	int hend = 7 * height / 24;
+	int wbeg = width / 20;
+	int wend = width - wbeg;
+	for (int i = hbeg; i <= hend; ++i) {
+		for (int j = wbeg; j <= wend; ++j) {
+			if (((int)(ibytes[i * width * 4 + j * 4]) & 255) <= 127) {
+				out << "*";
+			} else {
+				out << " ";
+			}
+		}
+		out << "\n";
+	}
+	out.close();
+	
 	vector<string> modified;
 	int n = fst_page.size();
 	n = min(n, 10);
