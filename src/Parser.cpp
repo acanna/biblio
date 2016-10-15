@@ -7,23 +7,24 @@
 using namespace std;
 
 Parser::Parser(const string & file_name){
+	doc = poppler::document::load_from_file(file_name);
 	try {
-		try {
-			doc = poppler::document::load_from_file(file_name);
+		if (doc != NULL) {
 			fst_page = split(doc->create_page(0)->text().to_latin1(),'\n');
-		} catch(...) {
-			cout << "\nCought!\n";
-			throw NULL;
+		} else {
+			fst_page = {};
+			throw runtime_error("Document is set empy.");
 		}
-	} catch (...) {
-		cout << "My exception cought!\n";
-	}
-	
+	} catch(...) {}
 	vector<string> modified;
 	int n = fst_page.size();
 	n = min(n, 10);
 	int firstl = 0, lastl = n - 1, contactsl = n - 1, abstractl = n - 1;
 	bool contacts = false;
+	string pt_issn_isbn = "\\bIS[SB]N\\s\\d+(-\\d+)+\\b";
+	regex re_issn_isbn(pt_issn_isbn);
+	string pt_doi = "\\bDOI\\s\\d+\\.\\d+/.*\\b";
+	regex re_doi(pt_doi);
 	string pt_year = "\\b(19|20)\\d{2}\\b";
 	string pt_pages = "\\b\\d+-\\d+\\b";
 	string pt_abstract = "\\bA\\s*(B|b)\\s*(S|s)\\s*(T|t)\\s*(R|r)\\s*(A|a)\\s*(C|c)\\s*(T|t)";
@@ -48,6 +49,10 @@ Parser::Parser(const string & file_name){
 	regex re_dept("\\b(Dept|DEPT)\\.\\b");
 	string formatted = "";
 	for (int i = 0; i < n; ++i) {
+		if (regex_search(fst_page[i],re_issn_isbn) || regex_search(fst_page[i],re_doi)) {
+			fst_page[i] = "";
+			continue;
+		}
 		formatted = regex_replace(fst_page[i],re_frmt,frmt_str);
 		formatted = regex_replace(formatted,re_space,frmt_space);
 		formatted = regex_replace(formatted,re_trim,frmt_trim);
@@ -127,7 +132,21 @@ list<string> Parser::get_authors() const{
 }
 
 list<string> Parser::get_title() const{
-	return get_authors();
+	list<string> title;
+	int n = fst_page.size();
+	string pt_dot = "\\.";
+	regex re_dot(pt_dot);
+	string fst_upper = "^[A-Z].*";
+	regex re_upper(fst_upper);
+	for (int i = 0; i < n; ++i) {
+		if (regex_search(fst_page[i],re_dot)) {
+			continue;
+		}
+		if (regex_match(fst_page[i],re_upper)) {
+			title.push_back(fst_page[i]);
+		}
+	}
+	return title;
 }
 
 
