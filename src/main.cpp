@@ -8,57 +8,39 @@
 
 using namespace std;
 
-int main (int argc, char ** argv) {
+vector <ArticleInfo> find_info(string filename, string key_online) {
 	list<string> auths, title;
-	DBLPManager * dblp;
+	DBLPManager dblp;
 	unsigned int result_size = 0;
-	if (string(argv[1]).string::compare("A") == 0) {
-		Parser * pr;
-		string file_name; 
-		if (argc > 2) {
-			file_name = string(argv[2]);
-			pr = new Parser(file_name);
-		} else {
-			cin >> file_name;
-			pr = new Parser(file_name);
-		}
-		auths = pr->get_authors();
-		title = pr->get_title();
-		cout << "------------------parser---------------------" << endl;
-		cout << "------------------authors---------------------" << endl;
-		for (list<string>::const_iterator it = auths.begin(); it != auths.end(); ++it) {
-			cout << *it << endl;
-		}
-		cout << "------------------title---------------------" << endl;
-		for (list<string>::const_iterator it = title.begin(); it != title.end(); ++it) {
-			cout << *it << endl;
-		}
-		cout << "------------------end-parser-----------------" << endl;
-		delete pr;
+	vector <ArticleInfo> result;
+	Parser pr = Parser (filename);
+	
+	auths = pr.get_authors();
+	title = pr.get_title();
+
+	cout << "------------------parser---------------------" << endl;
+	cout << "------------------authors---------------------" << endl;
+	for (list<string>::const_iterator it = auths.begin(); it != auths.end(); ++it) {
+		cout << *it << endl;
 	}
-	else if (string(argv[1]).string::compare("B") == 0) {
-		Parser * pr;
-		string file_name; 
-		if (argc > 2) {
-			file_name = string(argv[2]);
-			pr = new Parser(file_name);
-		} else {
-			cin >> file_name;
-			pr = new Parser(file_name);
-		}
-		auths = pr->get_authors();
-		cout << "------------------parser-----------------" << endl;
-		for (list<string>::const_iterator it = auths.begin(); it != auths.end(); ++it) {
-			cout << *it << endl;
-		}
+	cout << "------------------title---------------------" << endl;
+	for (list<string>::const_iterator it = title.begin(); it != title.end(); ++it) {
+		cout << *it << endl;
+	}
+	cout << "------------------end-parser-----------------" << endl;
+	if (key_online.string::compare("online") == 0) {
+// вопрос: может лучше искать в dblp по названию статьи? 
+// С авторами все менее однозначно. Или и по аторам, и по названию.
+// Название статьи, ИМХО, более уникально.
 		cout << "------------------dblp-----------------" << endl;
-
-
 		try {
-			dblp = new DBLPManager();
+			DBLPManager dblp = DBLPManager();
 			for (list<string>::const_iterator it = auths.begin(); it != auths.end(); ++it) {
-				vector <ArticleInfo> result = dblp->publicationRequest(*it);
+ 				string query = (string) (*it);
+				replace(query.begin(), query.end(), ' ', '.'); 	
+				result = dblp.publicationRequest(query);
 				result_size = result.size();
+
 				for (unsigned int k = 0; k < result_size; ++k) {
 					cout << result[k].to_string() << " \n"; 
 				}
@@ -68,39 +50,23 @@ int main (int argc, char ** argv) {
 			cout << e.what() << endl;
 		
 		}
-		delete dblp;
-		delete pr;
-
-/***************************************************************************************************
-		for (list<string>::const_iterator it = auths.begin(); it != auths.end(); ++it) {
-			vector <ArticleInfo> result = dblp->publicationRequest(*it);
-			result_size = result.size();
-			for (unsigned int k = 0; k < result_size; ++k) {
-				cout << result[k].to_string() << " \n"; 
-			}
-		}
-		delete pr;
-****************************************************************************************************/
-
 	}
-	else if (string(argv[1]).string::compare("Y") == 0) {			
-		try {
-			dblp = new DBLPManager();
-			for (int i = 2; i < argc; i++) {
-				string query = string(argv[i]);
-				replace(query.begin(), query.end(), ' ', '.'); 			
-				vector <ArticleInfo> result = dblp->publicationRequest(query);
-				result_size = result.size();
-				for (unsigned int k = 0; k < result_size; ++k) {
-					cout << result[k].to_string() << endl; 
-				}
-			}		
-		} 
-		catch (const exception & e) {
-			cout << e.what() << endl;
-		
-		}
-		delete dblp;
+	return result;
+}
+
+// как будет выглядеть вызов нашего приложения? Пока реализовано
+//	 ./main offline file1.pdf file2.pdf  
+// или 
+//	 ./main online file1.pdf file2.pdf  
+
+int main (int argc, char ** argv) {
+	string filename;
+	string key_online = argv[1];
+	int index = 2;
+        while (index < argc) {
+		filename = string(argv[index]);
+		find_info(filename, key_online);
+		index++;
 	}
 	return 0;
 }

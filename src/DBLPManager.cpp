@@ -36,12 +36,13 @@ vector <ArticleInfo> DBLPManager::publicationRequest(const string & query){
 	CURLcode result;
 	errorCode = 0;
 	bufferIndex = 0;
- 
+
 	string request = URL + query;
 	curl_easy_setopt(curl, CURLOPT_URL, request.c_str());		
 	
 	result = curl_easy_perform(curl);
 	vector <ArticleInfo> articles; 	
+
 	if (result != CURLE_OK) {
 		string what = "";
 		switch(result){
@@ -85,7 +86,7 @@ vector <ArticleInfo> DBLPManager::parseResponse() {
 	Json::Value hits = root["result"]["hits"]["hit"];
 
 	for (unsigned int i = 0; i < hits.size(); i++) {
-		Json::Value info = hits[i]["info"];
+		Json::Value info = hits[i]["info"];		
 		articles.push_back(ArticleInfo(info));
 
 	}
