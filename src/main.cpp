@@ -52,7 +52,12 @@ int main (int argc, char ** argv) {
 	// Do what you intend. 
 	for (const auto &filename : fileNames) // access by reference to avoid copying
 	{
-		find_info(filename, offline);
+		cout << "--------------------------------------------------------------" << endl;
+		cout << filename << endl;
+		cout << "--------------------------------------------------------------" << endl;
+		vector <ArticleInfo> result = find_info(filename, offline);
+		print_info(result);
+
 	}
 
 
