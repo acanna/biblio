@@ -1,17 +1,17 @@
 #include <iostream>
 #include <algorithm>
 #include <regex>
-#include "Parser.h"
-#include "tools.h"
 #include <fstream>
 #include <cstdint>
+#include "Parser.h"
+#include "tools.h"
 
 using namespace std;
-using namespace poppler;
+//using namespace poppler;
 
 Parser::Parser(const string & file_name){
 	try {
-		doc = document::load_from_file(file_name);
+		doc = poppler::document::load_from_file(file_name);
 	} catch(...) {}
 	if (doc != NULL) {
 		fst_page = split(doc->create_page(0)->text().to_latin1(),'\n');
@@ -19,9 +19,10 @@ Parser::Parser(const string & file_name){
 		fst_page = {};
 		throw runtime_error("Document is set empy.");
 	}
-	page_renderer renderer;	
-	renderer.set_render_hint(page_renderer::text_antialiasing);
-	image myimage = renderer.render_page(doc->create_page(0));
+	
+	poppler::page_renderer renderer;
+	renderer.set_render_hint(poppler::page_renderer::text_antialiasing);
+	poppler::image myimage = renderer.render_page(doc->create_page(0));
 	width = myimage.width();
 	height = myimage.height();
 	ibytes = myimage.data();
@@ -162,15 +163,16 @@ list<string> Parser::get_title() const{
 	int n = fst_page.size();
 	string pt_dot = "\\.";
 	regex re_dot(pt_dot);
-	string fst_upper = "^[A-Z].*";
-	regex re_upper(fst_upper);
+	//string fst_upper = "^[A-Z].*";
+	//regex re_upper(fst_upper);
 	for (int i = 0; i < n; ++i) {
 		if (regex_search(fst_page[i],re_dot)) {
 			continue;
 		}
-		if (regex_match(fst_page[i],re_upper)) {
-			title.push_back(fst_page[i]);
-		}
+		title.push_back(fst_page[i]);
+		//if (regex_match(fst_page[i],re_upper)) {
+		//	title.push_back(fst_page[i]);
+		//}
 	}
 	return title;
 }
