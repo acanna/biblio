@@ -12,7 +12,17 @@ ArticleInfo::ArticleInfo(Json::Value const & info) {
 	} else {
 	this->authors.push_back(info["authors"].get("author", "").asString());
 	}
-	this->venue = info["venue"].asString();
+	string venue ="";
+	Json::Value venueList = info.get("venue", "");
+	if (venueList.size() > 0) {
+		for (unsigned int i = 0; i < venueList.size(); i++) {
+			venue += venueList[i].asString();
+			venue += " ";
+		}
+	} else {
+		venue = info.get("venue", "").asString();
+	}
+	this->venue = venue;
 	this->volume = info["volume"].asString();
 	this->number = info["number"].asString();
 	this->pages = info["pages"].asString();
