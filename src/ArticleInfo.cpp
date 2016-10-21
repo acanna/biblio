@@ -60,7 +60,7 @@ string ArticleInfo::get_url(){
 	return url;	
 }
 
-/*ArticleInfo::ArticleInfo(string title, vector <string> authors, string venue, string volume, 
+ArticleInfo::ArticleInfo(string title, vector <string> authors, string venue, string volume, 
 string number, string pages, string year, string type, string url){
 	this->title = title;
 	this->authors = authors;
@@ -71,7 +71,7 @@ string number, string pages, string year, string type, string url){
 	this->year = year;
 	this->type = type;
 	this->url = url;
-}*/
+}
 
 string ArticleInfo::to_string(){
 	string output = "\n Title: \t" +this->title;

@@ -31,10 +31,10 @@ public:
 	std::string get_url();
 
 
-	/*ArticleInfo (const std::string title, std::vector <std::string> authors, 
+	ArticleInfo (const std::string title, std::vector <std::string> authors, 
 		     const std::string venue, const std::string volume, const std::string number,
 		     const std::string pages, const std::string year, const std::string type, 
-		     const std::string url);*/
+		     const std::string url);
 	
 	std::string to_string();
 };

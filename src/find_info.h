@@ -9,3 +9,4 @@
 #include "ArticleInfo.h"
 
 std::vector <ArticleInfo> find_info(std::string filename, bool offline);
+void print_info(std::vector <ArticleInfo> result);
