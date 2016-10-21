@@ -26,13 +26,13 @@ Parser::Parser(const string & file_name){
 	height = myimage.height();
 	ibytes = myimage.data();
 	ofstream out("image_bytes.txt");
-	int hbeg = height / 10;
+	int hbeg = height / 15;
 	int hend = 7 * height / 24;
 	int wbeg = width / 20;
 	int wend = width - wbeg;
 	for (int i = hbeg; i <= hend; ++i) {
 		for (int j = wbeg; j <= wend; ++j) {
-			if (((int)(ibytes[i * width * 4 + j * 4]) & 255) <= 127) {
+			if (((int)(ibytes[i * width * 4 + j * 4]) & 255) * ((int)(ibytes[i * width * 4 + j * 4 + 3]) & 255) / 255 <= 127) {
 				out << "*";
 			} else {
 				out << " ";

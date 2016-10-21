@@ -9,6 +9,7 @@
 using namespace std;
 
 int main (int argc, char ** argv) {
+	
 	list<string> auths, title;
 	DBLPManager * dblp;
 	unsigned int result_size = 0;
