@@ -11,7 +11,7 @@ using namespace poppler;
 
 Parser::Parser(const string & file_name){
 	try {
-		doc = poppler::document::load_from_file(file_name);
+		doc = document::load_from_file(file_name);
 	} catch(...) {}
 	if (doc != NULL) {
 		fst_page = split(doc->create_page(0)->text().to_latin1(),'\n');

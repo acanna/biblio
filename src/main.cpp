@@ -5,69 +5,61 @@
 #include "DBLPManager.h"
 #include "ArticleInfo.h"
 #include "Parser.h"
+#include "find_info.h"
+#include <tclap/CmdLine.h>
 
 using namespace std;
 
-vector <ArticleInfo> find_info(string filename, string key_online) {
-	list<string> auths, title;
-	DBLPManager dblp;
-	unsigned int result_size = 0;
-	vector <ArticleInfo> result;
-	Parser pr = Parser (filename);
-	
-	auths = pr.get_authors();
-	title = pr.get_title();
+// kaka budet vygl'adet vyzov prilozhenija? poka realizovano 
+//	 ./main [--offline | -f] file1.pdf file2.pdf ...
 
-	cout << "------------------parser---------------------" << endl;
-	cout << "------------------authors---------------------" << endl;
-	for (list<string>::const_iterator it = auths.begin(); it != auths.end(); ++it) {
-		cout << *it << endl;
-	}
-	cout << "------------------title---------------------" << endl;
-	for (list<string>::const_iterator it = title.begin(); it != title.end(); ++it) {
-		cout << *it << endl;
-	}
-	cout << "------------------end-parser-----------------" << endl;
-	if (key_online.string::compare("online") == 0) {
-// вопрос: может лучше искать в dblp по названию статьи? 
-// С авторами все менее однозначно. Или и по аторам, и по названию.
-// Название статьи, ИМХО, более уникально.
-		cout << "------------------dblp-----------------" << endl;
-		try {
-			DBLPManager dblp = DBLPManager();
-			for (list<string>::const_iterator it = auths.begin(); it != auths.end(); ++it) {
- 				string query = (string) (*it);
-				replace(query.begin(), query.end(), ' ', '.'); 	
-				result = dblp.publicationRequest(query);
-				result_size = result.size();
-
-				for (unsigned int k = 0; k < result_size; ++k) {
-					cout << result[k].to_string() << " \n"; 
-				}
-			}
-		} 
-		catch (const exception & e) {
-			cout << e.what() << endl;
-		
-		}
-	}
-	return result;
-}
-
-// как будет выглядеть вызов нашего приложения? Пока реализовано
-//	 ./main offline file1.pdf file2.pdf  
-// или 
-//	 ./main online file1.pdf file2.pdf  
 
 int main (int argc, char ** argv) {
-	string filename;
-	string key_online = argv[1];
-	int index = 2;
-        while (index < argc) {
-		filename = string(argv[index]);
-		find_info(filename, key_online);
-		index++;
+	
+	// Wrap everything in a try block.  Do this every time, 
+	// because exceptions will be thrown for problems.
+	try {
+	// Define the command line object, and insert a message
+	// that describes the program. The "Command description message" 
+	// is printed last in the help text. The second argument is the 
+	// delimiter (usually space) and the last one is the version number. 
+	// The CmdLine object parses the argv array based on the Arg objects
+	// that it contains. 
+	TCLAP::CmdLine cmd("This util will generate .bib files for your articles in .pdf format", ' ', "0.1");
+
+	// Define a switch and add it to the command line.
+	// A switch arg is a boolean argument and only defines a flag that
+	// indicates true or false.  In this example the SwitchArg adds itself
+	// to the CmdLine object as part of the constructor.  This eliminates
+	// the need to call the cmd.add() method.  All args have support in
+	// their constructors to add themselves directly to the CmdLine object.
+	// It doesn't matter which idiom you choose, they accomplish the same thing.
+	TCLAP::SwitchArg offlineSwitch("f","offline","Do only offline part", cmd, false);
+	
+	//
+	// UnlabeledMultiArg must be the LAST argument added!
+	//
+	TCLAP::UnlabeledMultiArg<string> multi("file_names", "file names", true, "list of strings");
+	cmd.add( multi );
+	
+	// Parse the argv array.
+	cmd.parse(argc, argv);
+	// Get the value parsed by each arg. 
+	vector<string> fileNames = multi.getValue();
+	
+	bool offline = offlineSwitch.getValue();
+
+	// Do what you intend. 
+	for (const auto &filename : fileNames) // access by reference to avoid copying
+	{
+		find_info(filename, offline);
 	}
+
+
+	} catch (TCLAP::ArgException &e) {
+		std::cerr << "error: " << e.error() << " for arg " << e.argId() << std::endl;
+	}
+
 	return 0;
 }
 
