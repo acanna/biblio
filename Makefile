@@ -1,4 +1,6 @@
 CC = g++
+#CC = g++-4.9
+
 CFLAGS = -c -std=c++11 -Wall -Wextra -Wpedantic
 CFLAGS_TEST = -std=c++11 -Wall -Wextra -Wpedantic -pthread -isystem $(GTEST_DIR)/include
 LDFLAGS = -lcurl -lpoppler-cpp
