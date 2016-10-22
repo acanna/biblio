@@ -44,14 +44,14 @@ vector <ArticleInfo> find_info(string filename, bool offline) {
 			DBLPManager dblp = DBLPManager();
 			for (list<string>::const_iterator it = auths_candidates.begin(); it != auths_candidates.end(); ++it) {
  				string query = (string) (*it);
-				dblp_tentative_result = dblp.publicationRequest(query);
+				//dblp_tentative_result = dblp.publicationRequest(query);
 				replace(query.begin(), query.end(), ' ', '.');
-				dblp_tentative_result = dblp.publicationRequest(query);
+				dblp_exact_result = dblp.publicationRequest(query);
 				result.insert(result.end(), dblp_exact_result.begin(), dblp_exact_result.end());
-				result.insert(result.end(), dblp_tentative_result.begin(), dblp_tentative_result.end());
+				//result.insert(result.end(), dblp_tentative_result.begin(), dblp_tentative_result.end());
 			}
 			result.insert(result.end(), dblp_exact_result.begin(), dblp_exact_result.end());
-			result.insert(result.end(), dblp_tentative_result.begin(), dblp_tentative_result.end());
+			//result.insert(result.end(), dblp_tentative_result.begin(), dblp_tentative_result.end());
 		} 
 		catch (const exception & e) {
 			cout << e.what() << endl;
