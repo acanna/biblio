@@ -3,21 +3,20 @@
 #include <regex>
 #include <fstream>
 #include <cstdint>
+#include <exception>
 #include "Parser.h"
 #include "tools.h"
+#include "Biblio_exception.h"
 
 using namespace std;
 //using namespace poppler;
 
 Parser::Parser(const string & file_name){
-	try {
-		doc = poppler::document::load_from_file(file_name);
-	} catch(...) {}
+	doc = poppler::document::load_from_file(file_name);
 	if (doc != NULL) {
 		fst_page = split(doc->create_page(0)->text().to_latin1(),'\n');
 	} else {
-		fst_page = {};
-		throw runtime_error("Document is set empy.");
+		throw Biblio_file_exception();
 	}
 	
 	poppler::page_renderer renderer;

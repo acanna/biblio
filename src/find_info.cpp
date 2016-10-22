@@ -1,5 +1,6 @@
 #include "find_info.h"
-
+#include <regex>
+#include <fstream>
 using namespace std;
 
 vector <ArticleInfo> find_info(string filename, bool offline) {
@@ -8,12 +9,14 @@ vector <ArticleInfo> find_info(string filename, bool offline) {
 	vector <ArticleInfo> result = {};
 	vector <ArticleInfo> dblp_exact_result = {};
 	vector <ArticleInfo> dblp_tentative_result = {};
-
-	Parser pr = Parser (filename);
+	try {
+		Parser pr = Parser (filename);
+		auths_candidates = pr.get_authors();
+		title_candidates = pr.get_title();
+	} catch (const Biblio_file_exception & e) {
+		throw;
+	}
 	
-	auths_candidates = pr.get_authors();
-	title_candidates = pr.get_title();
-
 	string title ="";
 	vector <string> authors = {};
 	string venue ="";
@@ -51,9 +54,10 @@ vector <ArticleInfo> find_info(string filename, bool offline) {
 			result.insert(result.end(), dblp_tentative_result.begin(), dblp_tentative_result.end());
 		} 
 		catch (const exception & e) {
-			cout << e.what() << endl;	
+			cout << e.what() << endl;
 		}
 	}
+
 
 	return result;
 }
@@ -65,3 +69,29 @@ void print_info(vector <ArticleInfo> result) {
 		cout << result[k].to_string() << " \n"; 
 	}
 }
+
+void printf_info(string filename, vector <ArticleInfo> result) {
+	unsigned int result_size = result.size();
+	ofstream out("result.html");
+	out << "<html>\n";
+	out << "\t<head>\n";
+	out << "\t\t<title>Biblio results</title>\n";
+	out << "\t</head>\n";
+	out << "\t<body>\n";
+	out << "--------------------------------------------------------------" << endl;
+	out << "<br>\n";
+	out << filename << endl;
+	out << "<br>\n";
+	out << "--------------------------------------------------------------" << endl;
+	out << "<br>\n";
+	for (unsigned int k = 0; k < result_size; ++k) {
+		string frmt_str = "<br>";
+		regex re_frmt("\n");
+		string formatted = regex_replace(result[k].to_string(),re_frmt,frmt_str);
+		out << formatted; 
+		out << "<br>\n";
+	}
+	out << "\t</body>\n";
+	out << "</html>\n";
+}
+
