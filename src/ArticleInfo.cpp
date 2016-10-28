@@ -29,6 +29,7 @@ ArticleInfo::ArticleInfo(Json::Value const & info) {
 	this->year = info["year"].asString();
 	this->type = info["type"].asString();
 	this->url = info["url"].asString();
+    this->precision = 0;
 } 
 
 string ArticleInfo::get_title(){
@@ -59,6 +60,14 @@ string ArticleInfo::get_type(){
 string ArticleInfo::get_url(){
 	return url;	
 }
+int ArticleInfo::get_precision() const{
+    return precision;
+}
+
+void ArticleInfo::set_precision(int precision){
+    this->precision = precision;
+}
+
 
 ArticleInfo::ArticleInfo(string title, vector <string> authors, string venue, string volume, 
 string number, string pages, string year, string type, string url){
@@ -71,6 +80,7 @@ string number, string pages, string year, string type, string url){
 	this->year = year;
 	this->type = type;
 	this->url = url;
+    this->precision = 0;
 }
 
 string ArticleInfo::to_string(){
@@ -86,5 +96,10 @@ string ArticleInfo::to_string(){
 	output += "\n Year: \t\t" + this->year;
 	output += "\n Type: \t\t" + this->type;
 	output += "\n URL: \t\t" + this->url;
+	output += "\n precision of request: \t" + std::to_string(precision) +"% \n\n";
 	return output;
 }
+
+/*bool operator > (const ArticleInfo& info){
+    return (this.precision > info.get_precision());
+}*/

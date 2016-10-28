@@ -5,6 +5,7 @@
 #include "DBLPManager.h"
 #include "ArticleInfo.h"
 #include "Parser.h"
+#include "PictureParser.h"
 #include "find_info.h"
 #include <tclap/CmdLine.h>
 
@@ -53,8 +54,16 @@ int main (int argc, char ** argv) {
 	for (const auto &filename : fileNames) // access by reference to avoid copying
 	{
 		try {
-			vector <ArticleInfo> result = find_info(filename, offline);
-			printf_info(filename, result);
+//			vector <ArticleInfo> result = find_info(filename, offline);
+//  		printf_info(filename, result);
+
+            // try to parse image using Tesseract and leptonica
+            PictureParser picture_parser = PictureParser("test_11.pdf", 300, 300, "test_11.png", "png", 150);
+            picture_parser.save_as_image(0);
+            char* out_text = picture_parser.parse_image();
+            cout << out_text;
+            delete [] out_text;	
+        
 		} catch (const Biblio_file_exception & e) {
 			cerr << "\nSkipped file " << e.what() << '\n'; 
 		} catch (...) {}
