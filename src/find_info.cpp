@@ -39,7 +39,7 @@ vector <ArticleInfo> search_dblp (DBLPManager & dblp, string & query) {
     return result;
 }
 
-int levenshtein_distance(string & s, string & t) {
+int levenshtein_distance(const string & s, const string & t) {
     if (s == t) return 0;
     if (s.length() == 0) return t.length();
     if (t.length() == 0) return s.length();
