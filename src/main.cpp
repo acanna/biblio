@@ -30,11 +30,12 @@ int main (int argc, char ** argv) {
 				vector <ArticleInfo> result = find_info(filename, offline);
 				printf_info(filename, result);
 				
-				PictureParser picture_parser = PictureParser("test_11.pdf", 300, 300, "test_11.png", "png", 150);
+                // try to parse image using Tesseract and leptonica
+				/*PictureParser picture_parser = PictureParser("test_11.pdf", 300, 300, "test_11.png", "png", 150);
 				picture_parser.save_as_image(0);
 				char* out_text = picture_parser.parse_image();
 				cout << out_text;
-				delete [] out_text;	
+				delete [] out_text;	*/
 				
 			} catch (const Biblio_exception & e) {
 				cerr << e.what() << '\n'; 
