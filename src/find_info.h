@@ -17,10 +17,10 @@ void print_html(std::ostream & out, const std::string & filename, std::vector <A
 void print_bib(std::ostream & out, const std::string & filename, std::vector <ArticleInfo> & result);
 void print_txt(std::ostream & out, const std::string & filename, std::vector <ArticleInfo> & result);
 
-bool greater (const ArticleInfo& info_1, const ArticleInfo& info_2);
+bool greater (const ArticleInfo & info_1, const ArticleInfo & info_2);
 
 std::vector <ArticleInfo> search_dblp (DBLPManager & dblp, std::string & query);
 
-int levenshtein_distance(std::string s, std::string t);
+int levenshtein_distance(std::string & s, std::string & t);
 
 
