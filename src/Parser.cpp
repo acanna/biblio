@@ -3,13 +3,11 @@
 #include <regex>
 #include <fstream>
 #include <cstdint>
-#include <exception>
 #include "Parser.h"
 #include "tools.h"
 #include "Biblio_exception.h"
 
 using namespace std;
-//using namespace poppler;
 
 Parser::Parser(const string & file_name){
 	doc = poppler::document::load_from_file(file_name);
@@ -25,22 +23,6 @@ Parser::Parser(const string & file_name){
 	width = myimage.width();
 	height = myimage.height();
 	ibytes = myimage.data();
-	ofstream out("image_bytes.txt");
-	int hbeg = height / 15;
-	int hend = 7 * height / 24;
-	int wbeg = width / 20;
-	int wend = width - wbeg;
-	for (int i = hbeg; i <= hend; ++i) {
-		for (int j = wbeg; j <= wend; ++j) {
-			if (((int)(ibytes[i * width * 4 + j * 4]) & 255) * ((int)(ibytes[i * width * 4 + j * 4 + 3]) & 255) / 255 <= 127) {
-				out << "*";
-			} else {
-				out << " ";
-			}
-		}
-		out << "\n";
-	}
-	out.close();
 	
 	vector<string> modified;
 	int n = fst_page.size();
@@ -122,6 +104,25 @@ Parser::Parser(const string & file_name){
 		modified.push_back(fst_page[i]);
 	}
 	fst_page = modified;
+}
+
+void Parser::prepare_data() {
+	ofstream out("image_bytes.txt");
+	int hbeg = height / 15;
+	int hend = 7 * height / 24;
+	int wbeg = width / 20;
+	int wend = width - wbeg;
+	for (int i = hbeg; i <= hend; ++i) {
+		for (int j = wbeg; j <= wend; ++j) {
+			if (((int)(ibytes[i * width * 4 + j * 4]) & 255) * ((int)(ibytes[i * width * 4 + j * 4 + 3]) & 255) / 255 <= 127) {
+				out << "*";
+			} else {
+				out << " ";
+			}
+		}
+		out << "\n";
+	}
+	out.close();
 }
 
 vector<string> Parser::get_document() const{

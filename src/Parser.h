@@ -15,12 +15,14 @@ class Parser{
 		char * ibytes;
 		int width;
 		int height;
+		char * data;
 	public:
 		Parser(const std::string &);
 		std::vector<std::string> get_document() const;
 		std::vector<std::string> get_fst_page() const;
 		std::list<std::string> get_authors() const;
 		std::list<std::string> get_title() const;
+		void prepare_data();
 };
 
 #endif

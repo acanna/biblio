@@ -1,12 +1,13 @@
-#include "find_info.h"
 #include <regex>
 #include <fstream>
 #include <algorithm>
 #include <vector>
+#include "find_info.h"
+
 using namespace std;
 
 
-bool _greater (const ArticleInfo& info_1, const ArticleInfo& info_2) {
+bool _greater (const ArticleInfo & info_1, const ArticleInfo & info_2) {
      return (info_1.get_precision() > info_2.get_precision());
 }
 
@@ -17,7 +18,7 @@ string delete_junk_symbol(string& str) {
     return str;
 }
 
-vector <ArticleInfo> search_dblp (DBLPManager& dblp, string query) {
+vector <ArticleInfo> search_dblp (DBLPManager & dblp, string & query) {
     vector <ArticleInfo> result = {};
 
     vector <ArticleInfo> additional_result = {};
@@ -38,8 +39,7 @@ vector <ArticleInfo> search_dblp (DBLPManager& dblp, string query) {
     return result;
 }
 
-int levenshtein_distance(string &s, string &t) {
-   
+int levenshtein_distance(string & s, string & t) {
     if (s == t) return 0;
     if (s.length() == 0) return t.length();
     if (t.length() == 0) return s.length();
@@ -63,6 +63,7 @@ int levenshtein_distance(string &s, string &t) {
 
 vector <ArticleInfo> find_info(const string & filename, bool offline) {
 	list<string> auths_candidates, title_candidates;
+
 	vector <ArticleInfo> result = {};
 	vector <ArticleInfo> dblp_result = {};
 	try {
@@ -76,7 +77,6 @@ vector <ArticleInfo> find_info(const string & filename, bool offline) {
 	string data_from_parser="";
 	string title = "";
 	vector <string> authors = {};
-
 
 	// info from parser
 	// title
@@ -112,9 +112,11 @@ vector <ArticleInfo> find_info(const string & filename, bool offline) {
 		} 
 		catch (const exception & e) {
 			cerr << e.what() << endl;
-		}            
+		}
+         
          if (result.size()>0) {
             data_from_parser = delete_junk_symbol(data_from_parser);
+
             for (unsigned int i = 0; i < result.size(); i++) {
     			string cur_title = result[i].get_title();
                 cur_title = delete_junk_symbol(cur_title);
@@ -124,8 +126,7 @@ vector <ArticleInfo> find_info(const string & filename, bool offline) {
                 }
                 if (the_same) {
                     result[i].set_precision(100);
-                }
-                else {
+                } else {
                     int lev_distance = levenshtein_distance(cur_title, data_from_parser);
                     result[i].set_precision(100-(int)(100*lev_distance/data_from_parser.size()));
                 }
@@ -143,18 +144,19 @@ vector <ArticleInfo> find_info(const string & filename, bool offline) {
 	return result;
 }
 
-void print_info(vector <ArticleInfo> & result) {
+void print_txt(ostream & out, const string & filename, vector <ArticleInfo> & result) {
 
-	unsigned int result_size = result.size();
-
-	for (unsigned int k = 0; k < result_size; ++k) {
-		cout << result[k].to_string() << " \n"; 
+	size_t result_size = result.size();
+	out << "--------------------------------------------------------------" << endl;
+	out << filename << endl;
+	out << "--------------------------------------------------------------" << endl;
+	for (size_t k = 0; k < result_size; ++k) {
+		out << result[k].to_string() << " \n"; 
 	}
 }
 
-void printf_info(const string & filename, vector <ArticleInfo> & result) {
-	unsigned int result_size = result.size();
-	ofstream out("result.html");
+void print_html(ostream & out, const string & filename, vector <ArticleInfo> & result) {
+	size_t result_size = result.size();
 	out << "<html>\n";
 	out << "\t<head>\n";
 	out << "\t\t<title>Biblio results</title>\n";
@@ -166,14 +168,23 @@ void printf_info(const string & filename, vector <ArticleInfo> & result) {
 	out << "<br>\n";
 	out << "--------------------------------------------------------------" << endl;
 	out << "<br>\n";
-	for (unsigned int k = 0; k < result_size; ++k) {
-		string frmt_str = "<br>";
-		regex re_frmt("\n");
-		string formatted = regex_replace(result[k].to_string(),re_frmt,frmt_str);
-		out << formatted; 
-		out << "<br>\n";
+	out << "<pre>\n";
+	for (size_t k = 0; k < result_size; ++k) {
+		out << result[k].to_string() << " \n"; 
 	}
+	out << "</pre>\n";
 	out << "\t</body>\n";
 	out << "</html>\n";
 }
+
+void print_bib(ostream & out, const string & filename, vector <ArticleInfo> & result) {
+	size_t result_size = result.size();
+	
+}
+
+
+
+
+
+
 
