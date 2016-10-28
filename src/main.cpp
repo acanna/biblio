@@ -2,11 +2,12 @@
 #include <algorithm>
 #include <stdexcept>
 #include <exception>
-#include <tclap/CmdLine.h>
 #include "DBLPManager.h"
 #include "ArticleInfo.h"
 #include "Parser.h"
+#include "PictureParser.h"
 #include "find_info.h"
+#include <tclap/CmdLine.h>
 
 using namespace std;
 
@@ -21,16 +22,25 @@ int main (int argc, char ** argv) {
 		// Get the value parsed by each arg. 
 		vector<string> fileNames = multi.getValue();
 		bool offline = offlineSwitch.getValue();
+		
 		for (const auto &filename : fileNames) // access by reference to avoid copying
 		{
 			try 
 			{
 				vector <ArticleInfo> result = find_info(filename, offline);
 				printf_info(filename, result);
+				
+				PictureParser picture_parser = PictureParser("test_11.pdf", 300, 300, "test_11.png", "png", 150);
+				picture_parser.save_as_image(0);
+				char* out_text = picture_parser.parse_image();
+				cout << out_text;
+				delete [] out_text;	
+				
 			} catch (const Biblio_exception & e) {
 				cerr << e.what() << '\n'; 
 			} catch (...) {}
 		}
+
 	} catch (TCLAP::ArgException &e) {
 		std::cerr << "error: " << e.error() << " for arg " << e.argId() << std::endl;
 	}

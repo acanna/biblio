@@ -1,7 +1,9 @@
 CC = g++
+#CC = g++-4.9
+
 CFLAGS = -c -std=c++11 -Wall -Wextra -Wpedantic
 CFLAGS_TEST = -std=c++11 -Wall -Wextra -Wpedantic -pthread -isystem $(GTEST_DIR)/include
-LDFLAGS = -lcurl -lpoppler-cpp
+LDFLAGS = -lcurl -lpoppler-cpp -ltesseract -llept
 
 SRC = src
 BIN = bin
@@ -14,7 +16,7 @@ GTEST_HEADERS = $(GTEST_DIR)/include/gtest/*.h \
                 $(GTEST_DIR)/include/gtest/internal/*.h
 TESTS_EXE = $(addprefix $(TEST_BIN)/, $(TESTS))
 
-FILES_FOR_TESTS = DBLPManager.cpp ArticleInfo.cpp jsoncpp.cpp tools.cpp Parser.cpp find_info.cpp
+FILES_FOR_TESTS = DBLPManager.cpp ArticleInfo.cpp jsoncpp.cpp tools.cpp Parser.cpp find_info.cpp PictureParser.cpp
 FILES = $(FILES_FOR_TESTS) main.cpp 
 
 SOURCES = $(addprefix $(SRC)/, $(FILES))
@@ -86,3 +88,4 @@ $(TEST_BIN)/gtest.a : $(TEST_BIN)/gtest-all.o
 
 $(TEST_BIN)/gtest_main.a : $(TEST_BIN)/gtest-all.o $(TEST_BIN)/gtest_main.o
 	$(AR) $(ARFLAGS) $@ $^
+

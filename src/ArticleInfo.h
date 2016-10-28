@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <cstring>
+#include <string>
 #include "json/json.h"
 #include "json/value.h" 
 
@@ -16,6 +17,7 @@ class ArticleInfo{
 	std::string year;
 	std::string type;
 	std::string url;
+    int precision;
 
 public:
 	ArticleInfo (Json::Value const & info) ;
@@ -29,7 +31,8 @@ public:
 	std::string get_year();
 	std::string get_type();
 	std::string get_url();
-
+    int get_precision() const;
+    void set_precision(int precision);
 
 	ArticleInfo (const std::string title, std::vector <std::string> authors, 
 		     const std::string venue, const std::string volume, const std::string number,
@@ -38,3 +41,4 @@ public:
 	
 	std::string to_string();
 };
+
