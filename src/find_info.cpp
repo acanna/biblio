@@ -3,19 +3,15 @@
 #include <fstream>
 using namespace std;
 
-vector <ArticleInfo> find_info(string filename, bool offline) {
+vector <ArticleInfo> find_info(const string & filename, bool offline) {
 	list<string> auths_candidates, title_candidates;
 	DBLPManager dblp;
 	vector <ArticleInfo> result = {};
 	vector <ArticleInfo> dblp_exact_result = {};
 	vector <ArticleInfo> dblp_tentative_result = {};
-	try {
-		Parser pr = Parser (filename);
-		auths_candidates = pr.get_authors();
-		title_candidates = pr.get_title();
-	} catch (const Biblio_file_exception & e) {
-		throw;
-	}
+	Parser pr = Parser (filename);
+	auths_candidates = pr.get_authors();
+	title_candidates = pr.get_title();
 	
 	string title ="";
 	vector <string> authors = {};
@@ -54,7 +50,7 @@ vector <ArticleInfo> find_info(string filename, bool offline) {
 			//result.insert(result.end(), dblp_tentative_result.begin(), dblp_tentative_result.end());
 		} 
 		catch (const exception & e) {
-			cout << e.what() << endl;
+			cerr << e.what() << endl;
 		}
 	}
 
@@ -62,7 +58,7 @@ vector <ArticleInfo> find_info(string filename, bool offline) {
 	return result;
 }
 
-void print_info(vector <ArticleInfo> result) {
+void print_info( vector <ArticleInfo> & result) {
 	unsigned int result_size = result.size();
 
 	for (unsigned int k = 0; k < result_size; ++k) {
@@ -70,7 +66,7 @@ void print_info(vector <ArticleInfo> result) {
 	}
 }
 
-void printf_info(string filename, vector <ArticleInfo> result) {
+void printf_info(const string & filename, vector <ArticleInfo> & result) {
 	unsigned int result_size = result.size();
 	ofstream out("result.html");
 	out << "<html>\n";
