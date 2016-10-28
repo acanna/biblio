@@ -96,10 +96,6 @@ string ArticleInfo::to_string(){
 	output += "\n Year: \t\t" + this->year;
 	output += "\n Type: \t\t" + this->type;
 	output += "\n URL: \t\t" + this->url;
-	output += "\n precision of request: \t" + std::to_string(precision) +"% \n\n";
+	output += "\n precision of request: \t" + std::to_string(this->precision) +"% \n\n";
 	return output;
 }
-
-/*bool operator > (const ArticleInfo& info){
-    return (this.precision > info.get_precision());
-}*/
