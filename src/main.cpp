@@ -26,7 +26,7 @@ int main (int argc, char ** argv) {
 				vector <ArticleInfo> result = find_info(filename, offline);
 				ofstream out("biblio.html");
 				print_html(out, filename, result);
-				ofstream out_bib("biblio.bib");
+				ofstream out_bib("tex/biblio.bib");
 				print_bib(out_bib, result);
 
                 // try to parse image using Tesseract and leptonica
