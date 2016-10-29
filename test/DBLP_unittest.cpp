@@ -40,7 +40,7 @@ TEST (PaperDatasetTest, Positive) {
 	string path = "../articles/";
 
 	ifstream file;
-    	file.open(data_file);
+	file.open(data_file);
 	int passed = 0;
 	int counter = 0;
 	while ((file.is_open()) && (!file.eof()))  {
