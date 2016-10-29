@@ -1,7 +1,4 @@
 #include <regex>
-#include <fstream>
-#include <algorithm>
-#include <vector>
 #include "find_info.h"
 
 using namespace std;
@@ -178,9 +175,66 @@ void print_html(ostream & out, const string & filename, vector <ArticleInfo> & r
 	out << "</html>\n";
 }
 
-void print_bib(ostream & out, const string & filename, vector <ArticleInfo> & result) {
+string short_name(string s) {
+    regex re_frmt("[^a-zA-Z\\s]");
+	regex re_name("\\b([a-zA-Z]{2,3})[a-zA-Z]*");
+	string res = regex_replace(s, re_frmt, "");
+    regex re_let("\\b[a-zA-Z]\\b");
+    res = regex_replace(res, re_let, "");
+    res = regex_replace(res, re_name, "$1");
+    regex re_trim("^\\s*\\b(.*)\\b\\s*$");
+    res = regex_replace(res, re_trim, "$1");
+    regex re_one("[a-zA-Z]+\\s");
+    res = regex_replace(res, re_one, "");
+    res = regex_replace(res, re_trim, "$1");
+    return res;
+}
+
+void print_bib(ostream & out, vector <ArticleInfo> & result) {
 	size_t result_size = result.size();
-	
+	for (size_t k = 0; k < result_size; ++k) {
+		vector<string> authors = result[k].get_authors();
+		size_t t = authors.size();
+		string label = "";
+
+		if (t > 1) {
+			label = short_name(authors[0]) + short_name(authors[1]) + result[k].get_year();
+		} else {
+			label = short_name(authors[0]) + result[k].get_year();
+		}
+
+		out <<  "@ARTICLE{" << label << ",\n"; 
+		out << "author = {";
+		for (size_t i = 0; i < t - 1; ++i) {
+			out << authors[i] << ", ";
+		}
+		out << authors[t - 1];
+		out << "},\n";
+		out << "title = {" << result[k].get_title() << "}";
+
+        if (result[k].get_pages().size() > 0) {
+            out << ",\n" << "pages = {" << result[k].get_pages() << "}";
+        }
+        if (result[k].get_number().size() > 0) {
+            out << ",\n" << "number = {" << result[k].get_number() << "}";
+        }
+        if (result[k].get_venue().size() > 0) {
+            out << ",\n" << "venue = {" << result[k].get_venue() << "}";
+        }
+        if (result[k].get_type().size() > 0) {
+            out << ",\n" << "type = {" << result[k].get_type() << "}";
+        }
+        if (result[k].get_url().size() > 0) {
+            out << ",\n" << "url = {" << result[k].get_url() << "}";
+        }
+        if (result[k].get_volume().size() > 0) {
+            out << ",\n" << "volume = {" << result[k].get_volume() << "}";
+        }
+		if (result[k].get_year().size() > 0) {
+            out << ",\n" << "year = {" << result[k].get_year() << "}";
+        }
+		out << "\n}\n\n";
+	}
 }
 
 

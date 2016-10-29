@@ -23,7 +23,7 @@ public:
 	ArticleInfo (Json::Value const & info) ;
 
 	std::string get_title();
-	std::vector <std::string> get_authors();		
+	std::vector <std::string> get_authors();
 	std::string get_venue();
 	std::string get_volume();
 	std::string get_number();

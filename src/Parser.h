@@ -15,7 +15,6 @@ class Parser{
 		char * ibytes;
 		int width;
 		int height;
-		char * data;
 	public:
 		Parser(const std::string &);
 		std::vector<std::string> get_document() const;

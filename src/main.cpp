@@ -1,12 +1,7 @@
 #include <iostream>
 #include <algorithm>
-#include <stdexcept>
-#include <exception>
 #include <tclap/CmdLine.h>
 #include "DBLPManager.h"
-#include "ArticleInfo.h"
-#include "Parser.h"
-#include "PictureParser.h"
 #include "find_info.h"
 
 
@@ -29,8 +24,10 @@ int main (int argc, char ** argv) {
 			try 
 			{
 				vector <ArticleInfo> result = find_info(filename, offline);
-				ofstream out("result.html");
+				ofstream out("biblio.html");
 				print_html(out, filename, result);
+				ofstream out_bib("biblio.bib");
+				print_bib(out_bib, result);
 
                 // try to parse image using Tesseract and leptonica
 				/*

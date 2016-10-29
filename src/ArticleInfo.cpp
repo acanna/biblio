@@ -1,4 +1,5 @@
 #include "ArticleInfo.h"
+
 using std::vector;
 using std::string;
 

@@ -1,4 +1,5 @@
 #include "PictureParser.h"
+
 using namespace std;
 
 PictureParser::PictureParser(string filename, int xres, int yres, string imagename, string format, int dpi){

@@ -2,7 +2,6 @@
 #include <algorithm>
 #include <regex>
 #include <fstream>
-#include <cstdint>
 #include "Parser.h"
 #include "tools.h"
 #include "Biblio_exception.h"
