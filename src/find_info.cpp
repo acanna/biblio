@@ -41,9 +41,9 @@ int levenshtein_distance(const string & s, const string & t) {
     if (s.length() == 0) return t.length();
     if (t.length() == 0) return s.length();
 
-    int v0[512];
-    int v1[512];
-    for (int i = 0; i < 512; i++) {
+    int v0[t.length()+1];
+    int v1[t.length()+1];
+    for (unsigned int i = 0; i < t.length() + 1; i++) {
         v0[i] = i;
     }
     for (unsigned int i = 0; i < s.length(); i++){
@@ -52,10 +52,10 @@ int levenshtein_distance(const string & s, const string & t) {
             int cost = (s[i] == t[j]) ? 0 : 1;
             v1[j + 1] = min(v1[j] + 1, min(v0[j + 1] + 1, v0[j] + cost));
         }
-        for (int j = 0; j < 512; j++)
+        for (unsigned int j = 0; j < t.length() + 1; j++)
             v0[j] = v1[j];
     }
-    return v1[t.size()];
+    return v1[t.length()];
 }
 
 vector <ArticleInfo> find_info(const string & filename, bool offline) {
@@ -123,8 +123,7 @@ vector <ArticleInfo> find_info(const string & filename, bool offline) {
                 }
                 if (the_same) {
                     result[i].set_precision(100);
-                }
-                if (! the_same) {
+                } else {
                     int lev_distance = levenshtein_distance(cur_title, data_from_parser);
                     result[i].set_precision(100-(int)(100*lev_distance/data_from_parser.size()));
                 }
