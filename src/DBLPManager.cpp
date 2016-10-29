@@ -1,4 +1,5 @@
 #include "DBLPManager.h"
+#include "Biblio_exception.h"
 
 using namespace std;
 
@@ -6,33 +7,33 @@ char buffer[MAX_BUF + 1];
 int bufferIndex;
 
 
-size_t writeData (void * webBuffer, size_t size, size_t nmemb, void *userp) {
-	int segSize = size * nmemb;
+size_t writeData (void * webBuffer, size_t size, size_t nmemb, void * userp) {
+	size_t segSize = size * nmemb;
 	if (bufferIndex + segSize > MAX_BUF) {
 		*(int *)userp = 1;
 		return 0;
 	}
-	memcpy ( (void*)& buffer[bufferIndex], webBuffer, (size_t) segSize);
+	memcpy ( (void*)& buffer[bufferIndex], webBuffer, segSize);
 	bufferIndex += segSize;
 	buffer[bufferIndex] = 0; 
 	return segSize;
 }
 
-DBLPManager::DBLPManager(){
+DBLPManager::DBLPManager() {
 	curl = curl_easy_init();
 	if (!curl) {
-		throw runtime_error("DBLP: CURL initialization failed");
+		throw Biblio_exception("DBLP: CURL initialization failed");
 	}	
 	
 	curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void*)& errorCode);
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeData);
 }
 
-DBLPManager::~DBLPManager(){
+DBLPManager::~DBLPManager() {
 	curl_easy_cleanup(curl);
 }
 
-vector <ArticleInfo> DBLPManager::publicationRequest(const string & query){
+vector <ArticleInfo> DBLPManager::publicationRequest(const string & query) {
 	CURLcode result;
 	errorCode = 0;
 	bufferIndex = 0;
@@ -42,6 +43,7 @@ vector <ArticleInfo> DBLPManager::publicationRequest(const string & query){
 	curl_easy_setopt(curl, CURLOPT_URL, request.c_str());		
 	
 	result = curl_easy_perform(curl);
+
 	vector <ArticleInfo> articles; 	
 
 	if (result != CURLE_OK) {
@@ -65,7 +67,7 @@ vector <ArticleInfo> DBLPManager::publicationRequest(const string & query){
 			default:
 				what = "DBLP: Failed to perform query";
 		}			
-		throw runtime_error(what);	
+		throw Biblio_exception(what);
 	}
 	articles = parseResponse();
 	return articles;
@@ -79,9 +81,8 @@ vector <ArticleInfo> DBLPManager::parseResponse() {
 	vector <ArticleInfo> articles; 	
 	 
 	if (!parsingSuccessful) {
-
 	        string what = "DBLP: Parser error: " + reader.getFormattedErrorMessages();
-		throw runtime_error(what);
+		throw Biblio_exception(what);
 	}
 	
 	Json::Value hits = root["result"]["hits"]["hit"];
@@ -89,7 +90,6 @@ vector <ArticleInfo> DBLPManager::parseResponse() {
 	for (unsigned int i = 0; i < hits.size(); i++) {
 		Json::Value info = hits[i]["info"];		
 		articles.push_back(ArticleInfo(info));
-
 	}
 	return articles;
 

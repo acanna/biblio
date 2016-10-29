@@ -55,26 +55,28 @@ TEST (PaperDatasetTest, Positive) {
 		filename = path + filename;
 
 		bool offline = true;
-
-		vector <ArticleInfo> result = find_info(filename, !offline);
-		if (result.size() > 0) {
-            int precision = result[0].get_precision();
-    		if (precision == 100) {
-    			passed++ ;
-    		} else {
-    			cout << "Failed at " << filename << endl;
-    		}          
-        } else {
-    	    cout << "Failed at " << filename << endl;
-        }
-		counter++;
-
+		try{
+			vector <ArticleInfo> result = find_info(filename, !offline);
+			if (result.size() > 0) {
+		        int precision = result[0].get_precision();
+				if (precision == 100) {
+					passed++ ;
+				} else {
+					cout << "Failed at " << filename << endl;
+				}          
+		    } else {
+			    cout << "Failed at " << filename << endl;
+		    }
+			counter++;
+		} catch(const Biblio_exception & e) {
+			cerr << e.what() << endl;
+		}
 	}
 						    
-	cout <<">>>-------------------------------------<<<" << endl;
-	cout <<"    Passed " << passed << " tests from " << counter << endl;
-	cout <<"    Passed " << passed*100/float(counter) << " % from total amount " << endl;
-	cout <<">>>-------------------------------------<<<" << endl;
+	cout << ">>>-------------------------------------<<<" << endl;
+	cout << "    Passed " << passed << " tests from " << counter << endl;
+	cout << "    Passed " << passed * 100 / (float)counter << " % from total amount" << endl;
+	cout << ">>>-------------------------------------<<<" << endl;
 	EXPECT_EQ(0, 0);
 }
 

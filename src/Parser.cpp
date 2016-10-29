@@ -13,7 +13,7 @@ Parser::Parser(const string & file_name){
 	if (doc != NULL) {
 		fst_page = split(doc->create_page(0)->text().to_latin1(),'\n');
 	} else {
-		throw Biblio_exception(file_name);
+		throw Biblio_file_exception(file_name);
 	}
 	
 	poppler::page_renderer renderer;

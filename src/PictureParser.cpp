@@ -1,4 +1,5 @@
 #include "PictureParser.h"
+#include "Biblio_exception.h"
 
 using namespace std;
 
@@ -16,7 +17,7 @@ void PictureParser::save_as_image (int page_num) {
  	poppler::document *doc = poppler::document::load_from_file(this->filename);
 	const int pages_nbr = doc->pages();
     if (page_num >pages_nbr) {
-    	throw runtime_error("PictureParser: Wrong page number indicated.\n");	
+    	throw Biblio_exception("PictureParser: Wrong page number indicated.\n");
     }
 	poppler::page* mypage =doc->create_page(page_num);
 
@@ -28,10 +29,10 @@ void PictureParser::save_as_image (int page_num) {
     return;
 }
 
-char* PictureParser::parse_image() {
+char * PictureParser::parse_image() {
 	tesseract::TessBaseAPI *api = new tesseract::TessBaseAPI();
 	if (api->Init(NULL, "eng")) {
-		throw runtime_error("PictureParser: Could not initialize tesseract.\n");	
+		throw Biblio_exception("PictureParser: Could not initialize tesseract.\n");
 	}
 
 	Pix *image = pixRead(this->imagename.c_str());
