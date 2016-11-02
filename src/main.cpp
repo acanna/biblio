@@ -1,8 +1,7 @@
 #include <iostream>
 #include <algorithm>
 #include <tclap/CmdLine.h>
-#include "DBLPManager.h"
-#include "find_info.h"
+#include "BiblioManager.h"
 
 
 using namespace std;
@@ -18,16 +17,18 @@ int main (int argc, char ** argv) {
 		// Get the value parsed by each arg. 
 		vector<string> fileNames = multi.getValue();
 		bool offline = offlineSwitch.getValue();
-		
+
+        BiblioManager manager;
+
 		for (const auto & filename : fileNames) // access by reference to avoid copying
 		{
 			try 
 			{
-				vector <ArticleInfo> result = find_info(filename, offline);
+				vector <ArticleInfo> result = manager.search_exact_match(filename, offline);
 				ofstream out("biblio.html");
-				print_html(out, filename, result);
+				manager.print_html(out, filename, result);
 				ofstream out_bib("tex/biblio.bib");
-				print_bib(out_bib, result);
+				manager.print_bib(out_bib, result);
 
                 // try to parse image using Tesseract and leptonica
 				/*

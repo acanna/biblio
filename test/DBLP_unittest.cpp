@@ -4,12 +4,13 @@
 #include <regex>
 #include "gtest/gtest.h"
 #include "../src/DBLPManager.h"
-#include "../src/find_info.h"
+#include "../src/BiblioManager.h"
 #include "../src/tools.h"
 
 using namespace std;
 
 DBLPManager dblp;
+BiblioManager manager;
 
 TEST (PaperPresent, Positive) {
 	const string query = "Land.Cover.Classification.and.Forest.Change.Analysis";
@@ -38,14 +39,13 @@ TEST (PaperDatasetTest, Positive) {
 	string data_file = "../articles/test_summary.txt";
 	string path = "../articles/";
 
-	ifstream file;
-	file.open(data_file);
+	ifstream file(data_file);
 	int passed = 0;
 	int counter = 0;
-	while ((file.is_open()) && (!file.eof()))  {
-		char buffer [256];
-		file.getline (buffer, 256);
-		string line =  string (buffer);
+    string line = "";
+    while ((file.is_open()) && (!file.eof()))  {
+
+		getline(file, line);
         vector<string> tmp = split(line, '\t');
 
 		string filename = tmp[0];
@@ -54,7 +54,7 @@ TEST (PaperDatasetTest, Positive) {
 
 		bool offline = true;
 		try{
-			vector <ArticleInfo> result = find_info(filename, !offline);
+			vector <ArticleInfo> result = manager.find_info(filename, !offline);
 			if (result.size() > 0) {
 		        int precision = result[0].get_precision();
 				if (precision == 100) {
@@ -77,4 +77,51 @@ TEST (PaperDatasetTest, Positive) {
 	cout << ">>>-------------------------------------<<<" << endl;
 	EXPECT_EQ(0, 0);
 }
+
+TEST (TestAlg_TitleExactMatch, Positive) {
+	string data_file = "../articles/test_summary.txt";
+	string path = "../articles/";
+
+	ifstream file(data_file);
+	int passed = 0;
+	int counter = 0;
+	string line = "", filename = "", paper_title = "";
+	vector<string> tmp;
+
+	while (file.is_open() && !file.eof()) {
+
+		getline(file, line);
+		tmp = split(line, '\t');
+
+		filename = tmp[0];
+		paper_title = tmp[1];
+		filename = path + filename;
+
+		bool offline = false;
+		try{
+			vector <ArticleInfo> result = manager.search_exact_match(filename, offline);
+			if (result.size() > 0) {
+				int precision = result[0].get_precision();
+				if (precision == 100) {
+					passed++ ;
+				} else {
+					cout << "Failed at " << filename << endl;
+				}
+			} else {
+				cout << "Failed at " << filename << endl;
+			}
+			counter++;
+		} catch(const Biblio_exception & e) {
+			cerr << e.what() << endl;
+		}
+	}
+
+	cout << ">>>-------------------------------------<<<" << endl;
+	cout << "    Passed " << passed << " tests from " << counter << endl;
+	cout << "    Passed " << passed * 100 / (float)counter << " % from total amount" << endl;
+	cout << ">>>-------------------------------------<<<" << endl;
+
+	EXPECT_EQ(0, 0);
+}
+
 

@@ -15,7 +15,7 @@ GTEST_HEADERS = $(GTEST_DIR)/include/gtest/*.h \
                 $(GTEST_DIR)/include/gtest/internal/*.h
 TESTS_EXE = $(addprefix $(TEST_BIN)/, $(TESTS))
 
-FILES_FOR_TESTS = DBLPManager.cpp ArticleInfo.cpp jsoncpp.cpp tools.cpp Parser.cpp find_info.cpp PictureParser.cpp
+FILES_FOR_TESTS = DBLPManager.cpp ArticleInfo.cpp jsoncpp.cpp tools.cpp Parser.cpp PictureParser.cpp BiblioManager.cpp
 FILES = $(FILES_FOR_TESTS) main.cpp 
 
 SOURCES = $(addprefix $(SRC)/, $(FILES))

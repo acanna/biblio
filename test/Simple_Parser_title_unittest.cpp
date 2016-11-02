@@ -23,9 +23,6 @@ TEST (PaperDatasetTest, Positive) {
 	vector<string> tmp, title;
 	
 	while ((file.is_open()) && (!file.eof())) {
-		//char buffer [256];
-		//file.getline (buffer, 256);
-		//string line =  string (buffer);		
 		getline(file, line);
 		tmp = split(line, '\t');
 		filename = tmp[0];

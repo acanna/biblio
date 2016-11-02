@@ -20,7 +20,9 @@ class Parser{
 
 	public:
 
-		Parser(const std::string &);
+        Parser();
+		Parser(const std::string & file_name);
+        void parse(const std::string & file_name);
         void prepare_fst_page();
 		std::vector<std::string> get_document() const;
 		std::vector<std::string> get_fst_page() const;
