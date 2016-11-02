@@ -1,13 +1,11 @@
-#include "../src/DBLPManager.h"
-#include "../src/ArticleInfo.h"
-#include "../src/find_info.h"
-#include "../src/tools.h"
-#include "gtest/gtest.h"
 #include <iostream>
 #include <fstream>
 #include <algorithm>
 #include <regex>
-#include <cstring>
+#include "gtest/gtest.h"
+#include "../src/DBLPManager.h"
+#include "../src/find_info.h"
+#include "../src/tools.h"
 
 using namespace std;
 

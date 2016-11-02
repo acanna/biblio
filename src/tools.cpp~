@@ -1,4 +1,3 @@
-#include <regex>
 #include "tools.h"
 
 using namespace std;
@@ -13,14 +12,5 @@ vector<string> split(const string & str, char delimiter) {
 		}
 	}
 	return internal;
-}
-
-string low_letters_only(string str) {
-    transform(str.begin(), str.end(), str.begin(), ::tolower);
-    regex re_frmt("[^a-zA-Z]");
-    regex re_space("\\b\\s+\\b");
-    str = regex_replace(str, re_frmt, "");
-    str = regex_replace(str, re_space, " ");
-    return str;
 }
 

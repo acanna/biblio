@@ -19,7 +19,7 @@ int main (int argc, char ** argv) {
 		vector<string> fileNames = multi.getValue();
 		bool offline = offlineSwitch.getValue();
 		
-		for (const auto &filename : fileNames) // access by reference to avoid copying
+		for (const auto & filename : fileNames) // access by reference to avoid copying
 		{
 			try 
 			{
