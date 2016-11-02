@@ -19,15 +19,15 @@ int main (int argc, char ** argv) {
 		bool offline = offlineSwitch.getValue();
 
         BiblioManager manager;
+        ofstream out_html("biblio.html");
+        ofstream out_bib("tex/biblio.bib");
 
 		for (const auto & filename : fileNames) // access by reference to avoid copying
 		{
 			try 
 			{
 				vector <ArticleInfo> result = manager.search_exact_match(filename, offline);
-				ofstream out("biblio.html");
-				manager.print_html(out, filename, result);
-				ofstream out_bib("tex/biblio.bib");
+				manager.print_html(out_html, filename, result);
 				manager.print_bib(out_bib, result);
 
                 // try to parse image using Tesseract and leptonica
@@ -43,6 +43,9 @@ int main (int argc, char ** argv) {
 				cerr << e.what() << '\n'; 
 			} catch (...) {}
 		}
+
+        out_html.close();
+        out_bib.close();
 
 	} catch (TCLAP::ArgException & e) {
 		std::cerr << "error: " << e.error() << " for arg " << e.argId() << std::endl;
