@@ -33,32 +33,32 @@ ArticleInfo::ArticleInfo(Json::Value const & info) {
     this->precision = 0;
 } 
 
-string ArticleInfo::get_title(){
+string const & ArticleInfo::get_title(){
 	return title;	
 }
 
-vector <string> ArticleInfo::get_authors(){
+vector <string> const & ArticleInfo::get_authors(){
 	return authors;	
 }
-string ArticleInfo::get_venue(){
+string const & ArticleInfo::get_venue(){
 	return venue;	
 }
-string ArticleInfo::get_volume(){
+string const & ArticleInfo::get_volume(){
 	return volume;	
 }
-string ArticleInfo::get_number(){
+string const & ArticleInfo::get_number(){
 	return number;	
 }
-string ArticleInfo::get_pages(){
+string const & ArticleInfo::get_pages(){
 	return pages;	
 }
-string ArticleInfo::get_year(){
+string const & ArticleInfo::get_year(){
 	return year;	
 }
-string ArticleInfo::get_type(){
+string const & ArticleInfo::get_type(){
 	return type;	
 }
-string ArticleInfo::get_url(){
+string const & ArticleInfo::get_url(){
 	return url;	
 }
 int ArticleInfo::get_precision() const{
@@ -70,8 +70,9 @@ void ArticleInfo::set_precision(int precision){
 }
 
 
-ArticleInfo::ArticleInfo(string title, vector <string> authors, string venue, string volume, 
-string number, string pages, string year, string type, string url){
+ArticleInfo::ArticleInfo(string const & title, vector <string> const & authors, 
+string const & venue, string const & volume, string const & number, 
+string const & pages, string const & year, string const & type, string const & url){
 	this->title = title;
 	this->authors = authors;
 	this->venue = venue;
@@ -84,7 +85,7 @@ string number, string pages, string year, string type, string url){
     this->precision = 0;
 }
 
-string ArticleInfo::to_string(){
+string const & ArticleInfo::to_string(){
 	string output = "\n Title: \t" +this->title;
 	output += "\n Authors: ";
 	for (unsigned int i = 0; i < authors.size(); i++) {

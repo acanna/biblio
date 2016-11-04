@@ -22,23 +22,23 @@ class ArticleInfo{
 public:
 	ArticleInfo (Json::Value const & info) ;
 
-	std::string get_title();
-	std::vector <std::string> get_authors();
-	std::string get_venue();
-	std::string get_volume();
-	std::string get_number();
-	std::string get_pages();
-	std::string get_year();
-	std::string get_type();
-	std::string get_url();
-    int get_precision() const;
+	std::string const & get_title();
+	std::vector <std::string> const & get_authors();
+	std::string const & get_venue();
+	std::string const & get_volume();
+	std::string const & get_number();
+	std::string const & get_pages();
+	std::string const & get_year();
+	std::string const & get_type();
+	std::string const & get_url();
+	int get_precision() const; 
     void set_precision(int precision);
 
-	ArticleInfo (const std::string title, std::vector <std::string> authors, 
-		     const std::string venue, const std::string volume, const std::string number,
-		     const std::string pages, const std::string year, const std::string type, 
-		     const std::string url);
+	ArticleInfo (std::string const & title, std::vector <std::string> const & authors, 
+		     std::string const & venue, std::string const & volume, std::string const & number,
+		     std::string const & pages, std::string const & year, std::string const & type, 
+		     std::string const & url);
 	
-	std::string to_string();
+	std::string const & to_string();
 };
 
