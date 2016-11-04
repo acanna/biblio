@@ -35,9 +35,10 @@ public:
     PictureParser(std::string filename, int xres, int yres, 
 				  std::string imagename, std::string format, int dpi);
 	std::string get_title();
-    void save_as_image ();
+
+    std::string find_title ();
 	void select_title_rectangle();
-    void parse_image();
+    std::string parse_image();
 
 };
 
