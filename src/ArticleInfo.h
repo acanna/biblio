@@ -39,6 +39,6 @@ public:
 		     std::string const & pages, std::string const & year, std::string const & type, 
 		     std::string const & url);
 	
-	std::string const & to_string();
+	std::string to_string();
 };
 

@@ -85,8 +85,8 @@ string const & pages, string const & year, string const & type, string const & u
     this->precision = 0;
 }
 
-string const & ArticleInfo::to_string(){
-	string output = "\n Title: \t" +this->title;
+string ArticleInfo::to_string(){
+	string output = "\n Title: \t" + this->title;
 	output += "\n Authors: ";
 	for (unsigned int i = 0; i < authors.size(); i++) {
 		output += "\n\t\t" + this->authors[i];

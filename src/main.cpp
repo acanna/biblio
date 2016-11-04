@@ -38,8 +38,6 @@ int main (int argc, char ** argv) {
 				vector <ArticleInfo> result = manager.search_exact_match(filename, offline);
 				manager.print_html(out_html, filename, result);
 				manager.print_bib(out_bib, result);
-
-				
 				
 			} catch (const Biblio_exception & e) {
 				cerr << e.what() << '\n'; 

@@ -174,8 +174,9 @@ void BiblioManager::print_html(std::ostream &out, const std::string &filename, s
     out << "--------------------------------------------------------------" << endl;
     out << "<br>\n";
     out << "<pre>\n";
+
     for (size_t k = 0; k < result_size; ++k) {
-        out << result[k].to_string() << " \n";
+        out << result[k].to_string();
     }
     out << "</pre>\n";
     out << "\t</body>\n";
