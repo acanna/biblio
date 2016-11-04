@@ -3,8 +3,8 @@
 
 using namespace std;
 
-PictureParser::PictureParser(string filename, int xres, int yres, 
-							 string imagename, string format, int dpi){
+PictureParser::PictureParser(string const & filename, int const & xres, int const & yres, 
+							 string const & imagename, string const & format, int const & dpi){
 
     this->filename = filename;  
     this->xres = xres;
@@ -19,7 +19,7 @@ PictureParser::PictureParser(string filename, int xres, int yres,
 	this->title = "";
 }
 
-string PictureParser::get_title() {
+string const & PictureParser::get_title() {
 	return this->title;
 }
 
@@ -33,11 +33,11 @@ vector<int> * PixInfo::get_height() {
 	return & this->row_height;
 }
 
-int PixInfo::get_x() {
+int const & PixInfo::get_x() {
 	return this->x;
 }
 
-int PixInfo::get_y() {
+int const & PixInfo::get_y() {
 	return this->y;
 }
 
