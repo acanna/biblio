@@ -98,9 +98,7 @@ bool BiblioManager::greater(const ArticleInfo &info_1, const ArticleInfo &info_2
     return (info_1.get_precision() > info_2.get_precision());
 }
 
-BiblioManager::BiblioManager() {
-
-}
+BiblioManager::BiblioManager() {  }
 
 void BiblioManager::print_txt(std::ostream &out, const std::string &filename, std::vector<ArticleInfo> &result) {
 

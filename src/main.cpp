@@ -3,8 +3,6 @@
 #include <tclap/CmdLine.h>
 #include "DBLPManager.h"
 #include "find_info.h"
-#include "PictureParser.h"
-#include "Biblio_exception.h"
 #include "BiblioManager.h"
 
 
@@ -25,7 +23,7 @@ int main (int argc, char ** argv) {
 
         BiblioManager manager;
         ofstream out_html("biblio.html");
-        ofstream out_bib("tex/biblio.bib");
+        ofstream out_bib("biblio.bib");
 
 		for (const auto & filename : fileNames) // access by reference to avoid copying
 		{
