@@ -14,17 +14,23 @@
 
 
 #define MAX_BUF 65536
+
 const std::string URL = "http://dblp.org/search/publ/api?format=json&q=";
 
 class DBLPManager {
+
 	int errorCode;
 	CURL *curl;
 
-	public:	
+public:
+
 	DBLPManager();
+
 	virtual ~DBLPManager();
+
 	std::vector <ArticleInfo> publicationRequest(const std::string & query);
 
-	private:
+private:
+
 	std::vector <ArticleInfo> parseResponse();
 };

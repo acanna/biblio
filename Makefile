@@ -10,15 +10,19 @@ BIN = bin
 TEST_BIN = bin
 GTEST_DIR = test
 
-TESTS = DBLP_unittest
+TESTS = DBLP_unittest Simple_Parser_title_unittest
 GTEST_HEADERS = $(GTEST_DIR)/include/gtest/*.h \
                 $(GTEST_DIR)/include/gtest/internal/*.h
 TESTS_EXE = $(addprefix $(TEST_BIN)/, $(TESTS))
 
+<<<<<<< HEAD
 #FILES_FOR_TESTS = DBLPManager.cpp ArticleInfo.cpp jsoncpp.cpp tools.cpp Parser.cpp find_info.cpp #PictureParser.cpp
 
 FILES_FOR_TESTS = PictureParser.cpp 
 
+=======
+FILES_FOR_TESTS = DBLPManager.cpp ArticleInfo.cpp jsoncpp.cpp tools.cpp Parser.cpp PictureParser.cpp BiblioManager.cpp
+>>>>>>> ee3ba6fee1d3a77bef027157b26b313e541224fa
 FILES = $(FILES_FOR_TESTS) main.cpp 
 
 SOURCES = $(addprefix $(SRC)/, $(FILES))
@@ -57,6 +61,12 @@ clean:
 ###########################################################################################
 # Test build
 ###########################################################################################
+
+$(TEST_BIN)/Simple_Parser_title_unittest.o : $(GTEST_DIR)/Simple_Parser_title_unittest.cpp $(SOURCES_FOR_TESTS) $(GTEST_HEADERS)
+	$(CC) $(CFLAGS_TEST) -c $(GTEST_DIR)/Simple_Parser_title_unittest.cpp -o $@
+
+$(TEST_BIN)/Simple_Parser_title_unittest : $(TEST_BIN)/Simple_Parser_title_unittest.o $(OBJECTS_FOR_TESTS) $(TEST_BIN)/gtest_main.a
+	$(CC) $(CFLAGS_TEST) -lpthread $^ -o $@ $(LDFLAGS) 
 
 $(TEST_BIN)/DBLP_unittest.o : $(GTEST_DIR)/DBLP_unittest.cpp $(SOURCES_FOR_TESTS) $(GTEST_HEADERS)
 	$(CC) $(CFLAGS_TEST) -c $(GTEST_DIR)/DBLP_unittest.cpp -o $@

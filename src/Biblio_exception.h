@@ -29,7 +29,7 @@ public:
 
 	const char* what() const throw() override {
 		static std::string ex;
-		ex = "\nSkipped file " + _filename;
+		ex = "\nFile " + _filename + " skipped.";
 		return ex.c_str();
 	}
 
