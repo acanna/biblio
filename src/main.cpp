@@ -25,7 +25,7 @@ int main (int argc, char ** argv) {
 
         BiblioManager manager;
         ofstream out_html("biblio.html");
-        ofstream out_bib("tex/biblio.bib");
+        ofstream out_bib("biblio.bib");
 
 		for (const auto & filename : fileNames) // access by reference to avoid copying
 		{
