@@ -29,12 +29,6 @@ int main (int argc, char ** argv) {
 		{
 			try 
 			{
-                // try to parse image using Tesseract and leptonica 
-	
-			//	PictureParser picture_parser = PictureParser("test_4.pdf", 300, 300, "test.png", "png", 700);
-			//    picture_parser.save_as_image();
-
-
 				vector <ArticleInfo> result = manager.search_exact_match(filename, offline);
 				manager.print_html(out_html, filename, result);
 				manager.print_bib(out_bib, result);
