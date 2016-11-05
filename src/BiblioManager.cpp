@@ -5,7 +5,7 @@
 
 using namespace std;
 
-std::vector<ArticleInfo> BiblioManager::search_exact_match(const std::string &filename, bool offline) {
+std::vector<ArticleInfo> BiblioManager::search_damerau_levenshtein(const std::string &filename, bool offline) {
 
     vector<string> title_candidates = {};
     vector <ArticleInfo> result = {};
@@ -37,6 +37,8 @@ std::vector<ArticleInfo> BiblioManager::search_exact_match(const std::string &fi
 
                 if (dblp_result.size() > 0) {
 
+                    string ss = low_letters_only(s);
+
                     size_t result_size = dblp_result.size();
 
                     for (size_t i = 0; i < result_size; i++) {
@@ -44,24 +46,24 @@ std::vector<ArticleInfo> BiblioManager::search_exact_match(const std::string &fi
                         string cur_title = dblp_result[i].get_title();
                         cur_title = low_letters_only(cur_title);
 
-                        if (prep_title.find(cur_title) != std::string::npos) {
-
-                            dblp_result[i].set_precision(100);
-                            vector<ArticleInfo> match;
-                            match.push_back(dblp_result[i]);
-                            return match;
-
-                        } else {
-                            int lev_distance = levenshtein_distance(cur_title, prep_title);
-                            dblp_result[i].set_precision(100 - (int) (100 * lev_distance / prep_title.size()));
-                        }
+                        size_t dist = damerauLevenshteinDistance(ss, cur_title);
+                        dblp_result[i].set_precision(100 - (int) (100 * dist / max(ss.size(), cur_title.size())));
 
                     }
-
                     result.insert(result.end(), dblp_result.begin(), dblp_result.end());
                 }
+                if (result.size() > 30) {
+                    break;
+                }
             }
-            sort(result.begin(), result.end(), greater);
+            if (result.size() > 0) {
+                stable_sort(result.begin(), result.end(), greater);
+                int t = result[0].get_precision();
+                size_t i = 0;
+                while (i < result.size() && result[i].get_precision() == t) i++;
+                i--;
+                stable_sort(result.begin(), result.begin() + i, longer_title);
+            }
         }
         catch (const Biblio_exception & e) {
             throw;
@@ -70,7 +72,7 @@ std::vector<ArticleInfo> BiblioManager::search_exact_match(const std::string &fi
     return result;
 }
 
-std::vector<ArticleInfo> BiblioManager::search_dblp(DBLPManager & dblp, std::string & query) {
+vector<ArticleInfo> BiblioManager::search_dblp(DBLPManager & dblp, string & query) {
 
     vector <ArticleInfo> result = {};
 
@@ -96,6 +98,14 @@ std::vector<ArticleInfo> BiblioManager::search_dblp(DBLPManager & dblp, std::str
 
 bool BiblioManager::greater(const ArticleInfo &info_1, const ArticleInfo &info_2) {
     return (info_1.get_precision() > info_2.get_precision());
+}
+
+bool BiblioManager::smaller(const ArticleInfo &info_1, const ArticleInfo &info_2) {
+    return info_1.get_precision() <= info_2.get_precision();
+}
+
+bool BiblioManager::longer_title(const ArticleInfo &info_1, const ArticleInfo &info_2) {
+    return info_1.get_title().size() > info_2.get_title().size();
 }
 
 BiblioManager::BiblioManager() {  }
@@ -183,7 +193,7 @@ void BiblioManager::print_html(std::ostream &out, const std::string &filename, s
     out << "</html>\n";
 }
 
-vector<ArticleInfo> BiblioManager::find_info(const string & filename, bool offline) {
+vector<ArticleInfo> BiblioManager::search_levenshtein(const string & filename, bool offline) {
 
     list<string> auths_candidates;
     vector<string> title_candidates;
@@ -193,110 +203,114 @@ vector<ArticleInfo> BiblioManager::find_info(const string & filename, bool offli
 
     try {
         parser = Parser(filename);
-        auths_candidates = parser.get_authors();
         title_candidates = parser.get_title();
+        size_t n = title_candidates.size();
+        for (size_t i = 0; i < n - 1; ++i) {
+            title_candidates.push_back(title_candidates[i] + " " + title_candidates[i + 1]);
+        }
     } catch (const Biblio_exception & e) {
         throw;
     }
 
-    string data_from_parser = "";
     string title = "";
-    vector <string> authors = {};
 
-    // info from parser
-    // title
     for (string s : title_candidates) {
-        data_from_parser += s + " ";
         title += s + " ";
     }
-    // authors
-    for (list<string>::const_iterator it = auths_candidates.begin(); it != auths_candidates.end(); ++it) {
-        string aut = (*it);
-        authors.push_back(aut);
-        data_from_parser += aut;
-    }
 
-    // dblp
     if (!offline) {
         try {
-            /*
-            // all data from parser
-			DBLPManager dblp = DBLPManager();
-			result = search_dblp(dblp, data_from_parser);
-
-            // title only
-			dblp_result = search_dblp(dblp, title);
-			result.insert(result.end(), dblp_result.begin(), dblp_result.end());
-
-            // authors only
-            for (list<string>::const_iterator it = auths_candidates.begin();
-                                it != auths_candidates.end(); ++it) {
- 				string query = (string) (*it);
-    			dblp_result = search_dblp(dblp, query);
-				result.insert(result.end(), dblp_result.begin(), dblp_result.end());
-  			}
-             */
-
             string prep_title = low_letters_only(title);
             for (string & s : title_candidates) {
                 dblp_result = search_dblp(requester, s);
                 if (dblp_result.size() > 0) {
+                    string ss = low_letters_only(s);
                     size_t result_size = dblp_result.size();
                     for (size_t i = 0; i < result_size; i++) {
                         string cur_title = dblp_result[i].get_title();
                         cur_title = low_letters_only(cur_title);
-                        bool the_same = false;
-                        if (prep_title.find(cur_title) != std::string::npos) {
-                            the_same = true;
-                        }
-                        if (the_same) {
-                            dblp_result[i].set_precision(100);
-                            vector<ArticleInfo> match;
-                            match.push_back(dblp_result[i]);
-                            return match;
-                        } else {
-                            int lev_distance = levenshtein_distance(cur_title, prep_title);
-                            dblp_result[i].set_precision(100 - (int) (100 * lev_distance / prep_title.size()));
-                        }
+
+                        size_t lev_distance = levenshtein_distance(cur_title, ss);
+                        dblp_result[i].set_precision(100 - (int) (100 * lev_distance / max(ss.size(), cur_title.size())));
+
                     }
                     result.insert(result.end(), dblp_result.begin(), dblp_result.end());
                 }
             }
-            sort(result.begin(), result.end(), greater);
-
-
+            if (result.size() > 0) {
+                stable_sort(result.begin(), result.end(), greater);
+                int t = result[0].get_precision();
+                size_t i = 0;
+                while (i < result.size() && result[i].get_precision() == t) i++;
+                i--;
+                stable_sort(result.begin(), result.begin() + i, longer_title);
+            }
         }
         catch (const Biblio_exception & e) {
             throw;
         }
-
-        if (result.size() > 0) {
-            //data_from_parser = delete_junk_symbol(data_from_parser);
-            string prep_title = low_letters_only(title);
-            size_t result_size = result.size();
-            for (size_t i = 0; i < result_size; i++) {
-                string cur_title = result[i].get_title();
-                //cur_title = delete_junk_symbol(cur_title);
-                cur_title = low_letters_only(cur_title);
-                bool the_same = false;
-                if (prep_title.find(cur_title) != std::string::npos) {
-                    the_same = true;
-                }
-                if (the_same) {
-                    result[i].set_precision(100);
-                } else {
-                    int lev_distance = levenshtein_distance(cur_title, prep_title);
-                    result[i].set_precision(100-(int)(100*lev_distance/prep_title.size()));
-                }
-            }
-            sort(result.begin(), result.end(), greater);
-
-            //    if (result[0].get_precision() == 100) {
-            //       result.resize(1);
-            //    } else {
-            //       result.resize(5);
-            //    }
-        }
     }
     return result;
+}
+
+vector<ArticleInfo> BiblioManager::search_exact_match(const string & filename, bool offline) {
+
+    vector<string> title_candidates = {};
+    vector <ArticleInfo> result = {};
+    vector <ArticleInfo> dblp_result = {};
+
+    try {
+        parser = Parser(filename);
+        title_candidates = parser.get_title();
+        size_t n = title_candidates.size();
+        for (size_t i = 0; i < n - 1; ++i) {
+            title_candidates.push_back(title_candidates[i] + " " + title_candidates[i + 1]);
+        }
+    } catch (const Biblio_exception & e) {
+        throw;
+    }
+
+    string title = "";
+    for (string s : title_candidates) {
+        title += s + " ";
+    }
+
+    if (!offline) {
+        try {
+            string prep_title = low_letters_only(title);
+
+            for (string & s : title_candidates) {
+
+                dblp_result = search_dblp(requester, s);
+
+                if (dblp_result.size() > 0) {
+
+                    string ss = low_letters_only(s);
+
+                    size_t result_size = dblp_result.size();
+
+                    for (size_t i = 0; i < result_size; i++) {
+
+                        string cur_title = dblp_result[i].get_title();
+                        cur_title = low_letters_only(cur_title);
+
+                        if (prep_title.find(cur_title) != string::npos) {
+
+                            dblp_result[i].set_precision(100);
+                            result.push_back(dblp_result[i]);
+                        }
+                    }
+                }
+            }
+            sort(result.begin(), result.end(), longer_title);
+        }
+        catch (const Biblio_exception & e) {
+            throw;
+        }
+    }
+    vector<ArticleInfo> res = {};
+    if (result.size() > 0) {
+        res.push_back(result[0]);
+    }
+    return res;
 }

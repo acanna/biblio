@@ -33,35 +33,35 @@ ArticleInfo::ArticleInfo(Json::Value const & info) {
     this->precision = 0;
 } 
 
-string const & ArticleInfo::get_title(){
+string const & ArticleInfo::get_title() const {
 	return title;	
 }
 
-vector <string> const & ArticleInfo::get_authors(){
+vector <string> const & ArticleInfo::get_authors() const {
 	return authors;	
 }
-string const & ArticleInfo::get_venue(){
+string const & ArticleInfo::get_venue() const {
 	return venue;	
 }
-string const & ArticleInfo::get_volume(){
+string const & ArticleInfo::get_volume() const {
 	return volume;	
 }
-string const & ArticleInfo::get_number(){
+string const & ArticleInfo::get_number() const {
 	return number;	
 }
-string const & ArticleInfo::get_pages(){
+string const & ArticleInfo::get_pages() const {
 	return pages;	
 }
-string const & ArticleInfo::get_year(){
+string const & ArticleInfo::get_year() const {
 	return year;	
 }
-string const & ArticleInfo::get_type(){
+string const & ArticleInfo::get_type() const {
 	return type;	
 }
-string const & ArticleInfo::get_url(){
+string const & ArticleInfo::get_url() const {
 	return url;	
 }
-int ArticleInfo::get_precision() const{
+int ArticleInfo::get_precision() const {
     return precision;
 }
 

@@ -35,49 +35,6 @@ TEST (WrongQuery, Negative) {
 	EXPECT_EQ(result.size(), 0);
 }
 
-TEST (PaperDatasetTest, Positive) {
-	string data_file = "../articles/test_summary.txt";
-	string path = "../articles/";
-
-	ifstream file(data_file);
-	int passed = 0;
-	int counter = 0;
-    string line = "";
-    while ((file.is_open()) && (!file.eof()))  {
-
-		getline(file, line);
-        vector<string> tmp = split(line, '\t');
-
-		string filename = tmp[0];
-		string paper_title = tmp[1];
-		filename = path + filename;
-
-		bool offline = true;
-		try{
-			vector <ArticleInfo> result = manager.find_info(filename, !offline);
-			if (result.size() > 0) {
-		        int precision = result[0].get_precision();
-				if (precision == 100) {
-					passed++ ;
-				} else {
-					cout << "Failed at " << filename << endl;
-				}          
-		    } else {
-			    cout << "Failed at " << filename << endl;
-		    }
-			counter++;
-		} catch(const Biblio_exception & e) {
-			cerr << e.what() << endl;
-		}
-	}
-						    
-	cout << ">>>-------------------------------------<<<" << endl;
-	cout << "    Passed " << passed << " tests from " << counter << endl;
-	cout << "    Passed " << passed * 100 / (float)counter << " % from total amount" << endl;
-	cout << ">>>-------------------------------------<<<" << endl;
-	EXPECT_EQ(0, 0);
-}
-
 TEST (TestAlg_TitleExactMatch, Positive) {
 	string data_file = "../articles/test_summary.txt";
 	string path = "../articles/";
@@ -101,8 +58,8 @@ TEST (TestAlg_TitleExactMatch, Positive) {
 		try{
 			vector <ArticleInfo> result = manager.search_exact_match(filename, offline);
 			if (result.size() > 0) {
-				int precision = result[0].get_precision();
-				if (precision == 100) {
+
+				if (low_letters_only(paper_title) == low_letters_only(result[0].get_title())) {
 					passed++ ;
 				} else {
 					cout << "Failed at " << filename << endl;
@@ -121,7 +78,103 @@ TEST (TestAlg_TitleExactMatch, Positive) {
 	cout << "    Passed " << passed * 100 / (float)counter << " % from total amount" << endl;
 	cout << ">>>-------------------------------------<<<" << endl;
 
-	EXPECT_EQ(0, 0);
+	EXPECT_EQ(passed, counter);
 }
+
+TEST (TestAlg_TitleLevenshtein, Positive) {
+
+	string data_file = "../articles/test_summary.txt";
+	string path = "../articles/";
+
+	ifstream file(data_file);
+	int passed = 0;
+	int counter = 0;
+	string line = "", filename = "", paper_title = "";
+	vector<string> tmp;
+
+	while (file.is_open() && !file.eof()) {
+
+		getline(file, line);
+		tmp = split(line, '\t');
+
+		filename = tmp[0];
+		paper_title = tmp[1];
+		filename = path + filename;
+
+		bool offline = false;
+		try{
+			vector <ArticleInfo> result = manager.search_levenshtein(filename, offline);
+			if (result.size() > 0) {
+
+				if (low_letters_only(paper_title) == low_letters_only(result[0].get_title())) {
+					passed++ ;
+				} else {
+					cout << "Failed at " << filename << endl;
+				}
+			} else {
+				cout << "Failed at " << filename << endl;
+			}
+			counter++;
+		} catch(const Biblio_exception & e) {
+			cerr << e.what() << endl;
+		}
+	}
+
+	cout << ">>>-------------------------------------<<<" << endl;
+	cout << "    Passed " << passed << " tests from " << counter << endl;
+	cout << "    Passed " << passed * 100 / (float)counter << " % from total amount" << endl;
+	cout << ">>>-------------------------------------<<<" << endl;
+
+	EXPECT_EQ(passed, counter);
+}
+
+TEST (TestAlg_TitleDamerauLevenshtein, Positive) {
+
+	string data_file = "../articles/test_summary.txt";
+	string path = "../articles/";
+
+	ifstream file(data_file);
+	int passed = 0;
+	int counter = 0;
+	string line = "", filename = "", paper_title = "";
+	vector<string> tmp;
+
+	while (file.is_open() && !file.eof()) {
+
+		getline(file, line);
+		tmp = split(line, '\t');
+
+		filename = tmp[0];
+		paper_title = tmp[1];
+		filename = path + filename;
+
+		bool offline = false;
+		try{
+			vector <ArticleInfo> result = manager.search_damerau_levenshtein(filename, offline);
+			if (result.size() > 0) {
+
+				if (low_letters_only(paper_title) == low_letters_only(result[0].get_title())) {
+					passed++ ;
+				} else {
+					cout << "Failed at " << filename << endl;
+				}
+			} else {
+				cout << "Failed at " << filename << endl;
+			}
+			counter++;
+		} catch(const Biblio_exception & e) {
+			cerr << e.what() << endl;
+		}
+	}
+
+	cout << ">>>-------------------------------------<<<" << endl;
+	cout << "    Passed " << passed << " tests from " << counter << endl;
+	cout << "    Passed " << passed * 100 / (float)counter << " % from total amount" << endl;
+	cout << ">>>-------------------------------------<<<" << endl;
+
+    EXPECT_EQ(passed, counter);
+}
+
+
 
 

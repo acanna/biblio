@@ -15,7 +15,13 @@ std::string short_name(std::string s);
 
 std::string delete_junk_symbol(std::string str);
 
-int levenshtein_distance(const std::string & s, const std::string & t);
+size_t levenshtein_distance(const std::string & s, const std::string & t);
+
+size_t damerauLevenshteinDistance_biblio(const std::string & a, const std::string & b);
+
+size_t damerauLevenshteinDistance(const std::string & a, const std::string & b);
+
+size_t damerauLevenshteinDistance_beg(const std::string & a, size_t  ind_beg, const std::string & b);
 
 #endif
 

@@ -22,15 +22,15 @@ class ArticleInfo{
 public:
 	ArticleInfo (Json::Value const & info) ;
 
-	std::string const & get_title();
-	std::vector <std::string> const & get_authors();
-	std::string const & get_venue();
-	std::string const & get_volume();
-	std::string const & get_number();
-	std::string const & get_pages();
-	std::string const & get_year();
-	std::string const & get_type();
-	std::string const & get_url();
+	std::string const & get_title() const;
+	std::vector <std::string> const & get_authors() const;
+	std::string const & get_venue() const;
+	std::string const & get_volume() const;
+	std::string const & get_number() const;
+	std::string const & get_pages() const;
+	std::string const & get_year() const;
+	std::string const & get_type() const;
+	std::string const & get_url() const;
 	int get_precision() const; 
     void set_precision(int precision);
 
