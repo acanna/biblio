@@ -32,12 +32,13 @@ class PictureParser{
 
 
 public: 
-    PictureParser(std::string filename, int xres, int yres, 
-				  std::string imagename, std::string format, int dpi);
-	std::string get_title();
-    void save_as_image ();
+    PictureParser(std::string const & filename, int const & xres, int const & yres, 
+				  std::string const & imagename, std::string const & format, int const & dpi);
+	std::string const & get_title();
+
+    std::string find_title ();
 	void select_title_rectangle();
-    void parse_image();
+    std::string parse_image();
 
 };
 
@@ -49,6 +50,6 @@ class PixInfo{
 public:	
 	PixInfo(int const & x, int const & y, std::vector <int> const & row_height);
 	std::vector<int> * get_height();
-	int get_x();
-	int get_y();
+	int const & get_x();
+	int const & get_y();
 };

@@ -3,8 +3,8 @@
 
 using namespace std;
 
-PictureParser::PictureParser(string filename, int xres, int yres, 
-							 string imagename, string format, int dpi){
+PictureParser::PictureParser(string const & filename, int const & xres, int const & yres, 
+							 string const & imagename, string const & format, int const & dpi){
 
     this->filename = filename;  
     this->xres = xres;
@@ -19,7 +19,7 @@ PictureParser::PictureParser(string filename, int xres, int yres,
 	this->title = "";
 }
 
-string PictureParser::get_title() {
+string const & PictureParser::get_title() {
 	return this->title;
 }
 
@@ -33,15 +33,15 @@ vector<int> * PixInfo::get_height() {
 	return & this->row_height;
 }
 
-int PixInfo::get_x() {
+int const & PixInfo::get_x() {
 	return this->x;
 }
 
-int PixInfo::get_y() {
+int const & PixInfo::get_y() {
 	return this->y;
 }
 
-void PictureParser::save_as_image() {
+string PictureParser::find_title() {
     int page_num = 0;
  	poppler::document *doc = poppler::document::load_from_file(this->filename);
 	const int pages_nbr = doc->pages();
@@ -65,9 +65,9 @@ void PictureParser::save_as_image() {
 				this->yres, this->title_x, this->title_y, this->width, this->title_height);	
 	cur_image.save(this->imagename, this->format, this->dpi);
 
-    parse_image();
-	
-    return;
+	string result = parse_image();
+
+    return result;
 }
 
 bool PictureParser::is_black(int x, int y) {
@@ -156,7 +156,7 @@ void PictureParser::select_title_rectangle() {
 
 }
 
-void PictureParser::parse_image() {
+string PictureParser::parse_image() {
 	tesseract::TessBaseAPI *api = new tesseract::TessBaseAPI();
 	if (api->Init(NULL, "eng")) {
 		throw Biblio_exception("PictureParser: Could not initialize tesseract.\n");
@@ -171,6 +171,5 @@ void PictureParser::parse_image() {
 	pixDestroy(&image);
 
 	this->title = string(out_text);
-	cout << out_text;
-	return;
+	return out_text;
 }
