@@ -41,7 +41,6 @@ int const & PixInfo::get_y() {
 	return this->y;
 }
 
-//template<typename T>
 string PictureParser::find_title() {
     int page_num = 0;
  	poppler::document *doc = poppler::document::load_from_file(this->filename);
@@ -59,6 +58,7 @@ string PictureParser::find_title() {
 	poppler::image cur_image = renderer.render_page(mypage, this->xres, 
 				this->yres, this->title_x, this->title_y, this->width, this->height);	
 	this->data = cur_image.data();
+	cur_image.save("temp.png", this->format, this->dpi);
     
 	select_title_rectangle();
 
@@ -68,12 +68,11 @@ string PictureParser::find_title() {
 				this->yres, this->title_x, this->title_y, this->width, this->title_height);	
 	cur_image.save(this->imagename, this->format, this->dpi);
 
-	string result = parse_image();*/
+	string result = parse_image();
 
-
-
+*/
 /* если документ - текстовый файл*/
-
+	
 /*	double x_rect = this->title_x/this->xres*0;
 	double y_rect = this->title_y/this->yres*0;	
 	double height_rect = this->title_height/this->yres*72000;	
@@ -108,7 +107,7 @@ string PictureParser::find_title() {
 	string result = mypage->text(rect).to_latin1();
 	result = raw_to_formatted(result);
 
-	//cout << result << endl;
+	cout << result << endl;
 	
     return result;
 }
@@ -138,8 +137,8 @@ void PictureParser::select_title_rectangle() {
 		int x_row = -1;
 		vector <int >heights = {};
         
-        // scanning between 1/4 and 1/2 of the page width  
-        int w_start = int(this->width/4);  
+        // scanning between 10% and 50% of the page width  
+        int w_start = int(this->width/10);  
         int w_end = int(this->width/2);     
         
 		for (int x = w_start; x < w_end; x++) {
@@ -165,6 +164,17 @@ void PictureParser::select_title_rectangle() {
 		y++;
 	}
 
+  /* // статистика на высоты найденых строк
+	for (unsigned int j = 0; j < black_rows.size(); j++) {
+		vector<int> * cur_height = black_rows[j].get_heights();
+		sort (cur_height->begin(), cur_height->end());
+		out << "-----------------------" << endl;
+		out << 	"x " << black_rows[j].get_x() << "\t y " <<  black_rows[j].get_y() << endl;
+		out << "min height "<< cur_height->front() << "\t max height"<< cur_height->back() << endl;
+	}
+	out.close();*/
+
+
 	int max_height = 0;
 	for (unsigned int j = 0; j < black_rows.size(); j++) {
 		vector<int> * cur_height = black_rows[j].get_heights();
@@ -174,7 +184,8 @@ void PictureParser::select_title_rectangle() {
 		}
 	}
 		
-	max_height -= 5; // height tolerance -5 pix
+	//max_height -= 5; // height tolerance -5 pix
+	max_height *= 0.95; // height tolerance 5% 
 	int min_x = 10000;
 	int min_y = 10000;
 	for (unsigned int j = 0; j < black_rows.size(); j++) {
@@ -190,11 +201,29 @@ void PictureParser::select_title_rectangle() {
 		}
 	}
 
+
+	int max_y = min_y + max_height; 
+	
+	// check whether the title is more than single-line
+	// assumption that the number of lines is < 6 was made
+	for (unsigned int j = 0; j < black_rows.size(); j++) {			
+		int next_y = black_rows[j].get_y();
+		if (next_y > min_y + 6* max_height) {
+			break;
+		}
+		
+		vector<int> * cur_height = black_rows[j].get_heights();
+		if ((cur_height->back() >= max_height) && (next_y > max_y) && (next_y-max_y < 2* max_height) ) {
+			max_y = next_y + max_height;
+		}
+	}
+
+
 	//this->title_x = min_x - 25; // select title area only 
     this->title_x = 0; // select across the width of the page 
 	this->title_y = min_y - 0.25*max_height;
-	
-    this->title_height = max_height + 0.75*max_height;
+    this->title_height = max_y - min_y + 0.75*max_height;
+
 	return;
 
 }

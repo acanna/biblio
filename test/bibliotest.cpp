@@ -16,7 +16,7 @@ using namespace std;
 DBLPManager dblp;
 BiblioManager manager;
 
-/*TEST (PaperPresent, Positive) {
+TEST (PaperPresent, Positive) {
 	const string query = "Land.Cover.Classification.and.Forest.Change.Analysis";
 	const string title = "Land Cover Classification and Forest Change Analysis, Using Satellite Imagery-A Case Study in Dehdez Area of Zagros Mountain in Iran.";
 	const string venue = "J. Geographic Information System";
@@ -221,7 +221,7 @@ TEST (PaperDatasetTest, Positive) {
 	cout << "    Passed " << passed * 100 / (float)counter << " % from total amount" << endl;
 	cout << ">>>-------------------------------------<<<" << endl;
 	EXPECT_EQ(0, 0);
-}*/
+}
 
 TEST (PictureParser, Positive) {
 	string data_file = "../articles/test_summary.txt";
@@ -252,11 +252,11 @@ TEST (PictureParser, Positive) {
 
 			transform(paper_title.begin(), paper_title.end(), paper_title.begin(), (int (*)(int))tolower);
 			paper_title = raw_to_formatted(paper_title);			
-/*
+
 			cout << "..." << result <<"..." <<endl;		
 			cout << "..." << paper_title <<"..." <<endl;		
 			cout << "---------------------------------------------" <<endl;		
-*/
+
 			if (paper_title.find(result) != std::string::npos) {
 					passed++ ;
 			} else {

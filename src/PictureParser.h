@@ -17,7 +17,6 @@
 #include "tools.h"
 
 
-
 class PictureParser{
 	std::string filename;  
 	std::string imagename;
@@ -43,7 +42,6 @@ public:
     PictureParser(std::string const & filename, int const xres, int const yres, 
 				  std::string const & imagename, std::string const & format, int const dpi);
 	std::string const & get_title();
-//	template<typename T>
     std::string find_title ();
 
 };
