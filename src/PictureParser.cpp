@@ -3,8 +3,8 @@
 
 using namespace std;
 
-PictureParser::PictureParser(string const & filename, int const & xres, int const & yres, 
-							 string const & imagename, string const & format, int const & dpi){
+PictureParser::PictureParser(string const & filename, int const xres, int const yres, 
+							 string const & imagename, string const & format, int const dpi){
 
     this->filename = filename;  
     this->xres = xres;
@@ -23,13 +23,13 @@ string const & PictureParser::get_title() {
 	return this->title;
 }
 
-PixInfo::PixInfo(int const & x, int const & y, std::vector <int> const & row_height){
+PixInfo::PixInfo(int const x, int const y, std::vector <int> const & row_height){
 	this-> x = x;
 	this-> y = y;
 	this->row_height = row_height;
 }
 
-vector<int> * PixInfo::get_height() {
+vector<int> * PixInfo::get_heights() {
 	return & this->row_height;
 }
 
@@ -41,6 +41,7 @@ int const & PixInfo::get_y() {
 	return this->y;
 }
 
+//template<typename T>
 string PictureParser::find_title() {
     int page_num = 0;
  	poppler::document *doc = poppler::document::load_from_file(this->filename);
@@ -61,12 +62,54 @@ string PictureParser::find_title() {
     
 	select_title_rectangle();
 
+/* если документ - картинка*/
+/*
 	cur_image = renderer.render_page(mypage, this->xres, 
 				this->yres, this->title_x, this->title_y, this->width, this->title_height);	
 	cur_image.save(this->imagename, this->format, this->dpi);
 
-	string result = parse_image();
+	string result = parse_image();*/
 
+
+
+/* если документ - текстовый файл*/
+
+/*	double x_rect = this->title_x/this->xres*0;
+	double y_rect = this->title_y/this->yres*0;	
+	double height_rect = this->title_height/this->yres*72000;	
+	double width_rect = this->width/this->xres*72000;	*/
+	
+/*	cout << "Init page" << endl;
+	cout <<"width: " << mypage->page_rect().width() <<"\t  height: " << mypage->page_rect().height()<< endl;
+
+	cout << "Data from image:" << endl;
+	cout <<"width: " << this->width <<"\t  height: " <<  this->height << endl;
+	cout << "x: " << this->title_x << "\t y: "<< this->title_y << endl;
+	cout << "title_height: " << this->title_height << endl;
+
+
+	cout << "Page rectangle" << endl;
+	poppler::rectangle<double> page_rect = mypage->page_rect();
+	cout <<"width: " << page_rect.width() <<"\t  height: " <<  page_rect.height() << endl;
+	cout << "x: " << page_rect.x() << "\t y: "<< page_rect.y() << endl;
+*/
+
+	double x_rect = this->title_x*72/this->xres;
+	double y_rect = this->title_y*72/this->yres;	
+	double height_rect = this->title_height*72/this->yres;	
+	double width_rect = this->width*72/this->xres;	
+
+	/*cout<< "selected rectangle"<< endl;
+	cout <<"width: " << width_rect <<"\t  height: " << height_rect<< endl;
+	cout << "x: " << x_rect << "\t y: "<< y_rect << endl;
+*/
+
+	poppler::rectangle<double> rect = poppler::rectangle<double>(x_rect, y_rect, width_rect, height_rect);
+	string result = mypage->text(rect).to_latin1();
+	result = raw_to_formatted(result);
+
+	//cout << result << endl;
+	
     return result;
 }
 
@@ -86,11 +129,11 @@ bool PictureParser::is_black(int x, int y) {
 void PictureParser::select_title_rectangle() {
     ofstream out("image_bytes.txt");
 	vector<PixInfo> black_rows = {};
-	int whight_rows_counter = 0;
+	int white_rows_counter = 0;
 	int y = 0;
 
 
-	while ((y < this->height) && (whight_rows_counter < 2000)) {
+	while ((y < this->height) && (white_rows_counter < 2000)) {
 		int y_row = y;
 		int x_row = -1;
 		vector <int >heights = {};
@@ -117,14 +160,14 @@ void PictureParser::select_title_rectangle() {
 			PixInfo pix_info = PixInfo(x_row, y_row, heights); 
 			black_rows.push_back(pix_info);			
 		} else {
-			whight_rows_counter++;
+			white_rows_counter++;
 		}
 		y++;
 	}
 
 	int max_height = 0;
 	for (unsigned int j = 0; j < black_rows.size(); j++) {
-		vector<int> * cur_height = black_rows[j].get_height();
+		vector<int> * cur_height = black_rows[j].get_heights();
 		sort (cur_height->begin(), cur_height->end());
 		if (cur_height->back() > max_height) {
 			max_height = cur_height->back();
@@ -135,7 +178,7 @@ void PictureParser::select_title_rectangle() {
 	int min_x = 10000;
 	int min_y = 10000;
 	for (unsigned int j = 0; j < black_rows.size(); j++) {
-		vector<int> * cur_height = black_rows[j].get_height();
+		vector<int> * cur_height = black_rows[j].get_heights();
 		if (cur_height->back() >= max_height) {
 			if (black_rows[j].get_x() < min_x){
 				min_x = black_rows[j].get_x();

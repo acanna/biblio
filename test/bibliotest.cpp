@@ -9,13 +9,14 @@
 #include "../src/PictureParser.h"
 #include "../src/Biblio_exception.h"
 #include "../src/Parser.h"
+#include "../src/tools.h"
 
 using namespace std;
 
 DBLPManager dblp;
 BiblioManager manager;
 
-TEST (PaperPresent, Positive) {
+/*TEST (PaperPresent, Positive) {
 	const string query = "Land.Cover.Classification.and.Forest.Change.Analysis";
 	const string title = "Land Cover Classification and Forest Change Analysis, Using Satellite Imagery-A Case Study in Dehdez Area of Zagros Mountain in Iran.";
 	const string venue = "J. Geographic Information System";
@@ -220,7 +221,7 @@ TEST (PaperDatasetTest, Positive) {
 	cout << "    Passed " << passed * 100 / (float)counter << " % from total amount" << endl;
 	cout << ">>>-------------------------------------<<<" << endl;
 	EXPECT_EQ(0, 0);
-}
+}*/
 
 TEST (PictureParser, Positive) {
 	string data_file = "../articles/test_summary.txt";
@@ -247,18 +248,15 @@ TEST (PictureParser, Positive) {
 			PictureParser picture_parser = PictureParser(filename, 300, 300, "test.png", "png", 700);
 			string result = picture_parser.find_title();
 			transform(result.begin(), result.end(), result.begin(), (int (*)(int))tolower);
-			regex re_frmt("\\s+");
-			regex re_trim("^\\s*(.*)\\s*$");
-			regex re_punct("[,!?:…()*-:={}]");
-
-			result = regex_replace(result, re_frmt, " ");
-			result = regex_replace(result,re_trim,"$1");
-			result = regex_replace(result,re_punct,"$1");			
-			result.erase(result.find_last_not_of(" \n\r\t")+1);	
+			result = raw_to_formatted(result);
 
 			transform(paper_title.begin(), paper_title.end(), paper_title.begin(), (int (*)(int))tolower);
-			paper_title = regex_replace(paper_title,re_punct,"$1");			
-
+			paper_title = raw_to_formatted(paper_title);			
+/*
+			cout << "..." << result <<"..." <<endl;		
+			cout << "..." << paper_title <<"..." <<endl;		
+			cout << "---------------------------------------------" <<endl;		
+*/
 			if (paper_title.find(result) != std::string::npos) {
 					passed++ ;
 			} else {

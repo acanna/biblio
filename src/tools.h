@@ -13,6 +13,8 @@ std::string delete_multiple_spaces(std::string str);
 
 std::string short_name(std::string s);
 
+std::string raw_to_formatted(std::string s);
+
 std::string delete_junk_symbol(std::string str);
 
 size_t levenshtein_distance(const std::string & s, const std::string & t);
