@@ -24,7 +24,7 @@ string low_letters_only(string str) {
     return str;
 }
 
-std::string delete_multiple_spaces(std::string str) {
+string delete_multiple_spaces(std::string str) {
 	regex re_frmt("\\b\\s+\\b");
 	return regex_replace(str, re_frmt, " ");
 }
@@ -63,7 +63,6 @@ string raw_to_formatted(string raw){
 	result = regex_replace(result,re_num_word,frmt_num_word);
 	
 	return result;
-
 }
 
 string delete_junk_symbol(string str) {
@@ -101,7 +100,8 @@ int levenshtein_distance(const std::string & s, const std::string & t) {
 }
  */
 
-size_t damerauLevenshteinDistance_beg(const string & a, size_t  ind_beg, const string & b) {
+
+size_t damerauLevenshteinDistance_beg(const string & a, size_t ind_beg, const string & b) {
 
 	size_t b_size = b.length();
 	size_t a_size = b_size;
