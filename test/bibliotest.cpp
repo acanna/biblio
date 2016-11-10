@@ -7,9 +7,6 @@
 #include "../src/BiblioManager.h"
 #include "../src/tools.h"
 #include "../src/PictureParser.h"
-#include "../src/Biblio_exception.h"
-#include "../src/Parser.h"
-#include "../src/tools.h"
 
 using namespace std;
 
@@ -179,7 +176,7 @@ TEST (TestAlg_TitleDamerauLevenshtein, Positive) {
     EXPECT_EQ(passed, counter);
 }
 
-TEST (PaperDatasetTest, Positive) {
+TEST (SimpleParser, Positive) {
 
 	string data_file = "../articles/test_summary.txt";
 	string path = "../articles/";

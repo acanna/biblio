@@ -4,10 +4,7 @@ project(biblio_test)
 
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 
-set(test_SRCS
-      DBLP_unittest.cpp
-      Picture_Parser_title_unittest.cpp
-      Simple_Parser_title_unittest.cpp)
+set(test_SRCS bibliotest.cpp)
 
 add_executable(runUnitTests ${test_SRCS})
 
