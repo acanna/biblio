@@ -8,7 +8,8 @@ SRC = src
 BIN = bin
 
 TEST_BIN = bin
-GTEST_DIR = test
+GTEST_DIR = lib/googletest-master/googletest
+TEST_DIR = test
 
 TESTS = bibliotest 
 
@@ -54,8 +55,8 @@ clean:
 # Test build
 ###########################################################################################
 
-$(TEST_BIN)/bibliotest.o : $(GTEST_DIR)/bibliotest.cpp $(SOURCES_FOR_TESTS) $(GTEST_HEADERS)
-	$(CC) $(CFLAGS_TEST) -c $(GTEST_DIR)/bibliotest.cpp -o $@
+$(TEST_BIN)/bibliotest.o : $(TEST_DIR)/bibliotest.cpp $(SOURCES_FOR_TESTS) $(GTEST_HEADERS)
+	$(CC) $(CFLAGS_TEST) -c $(TEST_DIR)/bibliotest.cpp -o $@
 
 $(TEST_BIN)/bibliotest : $(TEST_BIN)/bibliotest.o $(OBJECTS_FOR_TESTS) $(TEST_BIN)/gtest_main.a
 	$(CC) $(CFLAGS_TEST) -lpthread $^ -o $@ $(LDFLAGS) 

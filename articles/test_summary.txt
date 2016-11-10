@@ -28,3 +28,4 @@ test_20.pdf	Cross-Device User Matching Based on Massive Browse Logs: The Runner-
 test_21.pdf	Vector Lyapunov Functions for Stability and Stabilization of Differential Repetitive Processes
 test_22.pdf	An Algebraic Criterion for Detecting the Fact and Time a Fault Occurs in Control Systems of Dynamic Plants
 test_24.pdf	Analytical Synthesis of Robust Controllers of the Given Accuracy under External Perturbations
+test_31.pdf	Experiments on Union-Find Algorithms for the Disjoint-Set Data Structure
