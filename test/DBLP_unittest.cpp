@@ -6,7 +6,6 @@
 #include "../src/DBLPManager.h"
 #include "../src/BiblioManager.h"
 #include "../src/tools.h"
-#include "../src/PictureParser.h"
 
 using namespace std;
 

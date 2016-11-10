@@ -2,7 +2,7 @@
 #include <fstream>
 #include <algorithm>
 #include <regex>
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 #include "../src/tools.h"
 #include "../src/PictureParser.h"
 
@@ -35,7 +35,7 @@ TEST (PictureParser, Positive) {
 			transform(result.begin(), result.end(), result.begin(), (int (*)(int))tolower);
 			regex re_frmt("\\s+");
 			regex re_trim("^\\s*(.*)\\s*$");
-			regex re_punct("[,!?:…()*-:={}]");
+			regex re_punct("[,!?:ï¿½()*-:={}]");
 
 			result = regex_replace(result, re_frmt, " ");
 			result = regex_replace(result,re_trim,"$1");

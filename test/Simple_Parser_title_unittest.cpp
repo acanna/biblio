@@ -2,7 +2,7 @@
 #include <fstream>
 #include <algorithm>
 #include <regex>
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 #include "../src/tools.h"
 #include "../src/Biblio_exception.h"
 #include "../src/Parser.h"

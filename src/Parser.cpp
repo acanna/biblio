@@ -16,16 +16,16 @@ Parser::Parser() {
     fst_page = {};
 }
 
-Parser::Parser(const string & file_name) {
-	doc = poppler::document::load_from_file(file_name);
-	if (doc != NULL) {
-		fst_page = split(doc->create_page(0)->text().to_latin1(),'\n');
-	} else {
-		throw Biblio_file_exception(file_name);
-	}
+Parser::Parser(const string &file_name) {
+    doc = poppler::document::load_from_file(file_name);
+    if (doc != NULL) {
+        fst_page = split(doc->create_page(0)->text().to_latin1(), '\n');
+    } else {
+        throw Biblio_file_exception(file_name);
+    }
     vector<string> modified;
     size_t n = fst_page.size();
-    n = min((int)n, 10);
+    n = min((int) n, 10);
     regex re_issn_isbn("\\bIS[SB]N\\s\\d+(-\\d+)+\\b");
     regex re_doi("\\bDOI\\s\\d+\\.\\d+/.*\\b");
 
@@ -42,15 +42,15 @@ Parser::Parser(const string & file_name) {
     string formatted = "";
     for (size_t i = 0; i < n; ++i) {
         if (regex_search(fst_page[i], re_issn_isbn) || regex_search(fst_page[i], re_doi) ||
-                regex_search(fst_page[i],re_date) || regex_search(fst_page[i],re_dept)) {
+            regex_search(fst_page[i], re_date) || regex_search(fst_page[i], re_dept)) {
             fst_page[i] = "";
             continue;
         }
         formatted = regex_replace(fst_page[i], re_frmt, "");
         formatted = regex_replace(formatted, re_space, " ");
         formatted = regex_replace(formatted, re_trim, "$1");
-        formatted = regex_replace(formatted,re_sep_word,"$1$2");
-        formatted = regex_replace(formatted,re_num_word,"$1");
+        formatted = regex_replace(formatted, re_sep_word, "$1$2");
+        formatted = regex_replace(formatted, re_num_word, "$1");
         fst_page[i] = formatted;
         if (fst_page[i].size() < 4) {
             continue;
@@ -64,7 +64,7 @@ void Parser::prepare_fst_page() {
 
     vector<string> modified;
     size_t n = fst_page.size();
-    n = min((int)n, 10);
+    n = min((int) n, 10);
     size_t firstl = 0, lastl = n - 1, contactsl = n - 1, abstractl = n - 1;
     bool contacts = false;
     string pt_issn_isbn = "\\bIS[SB]N\\s\\d+(-\\d+)+\\b";
@@ -95,26 +95,27 @@ void Parser::prepare_fst_page() {
     regex re_dept("\\b(Dept|DEPT)\\.\\b");
     string formatted = "";
     for (size_t i = 0; i < n; ++i) {
-        if (regex_search(fst_page[i],re_issn_isbn) || regex_search(fst_page[i],re_doi)) {
+        if (regex_search(fst_page[i], re_issn_isbn) || regex_search(fst_page[i], re_doi)) {
             fst_page[i] = "";
             continue;
         }
-        formatted = regex_replace(fst_page[i],re_frmt,frmt_str);
-        formatted = regex_replace(formatted,re_space,frmt_space);
-        formatted = regex_replace(formatted,re_trim,frmt_trim);
-        formatted = regex_replace(formatted,re_sep_word,frmt_join_word);
-        formatted = regex_replace(formatted,re_num_word,frmt_num_word);
+        formatted = regex_replace(fst_page[i], re_frmt, frmt_str);
+        formatted = regex_replace(formatted, re_space, frmt_space);
+        formatted = regex_replace(formatted, re_trim, frmt_trim);
+        formatted = regex_replace(formatted, re_sep_word, frmt_join_word);
+        formatted = regex_replace(formatted, re_num_word, frmt_num_word);
         fst_page[i] = formatted;
-        if (regex_search(fst_page[i],re_abstr_b_e)) {
+        if (regex_search(fst_page[i], re_abstr_b_e)) {
             lastl = i - 1;
             break;
         }
         contacts = false;
-        contacts = fst_page[i].find('@') != string::npos || fst_page[i].find("email") != string::npos || fst_page[i].find("Email") != string::npos;
+        contacts = fst_page[i].find('@') != string::npos || fst_page[i].find("email") != string::npos ||
+                   fst_page[i].find("Email") != string::npos;
         if (contacts) {
             contactsl = i;
         }
-        if (regex_search(fst_page[i],re_abstract)) {
+        if (regex_search(fst_page[i], re_abstract)) {
             abstractl = i;
         }
         if (contactsl < abstractl && abstractl < n - 1) {
@@ -132,9 +133,9 @@ void Parser::prepare_fst_page() {
         if (regex_search(fst_page[i], re_date) || regex_search(fst_page[i], re_dept)) {
             continue;
         }
-        formatted = regex_replace(fst_page[i],re_email,frmt_email);
-        formatted = regex_replace(formatted,re_space,frmt_space);
-        formatted = regex_replace(formatted,re_trim,frmt_trim);
+        formatted = regex_replace(fst_page[i], re_email, frmt_email);
+        formatted = regex_replace(formatted, re_space, frmt_space);
+        formatted = regex_replace(formatted, re_trim, frmt_trim);
         fst_page[i] = formatted;
         if (fst_page[i].size() < 4) {
             continue;
@@ -153,62 +154,64 @@ void Parser::prepare_data() {
     height = myimage.height();
     ibytes = myimage.data();
 
-	ofstream out("image_bytes.txt");
-	int hbeg = height / 15;
-	int hend = 7 * height / 24;
-	int wbeg = width / 20;
-	int wend = width - wbeg;
-	for (int i = hbeg; i <= hend; ++i) {
-		for (int j = wbeg; j <= wend; ++j) {
-			if (((int)(ibytes[i * width * 4 + j * 4]) & 255) * ((int)(ibytes[i * width * 4 + j * 4 + 3]) & 255) / 255 <= 127) {
-				out << "*";
-			} else {
-				out << " ";
-			}
-		}
-		out << "\n";
-	}
-	out.close();
+    ofstream out("image_bytes.txt");
+    int hbeg = height / 15;
+    int hend = 7 * height / 24;
+    int wbeg = width / 20;
+    int wend = width - wbeg;
+    for (int i = hbeg; i <= hend; ++i) {
+        for (int j = wbeg; j <= wend; ++j) {
+            if (((int) (ibytes[i * width * 4 + j * 4]) & 255) * ((int) (ibytes[i * width * 4 + j * 4 + 3]) & 255) /
+                255 <= 127) {
+                out << "*";
+            } else {
+                out << " ";
+            }
+        }
+        out << "\n";
+    }
+    out.close();
 }
 
-vector<string> Parser::get_document() const{
-	vector<string> parsed_text, parsed_page;
-	const int pages_nbr = doc->pages();
-	for (int i = 0; i < pages_nbr; ++i) {
-		parsed_page = split(doc->create_page(i)->text().to_latin1(),'\n');
-		parsed_text.resize(parsed_text.size() + parsed_page.size());
-		copy_backward(parsed_page.begin(),parsed_page.end(),parsed_text.end());
-	}
-	return parsed_text;
+vector<string> Parser::get_document() const {
+    vector<string> parsed_text, parsed_page;
+    const int pages_nbr = doc->pages();
+    for (int i = 0; i < pages_nbr; ++i) {
+        parsed_page = split(doc->create_page(i)->text().to_latin1(), '\n');
+        parsed_text.resize(parsed_text.size() + parsed_page.size());
+        copy_backward(parsed_page.begin(), parsed_page.end(), parsed_text.end());
+    }
+    return parsed_text;
 }
 
-vector<string> Parser::get_fst_page() const{
-	return this->fst_page;
+vector<string> Parser::get_fst_page() const {
+    return this->fst_page;
 }
 
-list<string> Parser::get_authors() const{
-	list<string> authors;
-	int n = fst_page.size();
-	bool cont_name = false;
-	string pt_name = "(\\b[:upper:][:alpha:]*\\s+[:upper:]\\.\\s+[:upper:][:alpha:]*\\b|\\b[:upper:]\\.\\s+[:upper:][:alpha:]*\\b)";
-	regex re_name(pt_name);
-	for (int i = 0; i < n; ++i) {
-		cont_name = fst_page[i].find("Dr") != string::npos || fst_page[i].find("PhD") != string::npos || regex_search(fst_page[i],re_name);
-		if (cont_name) {
-			authors.push_front(fst_page[i]);
-		} else {
-			authors.push_back(fst_page[i]);
-		}
-		cont_name = false;
-	}
-	return authors;
+list <string> Parser::get_authors() const {
+    list <string> authors;
+    int n = fst_page.size();
+    bool cont_name = false;
+    string pt_name = "(\\b[:upper:][:alpha:]*\\s+[:upper:]\\.\\s+[:upper:][:alpha:]*\\b|\\b[:upper:]\\.\\s+[:upper:][:alpha:]*\\b)";
+    regex re_name(pt_name);
+    for (int i = 0; i < n; ++i) {
+        cont_name = fst_page[i].find("Dr") != string::npos || fst_page[i].find("PhD") != string::npos ||
+                    regex_search(fst_page[i], re_name);
+        if (cont_name) {
+            authors.push_front(fst_page[i]);
+        } else {
+            authors.push_back(fst_page[i]);
+        }
+        cont_name = false;
+    }
+    return authors;
 }
 
 vector<string> Parser::get_title() {
-	vector<string> title;
-	size_t n = fst_page.size();
-	regex re_email("(\\b(email|Email|EMAIL)?:?\\s*[\\w\\.,]*@[\\w\\.]*\\s*\\b|@|email|Email|EMAIL)");
-	regex re_dot("\\.");
+    vector<string> title;
+    size_t n = fst_page.size();
+    regex re_email("(\\b(email|Email|EMAIL)?:?\\s*[\\w\\.,]*@[\\w\\.]*\\s*\\b|@|email|Email|EMAIL)");
+    regex re_dot("\\.");
     regex re_commercial_at("@");
 
     regex re_space("\\b\\s+\\b");
@@ -220,14 +223,14 @@ vector<string> Parser::get_title() {
     regex re_date("\\b(\\d{2}\\s+\\w+|\\w+\\s+\\d{2}(|,))\\s+(19|20)\\d{2}\\b");
     regex re_dept("\\b(Dept|DEPT)\\.\\b");
 
-	for (size_t i = 0; i < n; ++i) {
+    for (size_t i = 0; i < n; ++i) {
         if (regex_search(fst_page[i], re_abstr_b_e) || regex_search(fst_page[i], re_commercial_at)) {
             n = i;
         }
-		if (regex_search(fst_page[i], re_dot) || regex_search(fst_page[i], re_dept)) {
-			fst_page[i] = "";
-		}
-	}
+        if (regex_search(fst_page[i], re_dot) || regex_search(fst_page[i], re_dept)) {
+            fst_page[i] = "";
+        }
+    }
 
     size_t firstl = 0, lastl = n - 1, contactsl = n, abstractl = n;
     string formatted = "";
@@ -256,19 +259,19 @@ vector<string> Parser::get_title() {
         title.push_back(fst_page[i]);
     }
 
-	return title;
+    return title;
 }
 
-void Parser::parse(const std::string & file_name) {
+void Parser::parse(const std::string &file_name) {
     doc = poppler::document::load_from_file(file_name);
     if (doc != NULL) {
-        fst_page = split(doc->create_page(0)->text().to_latin1(),'\n');
+        fst_page = split(doc->create_page(0)->text().to_latin1(), '\n');
     } else {
         throw Biblio_file_exception(file_name);
     }
     vector<string> modified;
     size_t n = fst_page.size();
-    n = min((int)n, 10);
+    n = min((int) n, 10);
     regex re_issn_isbn("\\bIS[SB]N\\s\\d+(-\\d+)+\\b");
     regex re_doi("\\bDOI\\s\\d+\\.\\d+/.*\\b");
 
@@ -285,15 +288,15 @@ void Parser::parse(const std::string & file_name) {
     string formatted = "";
     for (size_t i = 0; i < n; ++i) {
         if (regex_search(fst_page[i], re_issn_isbn) || regex_search(fst_page[i], re_doi) ||
-            regex_search(fst_page[i],re_date) || regex_search(fst_page[i],re_dept)) {
+            regex_search(fst_page[i], re_date) || regex_search(fst_page[i], re_dept)) {
             fst_page[i] = "";
             continue;
         }
         formatted = regex_replace(fst_page[i], re_frmt, "");
         formatted = regex_replace(formatted, re_space, " ");
         formatted = regex_replace(formatted, re_trim, "$1");
-        formatted = regex_replace(formatted,re_sep_word,"$1$2");
-        formatted = regex_replace(formatted,re_num_word,"$1");
+        formatted = regex_replace(formatted, re_sep_word, "$1$2");
+        formatted = regex_replace(formatted, re_num_word, "$1");
         fst_page[i] = formatted;
         if (fst_page[i].size() < 4) {
             continue;

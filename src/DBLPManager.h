@@ -8,8 +8,8 @@
 #include <vector>
 #include <exception>
 #include <stdexcept>
-#include "json/json.h"
-#include "json/value.h"
+#include "../lib/json/json.h"
+#include "../lib/json/value.h"
 #include "ArticleInfo.h"
 
 
@@ -19,18 +19,18 @@ const std::string URL = "http://dblp.org/search/publ/api?format=json&q=";
 
 class DBLPManager {
 
-	int errorCode;
-	CURL *curl;
+    int errorCode;
+    CURL *curl;
 
 public:
 
-	DBLPManager();
+    DBLPManager();
 
-	virtual ~DBLPManager();
+    virtual ~DBLPManager();
 
-	std::vector <ArticleInfo> publicationRequest(const std::string & query);
+    std::vector<ArticleInfo> publicationRequest(const std::string &query);
 
 private:
 
-	std::vector <ArticleInfo> parseResponse();
+    std::vector<ArticleInfo> parseResponse();
 };
