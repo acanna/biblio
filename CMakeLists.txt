@@ -22,6 +22,7 @@ set(SOURCE_FILES
         lib/json/json-forwards.h
         lib/json/json.h
         lib/json/value.h
+        lib/json/jsoncpp.cpp
 
         src/ArticleInfo.cpp
         src/ArticleInfo.h
@@ -30,7 +31,6 @@ set(SOURCE_FILES
         src/BiblioManager.h
         src/DBLPManager.cpp
         src/DBLPManager.h
-        src/jsoncpp.cpp
         src/main.cpp
         src/Parser.cpp
         src/Parser.h
