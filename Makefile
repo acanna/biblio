@@ -10,12 +10,13 @@ BIN = bin
 TEST_BIN = bin
 GTEST_DIR = test
 
-TESTS = DBLP_unittest Simple_Parser_title_unittest Picture_Parser_title_unittest
+TESTS = bibliotest 
+
 GTEST_HEADERS = $(GTEST_DIR)/include/gtest/*.h \
                 $(GTEST_DIR)/include/gtest/internal/*.h
 TESTS_EXE = $(addprefix $(TEST_BIN)/, $(TESTS))
 
-FILES_FOR_TESTS = DBLPManager.cpp ArticleInfo.cpp jsoncpp.cpp tools.cpp Parser.cpp PictureParser.cpp BiblioManager.cpp
+FILES_FOR_TESTS = ArticleInfo.cpp jsoncpp.cpp tools.cpp Parser.cpp PictureParser.cpp BiblioManager.cpp DBLPManager.cpp
 
 FILES = $(FILES_FOR_TESTS) main.cpp 
 
@@ -46,32 +47,17 @@ $(BIN)/%.o: $(SRC)/%.cpp $(SRC)/%.h
 
 test: $(TESTS_EXE)
 
-clean_tests :
-	rm -f $(TESTS_EXE) $(TEST_BIN)/gtest.a $(TEST_BIN)/gtest_main.a $(TEST_BIN)/*.o
-
 clean:
-	rm -f $(OBJECTS) $(EXECUTABLE)
+	rm -f $(OBJECTS) $(EXECUTABLE) $(TESTS_EXE) $(TEST_BIN)/gtest.a $(TEST_BIN)/gtest_main.a $(TEST_BIN)/*.o
 
 ###########################################################################################
 # Test build
 ###########################################################################################
 
-$(TEST_BIN)/DBLP_unittest.o : $(GTEST_DIR)/DBLP_unittest.cpp $(SOURCES_FOR_TESTS) $(GTEST_HEADERS)
-	$(CC) $(CFLAGS_TEST) -c $(GTEST_DIR)/DBLP_unittest.cpp -o $@
+$(TEST_BIN)/bibliotest.o : $(GTEST_DIR)/bibliotest.cpp $(SOURCES_FOR_TESTS) $(GTEST_HEADERS)
+	$(CC) $(CFLAGS_TEST) -c $(GTEST_DIR)/bibliotest.cpp -o $@
 
-$(TEST_BIN)/DBLP_unittest : $(TEST_BIN)/DBLP_unittest.o $(OBJECTS_FOR_TESTS) $(TEST_BIN)/gtest_main.a
-	$(CC) $(CFLAGS_TEST) -lpthread $^ -o $@ $(LDFLAGS) 
-
-$(TEST_BIN)/Simple_Parser_title_unittest.o : $(GTEST_DIR)/Simple_Parser_title_unittest.cpp $(SOURCES_FOR_TESTS) $(GTEST_HEADERS)
-	$(CC) $(CFLAGS_TEST) -c $(GTEST_DIR)/Simple_Parser_title_unittest.cpp -o $@
-
-$(TEST_BIN)/Simple_Parser_title_unittest : $(TEST_BIN)/Simple_Parser_title_unittest.o $(OBJECTS_FOR_TESTS) $(TEST_BIN)/gtest_main.a
-	$(CC) $(CFLAGS_TEST) -lpthread $^ -o $@ $(LDFLAGS) 
-
-$(TEST_BIN)/Picture_Parser_title_unittest.o : $(GTEST_DIR)/Picture_Parser_title_unittest.cpp $(SOURCES_FOR_TESTS) $(GTEST_HEADERS)
-	$(CC) $(CFLAGS_TEST) -c $(GTEST_DIR)/Picture_Parser_title_unittest.cpp -o $@
-
-$(TEST_BIN)/Picture_Parser_title_unittest : $(TEST_BIN)/Picture_Parser_title_unittest.o $(OBJECTS_FOR_TESTS) $(TEST_BIN)/gtest_main.a
+$(TEST_BIN)/bibliotest : $(TEST_BIN)/bibliotest.o $(OBJECTS_FOR_TESTS) $(TEST_BIN)/gtest_main.a
 	$(CC) $(CFLAGS_TEST) -lpthread $^ -o $@ $(LDFLAGS) 
 
 ###########################################################################################

@@ -24,9 +24,9 @@ string low_letters_only(string str) {
     return str;
 }
 
-std::string delete_multiple_spaces(std::string str) {
-    regex re_frmt("\\b\\s+\\b");
-    return regex_replace(str, re_frmt, " ");
+string delete_multiple_spaces(string str) {
+	regex re_frmt("\\b\\s+\\b");
+	return regex_replace(str, re_frmt, " ");
 }
 
 string short_name(string s) {
@@ -42,6 +42,27 @@ string short_name(string s) {
     res = regex_replace(res, re_one, "");
     res = regex_replace(res, re_trim, "$1");
     return res;
+}
+
+string raw_to_formatted(string raw){
+	string frmt_str = "";
+	string frmt_space = " ";
+	string frmt_trim = "$1";
+	string frmt_join_word = "$1$2";
+	string frmt_num_word = "$1";
+	regex re_space("\\b\\s+\\b");
+	regex re_frmt("[^\\w\\.,-@\\s]+");
+	regex re_trim("^\\s*(.*)\\s*$");
+	regex re_sep_word("\\b([b-zB-Z])\\s(\\w+)\\b");
+	regex re_num_word("\\b([a-zA-Z]+)[0-9]+\\b");
+	
+	string result = regex_replace(raw,re_frmt,frmt_str);
+	result = regex_replace(result,re_space,frmt_space);
+	result = regex_replace(result,re_trim,frmt_trim);
+	result = regex_replace(result,re_sep_word,frmt_join_word);
+	result = regex_replace(result,re_num_word,frmt_num_word);
+	
+	return result;
 }
 
 string delete_junk_symbol(string str) {
@@ -79,40 +100,41 @@ int levenshtein_distance(const std::string & s, const std::string & t) {
 }
  */
 
-size_t damerauLevenshteinDistance_beg(const string &a, size_t ind_beg, const string &b) {
 
-    size_t b_size = b.length();
-    size_t a_size = b_size;
+size_t damerauLevenshteinDistance_beg(const string & a, size_t ind_beg, const string & b) {
 
-    size_t INF = 2 * b_size;
-    vector<vector<size_t>> H(a_size + 2, vector<size_t>(b_size + 2, 0));
-    H[0][0] = INF;
-    for (size_t i = 0; i <= a_size; ++i) {
-        H[i + 1][1] = i;
-        H[i + 1][0] = INF;
-    }
-    for (size_t j = 0; j <= b_size; ++j) {
-        H[1][j + 1] = j;
-        H[0][j + 1] = INF;
-    }
+	size_t b_size = b.length();
+	size_t a_size = b_size;
 
-    const int alphabet_size = numeric_limits<u_char>::max();
-    vector<u_char> DA(alphabet_size, 0);
-    for (size_t i = 1; i <= a_size; ++i) {
-        size_t DB = 0;
-        for (size_t j = 1; j <= b_size; ++j) {
-            size_t i1 = DA[(u_char) b[j - 1]];
-            size_t j1 = DB;
-            int d = (a[ind_beg + i - 1] == b[j - 1]) ? 0 : 1;
-            if (d == 0) {
-                DB = j;
-            }
-            H[i + 1][j + 1] = min(min(H[i][j] + d, H[i + 1][j] + 1),
-                                  min(H[i][j + 1] + 1, H[i1][j1] + (i - i1 - 1) + 1 + (j - j1 - 1)));
-        }
-        DA[(u_char) a[ind_beg + i - 1]] = (u_char) i;
-    }
-    return H[a_size + 1][b_size + 1];
+	size_t INF = 2 * b_size;
+	vector<vector<size_t>> H(a_size + 2, vector<size_t>(b_size + 2, 0));
+	H[0][0] = INF;
+	for (size_t i = 0; i <= a_size; ++i) {
+		H[i+1][1] = i;
+		H[i+1][0] = INF;
+	}
+	for (size_t j = 0; j <= b_size; ++j) {
+		H[1][j+1] = j;
+		H[0][j+1] = INF;
+	}
+
+	const int alphabet_size = numeric_limits<u_char>::max();
+	vector<u_char> DA(alphabet_size, 0);
+	for (size_t i = 1; i <= a_size; ++i) {
+		size_t DB = 0;
+		for (size_t j = 1; j <= b_size; ++j) {
+			size_t i1 = DA[(u_char)b[j - 1]];
+			size_t j1 = DB;
+			int d = (a[ind_beg + i - 1] == b[j - 1]) ? 0 : 1;
+			if (d == 0) {
+				DB = j;
+			}
+			H[i + 1][j + 1] = min(min(H[i][j] + d, H[i + 1][j] + 1),
+								  min(H[i][j + 1] + 1, H[i1][j1] + (i - i1 - 1) + 1 + (j - j1 - 1)));
+		}
+		DA[(u_char)a[ind_beg + i - 1]] = (u_char)i;
+	}
+	return H[a_size + 1][b_size + 1];
 }
 
 size_t damerauLevenshteinDistance_biblio(const string &a, const string &b) {

@@ -8,7 +8,7 @@
 using namespace std;
 
 
-int main(int argc, char **argv) {
+int main (int argc, char ** argv) {
     try {
         TCLAP::CmdLine cmd("This util will generate .bib files for your articles in .pdf format.", ' ', "0.1");
         TCLAP::SwitchArg offlineSwitch("f", "offline", "Does only offline part.", cmd, false);
@@ -24,14 +24,15 @@ int main(int argc, char **argv) {
         ofstream out_html("biblio.html");
         ofstream out_bib("biblio.bib");
 
-        for (const auto &filename : fileNames) // access by reference to avoid copying
+        for (const auto & filename : fileNames) // access by reference to avoid copying
         {
-            try {
-                vector<ArticleInfo> result = manager.search_exact_match(filename, offline);
+            try
+            {
+                vector <ArticleInfo> result = manager.search_exact_match(filename, offline);
                 manager.print_html(out_html, filename, result);
                 manager.print_bib(out_bib, result);
 
-            } catch (const Biblio_exception &e) {
+            } catch (const Biblio_exception & e) {
                 cerr << e.what() << '\n';
             } catch (...) {}
         }
@@ -39,10 +40,11 @@ int main(int argc, char **argv) {
         out_html.close();
         out_bib.close();
 
-    } catch (TCLAP::ArgException &e) {
+/*		PictureParser picture_parser = PictureParser("test_1.pdf", 300, 300, "test.png", "png", 700);
+		string result = picture_parser.find_title();*/
+
+    } catch (TCLAP::ArgException & e) {
         std::cerr << "error: " << e.error() << " for arg " << e.argId() << std::endl;
     }
     return 0;
 }
-
-
