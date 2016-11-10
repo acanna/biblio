@@ -2,7 +2,7 @@
 #include <fstream>
 #include <algorithm>
 #include <regex>
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 #include "../src/DBLPManager.h"
 #include "../src/BiblioManager.h"
 #include "../src/tools.h"
@@ -12,6 +12,12 @@ using namespace std;
 
 DBLPManager dblp;
 BiblioManager manager;
+
+
+int main(int argc, char **argv) {
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
+}
 
 TEST (PaperPresent, Positive) {
 	const string query = "Land.Cover.Classification.and.Forest.Change.Analysis";
@@ -195,20 +201,26 @@ TEST (SimpleParser, Positive) {
 		filename = tmp[0];
 		paper_title = low_letters_only(tmp[1]);
 		filename = path + filename;
+        vector<string> first_page;
 		try{
 			Parser pr(filename);
 			title = pr.get_title();
+            first_page = pr.get_fst_page();
 		} catch(const Biblio_exception & e) {
 			cerr << e.what() << endl;
 			continue;
 		}
         parsed_title = "";
+
 		for (string s : title) {
             parsed_title += s + " ";
         }
         parsed_title = low_letters_only(parsed_title);
-        if (parsed_title.find(paper_title) != std::string::npos) {
+        if (parsed_title.find(paper_title) != string::npos) {
             passed++;
+        } else {
+            cout << "In fact: .." << paper_title << ".." << endl;
+            cout << "Parsed:  .." << parsed_title << ".." << endl;
         }
         counter++;
     }
@@ -217,7 +229,7 @@ TEST (SimpleParser, Positive) {
 	cout << "    Passed " << passed << " tests from " << counter << endl;
 	cout << "    Passed " << passed * 100 / (float)counter << " % from total amount" << endl;
 	cout << ">>>-------------------------------------<<<" << endl;
-	EXPECT_EQ(0, 0);
+    EXPECT_EQ(passed, counter);
 }
 
 TEST (PictureParser, Positive) {

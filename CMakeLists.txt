@@ -39,6 +39,7 @@ set(SOURCE_FILES
         src/tools.cpp
         src/tools.h)
 
+add_library(biblio_lib ${SOURCE_FILES})
 add_executable(biblio ${SOURCE_FILES})
 target_link_libraries(biblio gtest gtest_main ${CURL_LIBRARIES} poppler-cpp tesseract lept)
 

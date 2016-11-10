@@ -23,6 +23,7 @@ Parser::Parser(const string &file_name) {
     } else {
         throw Biblio_file_exception(file_name);
     }
+
     vector<string> modified;
     size_t n = fst_page.size();
     n = min((int) n, 10);

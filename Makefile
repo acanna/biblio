@@ -49,7 +49,7 @@ $(BIN)/%.o: $(SRC)/%.cpp $(SRC)/%.h
 test: $(TESTS_EXE)
 
 clean:
-	rm -f $(OBJECTS) $(EXECUTABLE) $(TESTS_EXE) $(TEST_BIN)/gtest.a $(TEST_BIN)/gtest_main.a $(TEST_BIN)/*.o
+	rm -rf $(BIN)
 
 ###########################################################################################
 # Test build

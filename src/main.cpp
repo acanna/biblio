@@ -15,7 +15,7 @@ int main (int argc, char ** argv) {
         TCLAP::UnlabeledMultiArg<string> multi("files", "file names", true, "files");
         cmd.add(multi);
         // Parse the argv array.
-        cmd.parse(argc, argv);
+        cmd.parse(argc, (const char *const *) argv);
         // Get the value parsed by each arg.
         vector<string> fileNames = multi.getValue();
         bool offline = offlineSwitch.getValue();
