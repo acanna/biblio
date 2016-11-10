@@ -29,7 +29,7 @@ public:
 
     std::vector<ArticleInfo> search_damerau_levenshtein(const std::string &filename, bool offline);
 
-    std::vector<ArticleInfo> search_levenshtein(const std::string &filename, bool offline);
+    std::vector<ArticleInfo> search_levenshtein(std::ostream &out, const std::string &filename, bool offline);
 
     void print_html(std::ostream &out, const std::string &filename, std::vector<ArticleInfo> &result);
 

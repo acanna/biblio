@@ -1,4 +1,6 @@
 #include <algorithm>
+#include <ctime>
+#include <iomanip>
 #include "BiblioManager.h"
 #include "tools.h"
 
@@ -185,8 +187,9 @@ void BiblioManager::print_html(std::ostream &out, const std::string &filename, s
     out << "</html>\n";
 }
 
-vector<ArticleInfo> BiblioManager::search_levenshtein(const string &filename, bool offline) {
-
+vector<ArticleInfo> BiblioManager::search_levenshtein(ostream &out, const string &filename, bool offline) {
+    out << "-----------------------New_Article----------------------" << endl;
+    std::clock_t c_start = std::clock();
     list <string> auths_candidates;
     vector<string> title_candidates;
 
@@ -211,11 +214,24 @@ vector<ArticleInfo> BiblioManager::search_levenshtein(const string &filename, bo
     }
 
     if (!offline) {
+        clock_t search_sum = 0, processing_sum = 0;
+        int search = 0;
         try {
             string prep_title = low_letters_only(title);
             for (string &s : title_candidates) {
+
+                clock_t req_start = clock();
                 dblp_result = search_dblp(s);
+                clock_t req_end = clock();
+                out << std::fixed << std::setprecision(2) << "CPU time used for search: "
+                    << 1000.0 * (req_end - req_start) / CLOCKS_PER_SEC << " ms\n";
+                search_sum += (1000.0 * (req_end - req_start) / CLOCKS_PER_SEC);
+                search++;
+                out << "dblp_result_size: " << dblp_result.size() << endl;
                 if (dblp_result.size() > 0) {
+
+                    clock_t beg = clock();
+
                     string ss = low_letters_only(s);
                     size_t result_size = dblp_result.size();
                     for (size_t i = 0; i < result_size; i++) {
@@ -228,8 +244,15 @@ vector<ArticleInfo> BiblioManager::search_levenshtein(const string &filename, bo
 
                     }
                     result.insert(result.end(), dblp_result.begin(), dblp_result.end());
+
+                    clock_t end = clock();
+                    out << std::fixed << std::setprecision(2) << "CPU time used for processing: "
+                        << 1000.0 * (end - beg) / CLOCKS_PER_SEC << " ms\n";
+                    processing_sum += (1000.0 * (end - beg) / CLOCKS_PER_SEC);
                 }
             }
+            clock_t beg = clock();
+
             if (result.size() > 0) {
                 stable_sort(result.begin(), result.end(), greater);
                 int t = result[0].get_precision();
@@ -238,11 +261,25 @@ vector<ArticleInfo> BiblioManager::search_levenshtein(const string &filename, bo
                 i--;
                 stable_sort(result.begin(), result.begin() + i, longer_title);
             }
+
+            clock_t end = clock();
+            processing_sum += (1000.0 * (end - beg) / CLOCKS_PER_SEC);
         }
         catch (const Biblio_exception &e) {
             throw;
         }
+
+        out << "================================================" << endl;
+        out << "Average search time: " << search_sum / search << " ms" << endl;
+        out << "Average processing time: " << processing_sum / search << " ms" << endl;
     }
+
+
+
+    std::clock_t c_end = std::clock();
+    out << std::fixed << std::setprecision(2) << "CPU time used: "
+        << 1000.0 * (c_end - c_start) / CLOCKS_PER_SEC << " ms\n";
+    out << "-----------------------End----------------------" << endl;
     return result;
 }
 

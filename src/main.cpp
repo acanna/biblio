@@ -23,12 +23,13 @@ int main (int argc, char ** argv) {
         BiblioManager manager;
         ofstream out_html("biblio.html");
         ofstream out_bib("biblio.bib");
-
+        ofstream out_time("time_before_dblp");
+        clock_t c_start = clock();
         for (const auto & filename : fileNames) // access by reference to avoid copying
         {
             try
             {
-                vector <ArticleInfo> result = manager.search_exact_match(filename, offline);
+                vector <ArticleInfo> result = manager.search_levenshtein(out_time, filename, offline);
                 manager.print_html(out_html, filename, result);
                 manager.print_bib(out_bib, result);
 
@@ -36,10 +37,13 @@ int main (int argc, char ** argv) {
                 cerr << e.what() << '\n';
             } catch (...) {}
         }
+        clock_t c_end = clock();
+        out_time << std::fixed << std::setprecision(2) << "CPU time used: "
+            << 1000.0 * (c_end - c_start) / CLOCKS_PER_SEC << " ms\n";
 
         out_html.close();
         out_bib.close();
-
+        out_time.close();
 /*		PictureParser picture_parser = PictureParser("test_1.pdf", 300, 300, "test.png", "png", 700);
 		string result = picture_parser.find_title();*/
 

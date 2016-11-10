@@ -9,6 +9,7 @@ BIN = bin
 
 TEST_BIN = bin
 GTEST_DIR = lib/googletest-master/googletest
+JSON_DIR = lib/json
 TEST_DIR = test
 
 TESTS = bibliotest 
@@ -36,7 +37,7 @@ $(EXECUTABLE): $(OBJECTS)
 
 $(BIN)/Parser.o: $(BIN)/tools.o
 
-$(BIN)/jsoncpp.o: $(SRC)/jsoncpp.cpp
+$(BIN)/jsoncpp.o: $(JSON_DIR)/jsoncpp.cpp
 	$(CC) $(CFLAGS) $< -o $@
 
 $(BIN)/main.o: $(SRC)/main.cpp
