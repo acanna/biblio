@@ -90,3 +90,15 @@ $(TEST_BIN)/gtest.a : $(TEST_BIN)/gtest-all.o
 $(TEST_BIN)/gtest_main.a : $(TEST_BIN)/gtest-all.o $(TEST_BIN)/gtest_main.o
 	$(AR) $(ARFLAGS) $@ $^
 
+###########################################################################################
+# Test bib
+###########################################################################################
+
+tex: $(EXECUTABLE)
+	./bin/main articles/test_1.pdf
+	mv biblio.bib tex/biblio.bib
+	cd tex
+	pdflatex biblio.tex
+	bibtex biblio
+	pdflatex biblio.tex
+	pdflatex biblio.tex
