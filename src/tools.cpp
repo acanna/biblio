@@ -193,7 +193,7 @@ size_t damerauLevenshteinDistance(const std::string &a, const std::string &b) {
     return H[a_size + 1][b_size + 1];
 }
 
-size_t levenshtein_distance(const string &src, const string &dst) {
+size_t _levenshtein_distance(const string &src, const string &dst) {
     const size_t m = src.size();
     const size_t n = dst.size();
     if (m == 0) {
@@ -225,4 +225,33 @@ size_t levenshtein_distance(const string &src, const string &dst) {
         }
     }
     return matrix[m][n];
+}
+
+
+size_t levenshtein_distance(const string &s, const string &t) {
+    if (s == t) return 0;
+    size_t t_length = t.length();
+    size_t s_length = s.length();
+    if (s.length() == 0) return t_length;
+    if (t.length() == 0) return s_length;
+
+    size_t max_length = max(t_length, s_length);
+    size_t v0[max_length];
+    size_t v1[max_length];
+    for (size_t i = 0; i < max_length; i++) {
+        v0[i] = i;
+    }
+    for (size_t i = 0; i < s_length; i++) {
+        v1[0] = i + 1;
+        for (size_t j = 0; j < t_length; j++) {
+            int cost = (s[i] == t[j]) ? 0 : 1;
+            v1[j + 1] = min(v1[j] + 1, min(v0[j + 1] + 1, v0[j] + cost));
+            if (v1[j + 1] >= 15) {
+                return max_length;
+            }
+        }
+        for (size_t j = 0; j < max_length; j++)
+            v0[j] = v1[j];
+    }
+    return v1[t_length];
 }
