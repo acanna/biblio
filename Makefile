@@ -56,7 +56,7 @@ clean:
 # Test build
 ###########################################################################################
 
-$(TEST_BIN)/bibliotest.o : $(TEST_DIR)/bibliotest.cpp $(SOURCES_FOR_TESTS) $(GTEST_HEADERS)
+$(TEST_BIN)/bibliotest.o : $(TEST_DIR)/bibliotest.cpp $(GTEST_HEADERS)
 	$(CC) $(CFLAGS_TEST) -c $(TEST_DIR)/bibliotest.cpp -o $@
 
 $(TEST_BIN)/bibliotest : $(TEST_BIN)/bibliotest.o $(OBJECTS_FOR_TESTS) $(TEST_BIN)/gtest_main.a
