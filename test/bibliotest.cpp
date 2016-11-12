@@ -89,7 +89,7 @@ TEST (TestAlg_TitleExactMatch, Positive) {
 	EXPECT_EQ(passed, counter);
 }
 
-TEST (TestAlg_TitleLevenshtein, Positive) {
+TEST (TestAlg_TitleLevenshtein, Timing) {
 	string data_file = "../articles/test_summary.txt";
 	string path = "../articles/";
 

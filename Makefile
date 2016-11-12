@@ -1,8 +1,8 @@
 CC = g++
 
-CFLAGS = -c -std=c++11 -Wall -Wextra -Wpedantic
+CFLAGS = -c -std=c++11 -pg -Wall -Wextra -Wpedantic
 CFLAGS_TEST = -std=c++11 -Wall -Wextra -Wpedantic -pthread -isystem $(GTEST_DIR)/include
-LDFLAGS = -lcurl -lpoppler-cpp -ltesseract -llept
+LDFLAGS = -pg -lcurl -lpoppler-cpp -ltesseract -llept
 
 SRC = src
 BIN = bin
@@ -18,15 +18,15 @@ GTEST_HEADERS = $(GTEST_DIR)/include/gtest/*.h \
                 $(GTEST_DIR)/include/gtest/internal/*.h
 TESTS_EXE = $(addprefix $(TEST_BIN)/, $(TESTS))
 
-FILES_FOR_TESTS = ArticleInfo.cpp jsoncpp.cpp tools.cpp Parser.cpp PictureParser.cpp BiblioManager.cpp DBLPManager.cpp
+FILES_FOR_TESTS = ArticleInfo.cpp tools.cpp Parser.cpp PictureParser.cpp BiblioManager.cpp DBLPManager.cpp
 
 FILES = $(FILES_FOR_TESTS) main.cpp 
 
 SOURCES = $(addprefix $(SRC)/, $(FILES))
-OBJECTS = $(addprefix $(BIN)/, $(FILES:.cpp=.o))
+OBJECTS = $(addprefix $(BIN)/, $(FILES:.cpp=.o)) $(BIN)/jsoncpp.o
 
 SOURCES_FOR_TESTS = $(addprefix $(SRC)/, $(FILES_FOR_TESTS))
-OBJECTS_FOR_TESTS = $(addprefix $(BIN)/, $(FILES_FOR_TESTS:.cpp=.o))
+OBJECTS_FOR_TESTS = $(addprefix $(BIN)/, $(FILES_FOR_TESTS:.cpp=.o)) $(BIN)/jsoncpp.o
 
 EXECUTABLE = $(BIN)/main
 

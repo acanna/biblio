@@ -42,6 +42,7 @@ vector<ArticleInfo> DBLPManager::publicationRequest(const string &query) {
 
     curl_easy_setopt(curl, CURLOPT_URL, request.c_str());
 
+
     result = curl_easy_perform(curl);
 
     vector<ArticleInfo> articles;
