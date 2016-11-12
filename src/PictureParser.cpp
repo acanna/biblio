@@ -42,6 +42,7 @@ int const & PixInfo::get_y() {
 }
 
 string PictureParser::find_title() {
+	int screen_res = 72;
     int page_num = 0;
     poppler::document *doc = poppler::document::load_from_file(this->filename);
     const int pages_nbr = doc->pages();
@@ -50,66 +51,45 @@ string PictureParser::find_title() {
     }
     poppler::page* mypage = doc->create_page(page_num);
 
-    this->width = int(mypage->page_rect().width()*(this->xres)/72);
-    this->height = int(mypage->page_rect().height()*(this->yres)/72);
+    this->width = int(mypage->page_rect().width()*(this->xres)/screen_res);
+    this->height = int(mypage->page_rect().height()*(this->yres)/screen_res);
 
     poppler::page_renderer renderer;
-
-    poppler::image cur_image = renderer.render_page(mypage, this->xres,
-                                                    this->yres, this->title_x, this->title_y, this->width, this->height);
+    poppler::image cur_image = renderer.render_page(mypage, 
+				this->xres, this->yres, this->title_x, 
+				this->title_y, this->width, this->height);
     this->data = cur_image.data();
-    cur_image.save("temp.png", this->format, this->dpi);
 
     select_title_rectangle();
+    string result = "";
 
-/* åñëè äîêóìåíò - êàðòèíêà*/
-/*
-	cur_image = renderer.render_page(mypage, this->xres,
-				this->yres, this->title_x, this->title_y, this->width, this->title_height);
-	cur_image.save(this->imagename, this->format, this->dpi);
-	string result = parse_image();
-*/
-/* åñëè äîêóìåíò - òåêñòîâûé ôàéë*/
+    vector<poppler::font_info> fonts = doc->fonts();
 
-/*	double x_rect = this->title_x/this->xres*0;
-	double y_rect = this->title_y/this->yres*0;
-	double height_rect = this->title_height/this->yres*72000;
-	double width_rect = this->width/this->xres*72000;	*/
+	// pdf as image
+    if (fonts.size() == 0) { 
+	    poppler::image rect_image = renderer.render_page(mypage, 
+				this->xres, this->yres, this->title_x, 
+				this->title_y, this->width, this->title_height);
+    	rect_image.save(this->imagename, this->format, this->dpi);
+    	result = parse_image();
 
-/*	cout << "Init page" << endl;
-	cout <<"width: " << mypage->page_rect().width() <<"\t  height: " << mypage->page_rect().height()<< endl;
-	cout << "Data from image:" << endl;
-	cout <<"width: " << this->width <<"\t  height: " <<  this->height << endl;
-	cout << "x: " << this->title_x << "\t y: "<< this->title_y << endl;
-	cout << "title_height: " << this->title_height << endl;
-	cout << "Page rectangle" << endl;
-	poppler::rectangle<double> page_rect = mypage->page_rect();
-	cout <<"width: " << page_rect.width() <<"\t  height: " <<  page_rect.height() << endl;
-	cout << "x: " << page_rect.x() << "\t y: "<< page_rect.y() << endl;
-*/
-
-    double x_rect = this->title_x*72/this->xres;
-    double y_rect = this->title_y*72/this->yres;
-    double height_rect = this->title_height*72/this->yres;
-    double width_rect = this->width*72/this->xres;
-
-    /*cout<< "selected rectangle"<< endl;
-    cout <<"width: " << width_rect <<"\t  height: " << height_rect<< endl;
-    cout << "x: " << x_rect << "\t y: "<< y_rect << endl;
-*/
-
-    poppler::rectangle<double> rect = poppler::rectangle<double>(x_rect, y_rect, width_rect, height_rect);
-    string result = mypage->text(rect).to_latin1();
-    result = raw_to_formatted(result);
-
-    cout << result << endl;
-
+	// pdf as text 
+    } else { 
+        double x_rect = this->title_x*screen_res/this->xres;
+        double y_rect = this->title_y*screen_res/this->yres;
+        double height_rect = this->title_height*screen_res/this->yres;
+        double width_rect = this->width*screen_res/this->xres;
+        poppler::rectangle<double> rect = poppler::rectangle<double>(x_rect, y_rect, width_rect, height_rect);
+        result = mypage->text(rect).to_latin1();
+        result = raw_to_formatted(result);
+    }
+ 
     return result;
 }
 
 bool PictureParser::is_black(int x, int y) {
     int black = 60; // (color <= black) <=> (black pix)
-    // (color > black) <=> (white pix)
+				    // (color > black) <=> (white pix)
 
     //	avoid other colors
     if  ((((this->data[y * (this->width) * 4 + x * 4]) & 255) > black) ||
@@ -126,15 +106,14 @@ void PictureParser::select_title_rectangle() {
     int white_rows_counter = 0;
     int y = 0;
 
-
     while ((y < this->height) && (white_rows_counter < 2000)) {
         int y_row = y;
         int x_row = -1;
         vector <int >heights = {};
 
-        // scanning between 10% and 50% of the page width
-        int w_start = int(this->width/10);
-        int w_end = int(this->width/2);
+        // scanning between 12% and 50% of the page width
+        int w_start = int(this->width *12/100);
+        int w_end = int(this->width *50/100);
 
         for (int x = w_start; x < w_end; x++) {
             if ((is_black(x,y)) && (y > 0) && (y < height)) {
@@ -159,7 +138,7 @@ void PictureParser::select_title_rectangle() {
         y++;
     }
 
-    /* // ñòàòèñòèêà íà âûñîòû íàéäåíûõ ñòðîê
+    /* // statistics on heights
       for (unsigned int j = 0; j < black_rows.size(); j++) {
           vector<int> * cur_height = black_rows[j].get_heights();
           sort (cur_height->begin(), cur_height->end());
@@ -196,7 +175,6 @@ void PictureParser::select_title_rectangle() {
         }
     }
 
-
     int max_y = min_y + max_height;
 
     // check whether the title is more than single-line
@@ -218,7 +196,7 @@ void PictureParser::select_title_rectangle() {
     this->title_x = 0; // select across the width of the page
     this->title_y = min_y - 0.25*max_height;
     this->title_height = max_y - min_y + 0.75*max_height;
-
+	
     return;
 
 }

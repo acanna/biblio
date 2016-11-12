@@ -273,15 +273,12 @@ TEST (PictureParser, Positive) {
 
 			PictureParser picture_parser = PictureParser(filename, 300, 300, "test.png", "png", 700);
 			string result = picture_parser.find_title();
+
 			transform(result.begin(), result.end(), result.begin(), (int (*)(int))tolower);
 			result = raw_to_formatted(result);
 
 			transform(paper_title.begin(), paper_title.end(), paper_title.begin(), (int (*)(int))tolower);
 			paper_title = raw_to_formatted(paper_title);			
-
-			cout << "..." << result <<"..." <<endl;		
-			cout << "..." << paper_title <<"..." <<endl;		
-			cout << "---------------------------------------------" <<endl;		
 
 			if (paper_title.find(result) != std::string::npos) {
 					passed++ ;

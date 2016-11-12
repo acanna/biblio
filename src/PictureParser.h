@@ -12,6 +12,7 @@
 #include <poppler/cpp/poppler-image.h>
 #include <poppler/cpp/poppler-page-renderer.h>
 #include <poppler/cpp/poppler-rectangle.h>
+#include <poppler/cpp/poppler-font.h>
 
 #include "Biblio_exception.h"
 #include "tools.h"
