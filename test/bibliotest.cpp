@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <regex>
 #include <gtest/gtest.h>
-#include <ctime>
 #include "../src/DBLPManager.h"
 #include "../src/BiblioManager.h"
 #include "../src/tools.h"
@@ -116,7 +115,7 @@ TEST (TestAlg_TitleLevenshtein, Timing) {
 
 		bool offline = false;
 		try{
-			vector <ArticleInfo> result = manager.search_levenshtein(out, filename, offline);
+            vector<ArticleInfo> result = manager.search_levenshtein_light(filename, offline);
 			if (result.size() > 0) {
 
 				if (low_letters_only(paper_title) == low_letters_only(result[0].get_title())) {
@@ -150,6 +149,69 @@ TEST (TestAlg_TitleLevenshtein, Timing) {
 	cout << ">>>-------------------------------------<<<" << endl;
     out.close();
 	EXPECT_EQ(passed, counter);
+}
+
+TEST (TestAlg_TitleLevenshtein, Threads_Timing) {
+    string data_file = "../articles/test_summary.txt";
+    string path = "../articles/";
+
+    ifstream file(data_file);
+    int passed = 0;
+    int counter = 0;
+    string line = "", filename = "", paper_title = "";
+    vector<string> tmp;
+
+
+    ofstream out("before_time.txt");
+    out << "--------------------------------" << endl;
+    std::clock_t c_start = std::clock();
+    std::clock_t sum = 0;
+    while (file.is_open() && !file.eof()) {
+
+        std::clock_t start = std::clock();
+        getline(file, line);
+        tmp = split(line, '\t');
+
+        filename = tmp[0];
+        paper_title = tmp[1];
+        filename = path + filename;
+
+        bool offline = false;
+        try {
+            vector<ArticleInfo> result = manager.search_levenshtein_light_threads(filename, offline);
+            if (result.size() > 0) {
+
+                if (low_letters_only(paper_title) == low_letters_only(result[0].get_title())) {
+                    passed++;
+                } else {
+                    cout << "Failed at " << filename << endl;
+                }
+            } else {
+                cout << "Failed at " << filename << endl;
+            }
+            counter++;
+        } catch (const Biblio_exception &e) {
+            cerr << e.what() << endl;
+        }
+        out << "................................." << endl;
+        std::clock_t end = std::clock();
+        sum += 1000.0 * (end - start) / CLOCKS_PER_SEC;
+
+        out << std::fixed << std::setprecision(2) << "CPU time used: "
+            << 1000.0 * (end - start) / CLOCKS_PER_SEC << " ms\n";
+    }
+    out << "--------------------------------" << endl;
+    std::clock_t c_end = std::clock();
+    out << std::fixed << std::setprecision(2) << "CPU time used: "
+        << 1000.0 * (c_end - c_start) / CLOCKS_PER_SEC << " ms\n";
+    out << std::fixed << std::setprecision(2) << "Average CPU time used: "
+        << sum / counter << " ms\n";
+    cout << ">>>-------------------------------------<<<" << endl;
+    cout << "    Passed " << passed << " tests from " << counter << endl;
+    cout << "    Passed " << passed * 100 / (float) counter << " % from total amount" << endl;
+    cout << ">>>-------------------------------------<<<" << endl;
+    out.close();
+    EXPECT_EQ(passed, counter);
 }
 
 TEST (TestAlg_TitleDamerauLevenshtein, Positive) {
@@ -302,7 +364,16 @@ TEST (PictureParser, Positive) {
 	EXPECT_EQ(0, 0);
 }
 
-
+TEST (Parse_Title, Positive) {
+    string actual_title = "Experiments on Union-Find Algorithms for the Disjoint-Set Data Structure";
+    string filename = "articles/test_31.pdf";
+    BiblioManager manager = BiblioManager(filename);
+    std::vector<std::string> fst_page = manager.get_fst_page();
+    for (std::string s : fst_page) {
+        cout << s << endl;
+    }
+    EXPECT_EQ(0, 0);
+}
 
 
 

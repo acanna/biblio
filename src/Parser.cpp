@@ -186,7 +186,9 @@ vector<string> Parser::get_document() const {
 }
 
 vector<string> Parser::get_fst_page() const {
-    return this->fst_page;
+    vector<string> parsed_page;
+    parsed_page = split(doc->create_page(0)->text().to_latin1(), '\n');
+    return parsed_page;
 }
 
 list <string> Parser::get_authors() const {

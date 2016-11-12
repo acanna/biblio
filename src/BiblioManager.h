@@ -13,7 +13,7 @@ private:
     Parser parser;
     DBLPManager requester;
 
-    std::vector<ArticleInfo> search_dblp(std::string &query);
+    static std::vector<ArticleInfo> search_dblp(std::string query);
 
     static bool greater(const ArticleInfo &info_1, const ArticleInfo &info_2);
 
@@ -21,9 +21,15 @@ private:
 
     static bool longer_title(const ArticleInfo &info_1, const ArticleInfo &info_2);
 
+    static void thread_search_function(std::string s, std::vector<ArticleInfo> &result);
+
 public:
 
     BiblioManager();
+
+    BiblioManager(std::string &filename);
+
+    std::vector<std::string> get_fst_page();
 
     std::vector<ArticleInfo> search_exact_match(const std::string &filename, bool offline);
 
@@ -34,6 +40,8 @@ public:
     std::vector<ArticleInfo> search_levenshtein(const std::string &filename, bool offline);
 
     std::vector<ArticleInfo> search_levenshtein_light(const std::string &filename, bool offline);
+
+    std::vector<ArticleInfo> search_levenshtein_light_threads(const std::string &filename, bool offline);
 
     void print_html(std::ostream &out, const std::string &filename, std::vector<ArticleInfo> &result);
 
