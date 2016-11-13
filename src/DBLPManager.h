@@ -15,7 +15,7 @@
 
 #define MAX_BUF 65536
 
-const std::string URL = "http://dblp.org/search/publ/api?format=json&q=";
+const std::string URL = "http://dblp.org/search/publ/api?format=json&h=1&q=";
 
 class DBLPManager {
 

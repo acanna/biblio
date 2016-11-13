@@ -1,5 +1,5 @@
 all:
-	../bin/main ../articles/test_1.pdf
+	../bin/main ../articles/test_[1-9^7].pdf
 	pdflatex biblio.tex
 	bibtex biblio
 	pdflatex biblio.tex

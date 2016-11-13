@@ -174,15 +174,44 @@ void BiblioManager::print_html(std::ostream &out, const std::string &filename, s
     out << "\t</head>\n";
     out << "\t<body>\n";
     out << "--------------------------------------------------------------" << endl;
-    out << "<br>\n";
-    out << filename << endl;
-    out << "<br>\n";
+    out << "<p><a href=\"" << filename << "\">" << filename << "</a></p>" << endl;
     out << "--------------------------------------------------------------" << endl;
     out << "<br>\n";
     out << "<pre>\n";
 
+    if (result_size == 0) {
+        out << "<p>NOT FOUND</p>" << endl;
+    }
+
     for (size_t k = 0; k < result_size; ++k) {
-        out << result[k].to_string();
+        vector<string> authors = result[k].get_authors();
+        size_t t = authors.size();
+        for (size_t i = 0; i < t - 1; ++i) {
+            out << authors[i] << ", ";
+        }
+        out << authors[t - 1] << ":\n";
+        out << result[k].get_title();
+        if (result[k].get_type() != "") {
+            out << " " << result[k].get_type() << ".";
+        }
+        if (result[k].get_venue() != "") {
+            out << " " << result[k].get_venue() << ".";
+        }
+        if (result[k].get_volume() != "") {
+            out << " " << result[k].get_volume() << ".";
+        }
+        if (result[k].get_year() != "") {
+            out << " " << result[k].get_year() << ".";
+        }
+        if (result[k].get_pages() != "") {
+            out << " " << result[k].get_pages() << ".";
+        }
+        if (result[k].get_number() != "") {
+            out << " " << result[k].get_number() << ".";
+        }
+        if (result[k].get_url() != "") {
+            out << "\n" << result[k].get_url() << endl;
+        }
     }
     out << "</pre>\n";
     out << "\t</body>\n";
@@ -339,7 +368,9 @@ vector<ArticleInfo> BiblioManager::search_levenshtein(const string &filename, bo
     }
     if (result.size() > 0) {
         vector<ArticleInfo> res = {};
-        res.push_back(result[0]);
+        if (result[0].get_precision() == 100) {
+            res.push_back(result[0]);
+        }
         return res;
     }
     return result;
@@ -517,7 +548,7 @@ std::vector<ArticleInfo> BiblioManager::search_levenshtein_light_threads(const s
         try {
             string str = title_candidates[title_candidates.size() - 1];
             size_t rest = 4 - (title_candidates.size() % 4);
-            for (int i = 1; i <= rest; i++) {
+            for (size_t i = 1; i <= rest; i++) {
                 title_candidates.push_back(str);
             }
             size_t iterations = title_candidates.size() / 4;
