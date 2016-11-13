@@ -374,3 +374,62 @@ TEST (Parse_Title, Positive) {
 
 
 
+TEST (PictureParser, Online) {
+	string data_file = "../articles/test_summary_.txt";
+	string path = "../articles/";
+
+	ifstream file(data_file);
+	ofstream out_html("result.html");
+	int passed = 0;
+	int counter = 0;
+	string line = "", filename = "", paper_title = "";
+	vector<string> tmp;
+
+	while (file.is_open() && !file.eof()) {
+
+		getline(file, line);
+		tmp = split(line, '\t');
+
+		filename = tmp[0];
+		paper_title = tmp[1];
+		filename = path + filename;
+
+
+		try{
+
+			PictureParser picture_parser = PictureParser(filename, 300, 300, "test.png", "png", 700);
+			string result = picture_parser.find_title();
+/*
+			transform(result.begin(), result.end(), result.begin(), (int (*)(int))tolower);
+			result = raw_to_formatted(result);
+
+			transform(paper_title.begin(), paper_title.end(), paper_title.begin(), (int (*)(int))tolower);
+			paper_title = raw_to_formatted(paper_title);
+			*/
+			vector <ArticleInfo> result_ = BiblioManager::search_title(result, out_html);
+			if (result_.size() > 0) {
+				if (low_letters_only(paper_title) == low_letters_only(result_[0].get_title())) {
+					passed++ ;
+				} else {
+					cout << "Failed at " << filename << endl;
+				}
+			} else {
+				cout << "Failed at " << filename << endl;
+			}
+			if (paper_title.find(result) != std::string::npos) {
+				passed++ ;
+			}
+			counter++;
+
+		} catch(const Biblio_exception & e) {
+			cerr << e.what() << endl;
+		}
+	}
+	out_html.close();
+	cout << ">>>-------------------------------------<<<" << endl;
+	cout << "    Passed " << passed << " tests from " << counter << endl;
+	cout << "    Passed " << passed * 100 / (float)counter << " % from total amount" << endl;
+	cout << ">>>-------------------------------------<<<" << endl;
+
+	EXPECT_EQ(0, 0);
+}

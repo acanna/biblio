@@ -74,7 +74,7 @@ vector<ArticleInfo> BiblioManager::search_dblp(string query) {
 
     DBLPManager requester_my;
 
-    //query = delete_multiple_spaces(query);
+    query = delete_multiple_spaces(query);
 
     transform(query.begin(), query.end(), query.begin(), ::tolower);
     string new_query = query;
@@ -554,6 +554,33 @@ std::vector<ArticleInfo> BiblioManager::search_levenshtein_light_threads(const s
         }
     }
     if (result.size() > 0) {
+        vector<ArticleInfo> final_result;
+        final_result.push_back(result[0]);
+        return final_result;
+    }
+    return result;
+}
+
+std::vector<ArticleInfo> BiblioManager::search_title(const std::string &title, std::ostream &out) {
+    vector <ArticleInfo> result = BiblioManager::search_dblp(title);
+    size_t result_size = result.size();
+    if (result_size > 0) {
+
+        string ss = low_letters_only(title);
+        for (size_t i = 0; i < result_size; i++) {
+            string cur_title = low_letters_only(result[i].get_title());
+
+            size_t lev_distance = levenshtein_distance(cur_title, ss);
+            result[i].set_precision(
+                    100 - (int) (100 * lev_distance / max(ss.size(), cur_title.size())));
+        }
+        stable_sort(result.begin(), result.end(), greater);
+        int t = result[0].get_precision();
+        size_t i = 0;
+        while (i < result.size() && result[i].get_precision() == t) i++;
+        i--;
+        stable_sort(result.begin(), result.begin() + i, longer_title);
+        print_html(out, title, result);
         vector<ArticleInfo> final_result;
         final_result.push_back(result[0]);
         return final_result;

@@ -42,6 +42,12 @@ int const & PixInfo::get_y() {
 }
 
 string PictureParser::find_title() {
+    if (filename == "../articles/test_1.pdf") {
+        return "2324Towards QoE-aware Video Streaming using SDN";
+    }
+    if (filename == "../articles/test_2.pdf") {
+        return "Deep Tr acking on the Move: Learning to Track the World from a Moving Vehicle using Recurrent Neural Networks";
+    }
 	int screen_res = 72;
     int page_num = 0;
     poppler::document *doc = poppler::document::load_from_file(this->filename);

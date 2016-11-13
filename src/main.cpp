@@ -28,7 +28,7 @@ int main (int argc, char ** argv) {
         {
             try
             {
-                vector <ArticleInfo> result = manager.search_levenshtein_light(filename, offline);
+                vector <ArticleInfo> result = manager.search_levenshtein(filename, offline);
                 manager.print_html(out_html, filename, result);
                 manager.print_bib(out_bib, result);
 
