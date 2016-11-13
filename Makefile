@@ -95,10 +95,10 @@ $(TEST_BIN)/gtest_main.a : $(TEST_BIN)/gtest-all.o $(TEST_BIN)/gtest_main.o
 ###########################################################################################
 
 tex: $(EXECUTABLE)
-	./bin/main articles/test_1.pdf
-	mv biblio.bib tex/biblio.bib
-	cd tex
-	pdflatex biblio.tex
-	bibtex biblio
-	pdflatex biblio.tex
-	pdflatex biblio.tex
+	make -C tex clean
+	make -C tex all
+
+tex_clean:
+		make -C tex clean
+
+.PHONY: tex_clean tex
