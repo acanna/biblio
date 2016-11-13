@@ -134,7 +134,7 @@ void BiblioManager::print_bib(std::ostream &out, std::vector<ArticleInfo> &resul
         out << "@ARTICLE{" << label << ",\n";
         out << "author = {";
         for (size_t i = 0; i < t - 1; ++i) {
-            out << authors[i] << ", ";
+            out << authors[i] << " and\n";
         }
         out << authors[t - 1];
         out << "},\n";
@@ -336,6 +336,11 @@ vector<ArticleInfo> BiblioManager::search_levenshtein(const string &filename, bo
         catch (const Biblio_exception &e) {
             throw;
         }
+    }
+    if (result.size() > 0) {
+        vector<ArticleInfo> res = {};
+        res.push_back(result[0]);
+        return res;
     }
     return result;
 }
