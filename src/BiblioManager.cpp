@@ -8,65 +8,6 @@
 
 using namespace std;
 
-std::vector<ArticleInfo> BiblioManager::search_damerau_levenshtein(const std::string &filename, bool offline) {
-
-    vector<string> title_candidates = {};
-    vector<ArticleInfo> result = {};
-    vector<ArticleInfo> dblp_result = {};
-
-    try {
-        parser = Parser(filename);
-        title_candidates = parser.get_title();
-        size_t n = title_candidates.size();
-        for (size_t i = 0; i < n - 1; ++i) {
-            title_candidates.push_back(title_candidates[i] + " " + title_candidates[i + 1]);
-        }
-    } catch (const Biblio_exception &e) {
-        throw;
-    }
-
-    string title = "";
-    for (string s : title_candidates) {
-        title += s + " ";
-    }
-
-    if (!offline) {
-        string prep_title = low_letters_only(title);
-        for (string &s : title_candidates) {
-
-            dblp_result = search_dblp(s);
-            if (dblp_result.size() > 0) {
-
-                string ss = low_letters_only(s);
-                size_t result_size = dblp_result.size();
-
-                for (size_t i = 0; i < result_size; i++) {
-
-                    string cur_title = dblp_result[i].get_title();
-                    cur_title = low_letters_only(cur_title);
-                    size_t dist = damerauLevenshteinDistance(ss, cur_title);
-                    dblp_result[i].set_precision(100 - (int) (100 * dist / max(ss.size(), cur_title.size())));
-
-                }
-                result.insert(result.end(), dblp_result.begin(), dblp_result.end());
-            }
-            if (result.size() > 30) {
-                break;
-            }
-        }
-        if (result.size() > 0) {
-            stable_sort(result.begin(), result.end(), greater);
-            int t = result[0].get_precision();
-            size_t i = 0;
-            while (i < result.size() && result[i].get_precision() == t) i++;
-            i--;
-            stable_sort(result.begin(), result.begin() + i, longer_title);
-        }
-
-    }
-    return result;
-}
-
 vector<ArticleInfo> BiblioManager::search_dblp(string query) {
 
     vector<ArticleInfo> result = {};
@@ -221,7 +162,6 @@ void BiblioManager::print_html(std::ostream &out, const std::string &filename, s
 vector<ArticleInfo> BiblioManager::search_levenshtein(ostream &out, const string &filename, bool offline) {
     out << "-----------------------New_Article----------------------" << endl;
     std::clock_t c_start = std::clock();
-    list <string> auths_candidates;
     vector<string> title_candidates;
 
     vector<ArticleInfo> result = {};
@@ -248,7 +188,6 @@ vector<ArticleInfo> BiblioManager::search_levenshtein(ostream &out, const string
         clock_t search_sum = 0, processing_sum = 0;
         int search = 0;
         try {
-            string prep_title = low_letters_only(title);
             for (string &s : title_candidates) {
 
                 clock_t req_start = clock();
@@ -465,18 +404,11 @@ vector<ArticleInfo> BiblioManager::search_exact_match(const string &filename, bo
                 dblp_result = search_dblp(s);
 
                 if (dblp_result.size() > 0) {
-
-                    string ss = low_letters_only(s);
-
                     size_t result_size = dblp_result.size();
-
                     for (size_t i = 0; i < result_size; i++) {
-
                         string cur_title = dblp_result[i].get_title();
                         cur_title = low_letters_only(cur_title);
-
                         if (prep_title.find(cur_title) != string::npos) {
-
                             dblp_result[i].set_precision(100);
                             result.push_back(dblp_result[i]);
                         }

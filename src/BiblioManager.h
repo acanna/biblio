@@ -24,7 +24,6 @@ public:
     static std::vector<ArticleInfo> search_title(const std::string &filename, std::ostream &out);
     std::vector<std::string> get_fst_page();
     std::vector<ArticleInfo> search_exact_match(const std::string &filename, bool offline);
-    std::vector<ArticleInfo> search_damerau_levenshtein(const std::string &filename, bool offline);
     std::vector<ArticleInfo> search_levenshtein(std::ostream &out, const std::string &filename, bool offline);
     std::vector<ArticleInfo> search_levenshtein(const std::string &filename, bool offline);
     std::vector<ArticleInfo> search_levenshtein_light(const std::string &filename, bool offline);

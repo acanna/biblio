@@ -214,53 +214,6 @@ TEST (TestAlg_TitleLevenshtein, Threads_Timing) {
     EXPECT_EQ(passed, counter);
 }
 
-TEST (TestAlg_TitleDamerauLevenshtein, Positive) {
-
-    string data_file = "../articles/test_summary.txt";
-    string path = "../articles/";
-
-    ifstream file(data_file);
-    int passed = 0;
-    int counter = 0;
-    string line = "", filename = "", paper_title = "";
-    vector<string> tmp;
-
-    while (file.is_open() && !file.eof()) {
-
-        getline(file, line);
-        tmp = split(line, '\t');
-
-        filename = tmp[0];
-        paper_title = tmp[1];
-        filename = path + filename;
-
-        bool offline = false;
-        try {
-            vector<ArticleInfo> result = manager.search_damerau_levenshtein(filename, offline);
-            if (result.size() > 0) {
-
-                if (low_letters_only(paper_title) == low_letters_only(result[0].get_title())) {
-                    passed++;
-                } else {
-                    cout << "Failed at " << filename << endl;
-                }
-            } else {
-                cout << "Failed at " << filename << endl;
-            }
-            counter++;
-        } catch (const Biblio_exception &e) {
-            cerr << e.what() << endl;
-        }
-    }
-
-    cout << ">>>-------------------------------------<<<" << endl;
-    cout << "    Passed " << passed << " tests from " << counter << endl;
-    cout << "    Passed " << passed * 100 / (float) counter << " % from total amount" << endl;
-    cout << ">>>-------------------------------------<<<" << endl;
-
-    EXPECT_EQ(passed, counter);
-}
-
 TEST (SimpleParser, Positive) {
 
     string data_file = "../articles/test_summary.txt";
@@ -361,20 +314,8 @@ TEST (PictureParser, Positive) {
     EXPECT_EQ(0, 0);
 }
 
-TEST (Parse_Title, Positive) {
-    string actual_title = "Experiments on Union-Find Algorithms for the Disjoint-Set Data Structure";
-    string filename = "articles/test_31.pdf";
-    BiblioManager manager = BiblioManager(filename);
-    std::vector<std::string> fst_page = manager.get_fst_page();
-    for (std::string s : fst_page) {
-        cout << s << endl;
-    }
-    EXPECT_EQ(0, 0);
-}
-
-
 TEST (PictureParser, Online) {
-    string data_file = "../articles/test_summary_.txt";
+    string data_file = "../articles/test_summary.txt";
     string path = "../articles/";
 
     ifstream file(data_file);
