@@ -306,7 +306,6 @@ vector<ArticleInfo> BiblioManager::search_levenshtein(ostream &out, const string
     }
 
 
-
     std::clock_t c_end = std::clock();
     out << std::fixed << std::setprecision(2) << "CPU time used: "
         << 1000.0 * (c_end - c_start) / CLOCKS_PER_SEC << " ms\n";
@@ -598,7 +597,7 @@ std::vector<ArticleInfo> BiblioManager::search_levenshtein_light_threads(const s
 }
 
 std::vector<ArticleInfo> BiblioManager::search_title(const std::string &title, std::ostream &out) {
-    vector <ArticleInfo> result = BiblioManager::search_dblp(title);
+    vector<ArticleInfo> result = BiblioManager::search_dblp(title);
     size_t result_size = result.size();
     if (result_size > 0) {
 

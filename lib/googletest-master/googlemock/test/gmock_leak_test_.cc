@@ -38,63 +38,64 @@
 
 namespace {
 
-using ::testing::Return;
+    using ::testing::Return;
 
-class FooInterface {
- public:
-  virtual ~FooInterface() {}
-  virtual void DoThis() = 0;
-};
+    class FooInterface {
+    public:
+        virtual ~FooInterface() {}
 
-class MockFoo : public FooInterface {
- public:
-  MockFoo() {}
+        virtual void DoThis() = 0;
+    };
 
-  MOCK_METHOD0(DoThis, void());
+    class MockFoo : public FooInterface {
+    public:
+        MockFoo() {}
 
- private:
-  GTEST_DISALLOW_COPY_AND_ASSIGN_(MockFoo);
-};
+        MOCK_METHOD0(DoThis, void());
 
-TEST(LeakTest, LeakedMockWithExpectCallCausesFailureWhenLeakCheckingIsEnabled) {
-  MockFoo* foo = new MockFoo;
+    private:
+        GTEST_DISALLOW_COPY_AND_ASSIGN_(MockFoo);
+    };
 
-  EXPECT_CALL(*foo, DoThis());
-  foo->DoThis();
+    TEST(LeakTest, LeakedMockWithExpectCallCausesFailureWhenLeakCheckingIsEnabled) {
+        MockFoo *foo = new MockFoo;
 
-  // In order to test the leak detector, we deliberately leak foo.
+        EXPECT_CALL(*foo, DoThis());
+        foo->DoThis();
 
-  // Makes sure Google Mock's leak detector can change the exit code
-  // to 1 even when the code is already exiting with 0.
-  exit(0);
-}
+        // In order to test the leak detector, we deliberately leak foo.
 
-TEST(LeakTest, LeakedMockWithOnCallCausesFailureWhenLeakCheckingIsEnabled) {
-  MockFoo* foo = new MockFoo;
+        // Makes sure Google Mock's leak detector can change the exit code
+        // to 1 even when the code is already exiting with 0.
+        exit(0);
+    }
 
-  ON_CALL(*foo, DoThis()).WillByDefault(Return());
+    TEST(LeakTest, LeakedMockWithOnCallCausesFailureWhenLeakCheckingIsEnabled) {
+        MockFoo *foo = new MockFoo;
 
-  // In order to test the leak detector, we deliberately leak foo.
+        ON_CALL(*foo, DoThis()).WillByDefault(Return());
 
-  // Makes sure Google Mock's leak detector can change the exit code
-  // to 1 even when the code is already exiting with 0.
-  exit(0);
-}
+        // In order to test the leak detector, we deliberately leak foo.
 
-TEST(LeakTest, CatchesMultipleLeakedMockObjects) {
-  MockFoo* foo1 = new MockFoo;
-  MockFoo* foo2 = new MockFoo;
+        // Makes sure Google Mock's leak detector can change the exit code
+        // to 1 even when the code is already exiting with 0.
+        exit(0);
+    }
 
-  ON_CALL(*foo1, DoThis()).WillByDefault(Return());
-  EXPECT_CALL(*foo2, DoThis());
-  foo2->DoThis();
+    TEST(LeakTest, CatchesMultipleLeakedMockObjects) {
+        MockFoo *foo1 = new MockFoo;
+        MockFoo *foo2 = new MockFoo;
 
-  // In order to test the leak detector, we deliberately leak foo1 and
-  // foo2.
+        ON_CALL(*foo1, DoThis()).WillByDefault(Return());
+        EXPECT_CALL(*foo2, DoThis());
+        foo2->DoThis();
 
-  // Makes sure Google Mock's leak detector can change the exit code
-  // to 1 even when the code is already exiting with 0.
-  exit(0);
-}
+        // In order to test the leak detector, we deliberately leak foo1 and
+        // foo2.
+
+        // Makes sure Google Mock's leak detector can change the exit code
+        // to 1 even when the code is already exiting with 0.
+        exit(0);
+    }
 
 }  // namespace

@@ -18,43 +18,47 @@
 #include "tools.h"
 
 
-class PictureParser{
-	std::string filename;
-	std::string imagename;
-	int xres;
-	int yres;
-	int dpi;
-	std::string format;
-	char * data;
-	int width;
-	int height;
-	int title_x;
-	int title_y;
-	int title_height;
-	std::string title;
+class PictureParser {
 
-	bool is_black(int x, int y);
-	void select_title_rectangle();
-	std::string parse_image();
+private:
+    std::string filename;
+    std::string imagename;
+    int xres;
+    int yres;
+    int dpi;
+    std::string format;
+    char *data;
+    int width;
+    int height;
+    int title_x;
+    int title_y;
+    int title_height;
+    std::string title;
 
-
+private:
+    bool is_black(int x, int y);
+    void select_title_rectangle();
+    std::string parse_image();
 
 public:
-	PictureParser(std::string const & filename, int const xres, int const yres,
-				  std::string const & imagename, std::string const & format, int const dpi);
-	std::string const & get_title();
-	std::string find_title ();
-
+    PictureParser(std::string const &filename, int const xres, int const yres,
+                  std::string const &imagename, std::string const &format, int const dpi);
+    std::string const &get_title();
+    std::string find_title();
 };
 
-class PixInfo{
-	int x;
-	int y;
-	std::vector <int> row_height;
+class PixInfo {
+
+private:
+    int x;
+    int y;
+
+private:
+    std::vector<int> row_height;
 
 public:
-	PixInfo(int const x, int const y, std::vector <int> const & row_height);
-	std::vector<int> * get_heights();
-	int const & get_x();
-	int const & get_y();
+    PixInfo(int const x, int const y, std::vector<int> const &row_height);
+    std::vector<int> *get_heights();
+    int const &get_x();
+    int const &get_y();
 };

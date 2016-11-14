@@ -11,7 +11,6 @@
 class Parser {
 
 private:
-
     poppler::document *doc;
     std::vector<std::string> fst_page;
     char *ibytes;
@@ -19,23 +18,14 @@ private:
     int height;
 
 public:
-
     Parser();
-
     Parser(const std::string &file_name);
-
     void parse(const std::string &file_name);
-
     void prepare_fst_page();
-
     std::vector<std::string> get_document() const;
-
     std::vector<std::string> get_fst_page() const;
-
     std::list<std::string> get_authors() const;
-
     std::vector<std::string> get_title();
-
     void prepare_data();
 };
 

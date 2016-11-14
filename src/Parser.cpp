@@ -126,8 +126,7 @@ void Parser::prepare_fst_page() {
     }
     if (contactsl < n - 1) {
         lastl = contactsl;
-    }
-    else if (abstractl < n - 1) {
+    } else if (abstractl < n - 1) {
         lastl = abstractl - 1;
     }
     for (size_t i = firstl; i <= lastl; ++i) {

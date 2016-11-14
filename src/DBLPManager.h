@@ -19,18 +19,15 @@ const std::string URL = "http://dblp.org/search/publ/api?format=json&h=1&q=";
 
 class DBLPManager {
 
+private:
     int errorCode;
     CURL *curl;
 
-public:
-
-    DBLPManager();
-
-    virtual ~DBLPManager();
-
-    std::vector<ArticleInfo> publicationRequest(const std::string &query);
-
 private:
-
     std::vector<ArticleInfo> parseResponse();
+
+public:
+    DBLPManager();
+    virtual ~DBLPManager();
+    std::vector<ArticleInfo> publicationRequest(const std::string &query);
 };
