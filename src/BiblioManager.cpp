@@ -428,42 +428,36 @@ vector<ArticleInfo> BiblioManager::search_exact_match(const string &filename, bo
     return res;
 }
 
-std::vector<std::string> BiblioManager::get_fst_page() {
-    return parser.get_fst_page();
-}
-
 BiblioManager::BiblioManager(std::string &filename) {
     parser = Parser(filename);
 }
 
-void BiblioManager::thread_search_function(std::string s, std::vector<ArticleInfo> &result) {
+void BiblioManager::thread_search_function(int i, vector<string> &title_candidates, std::vector<std::vector<ArticleInfo>> &results) {
     try {
         vector<ArticleInfo> dblp_result = {};
-        dblp_result = search_dblp(s);
-        size_t result_size = dblp_result.size();
-        if (result_size > 0) {
-            string ss = low_letters_only(s);
-            for (size_t i = 0; i < result_size; i++) {
-                string cur_title = low_letters_only(dblp_result[i].get_title());
-
-                size_t lev_distance = levenshtein_distance(cur_title, ss);
-                dblp_result[i].set_precision(
-                        100 - (int) (100 * lev_distance / max(ss.size(), cur_title.size())));
+        size_t iters = (title_candidates.size() - 1 - i) / 4;
+        for (size_t j = 0; j < iters; j++) {
+            string query = title_candidates[j * 4 + i];
+            dblp_result = search_dblp(query);
+            size_t result_size = dblp_result.size();
+            if (result_size > 0) {
+                for (size_t i = 0; i < result_size; i++) {
+                    string cur_title = dblp_result[i].get_title();
+                    size_t lev_distance = levenshtein_distance(cur_title, query);
+                    dblp_result[i].set_precision(
+                            100 - (int) (100 * lev_distance / max(query.size(), cur_title.size())));
+                }
+                results[i].insert(results[i].end(), dblp_result.begin(), dblp_result.end());
             }
-            result.insert(result.end(), dblp_result.begin(), dblp_result.end());
         }
     } catch (...) {}
 }
 
 std::vector<ArticleInfo> BiblioManager::search_levenshtein_light_threads(const std::string &filename, bool offline) {
-
     vector<string> title_candidates;
     vector<ArticleInfo> result = {};
-    vector<ArticleInfo> dblp_result_1 = {};
-    vector<ArticleInfo> dblp_result_2 = {};
-    vector<ArticleInfo> dblp_result_3 = {};
-    vector<ArticleInfo> dblp_result_4 = {};
-
+    vector<vector<ArticleInfo>> results(4);
+    vector<thread> threads = {};
     try {
         parser = Parser(filename);
         title_candidates = parser.get_title();
@@ -474,39 +468,15 @@ std::vector<ArticleInfo> BiblioManager::search_levenshtein_light_threads(const s
     } catch (const Biblio_exception &e) {
         throw;
     }
-
     if (!offline) {
         try {
-            string str = title_candidates[title_candidates.size() - 1];
-            size_t rest = 4 - (title_candidates.size() % 4);
-            for (size_t i = 1; i <= rest; i++) {
-                title_candidates.push_back(str);
+            for (int i = 0; i < 4; i++) {
+                threads.push_back(thread(thread_search_function, i, ref(title_candidates), ref(results)));
+                threads[i].join();
             }
-            size_t iterations = title_candidates.size() / 4;
-            for (size_t i = 0; i < iterations; i++) {
-                thread thread_1(thread_search_function, title_candidates[4 * i], ref(dblp_result_1));
-                thread thread_2(thread_search_function, title_candidates[4 * i + 1], ref(dblp_result_2));
-                thread thread_3(thread_search_function, title_candidates[4 * i + 2], ref(dblp_result_3));
-                thread thread_4(thread_search_function, title_candidates[4 * i + 3], ref(dblp_result_4));
-                thread_1.join();
-                thread_2.join();
-                thread_3.join();
-                thread_4.join();
+            for (int i = 0; i < 4; i++) {
+                result.insert(result.end(), results[i].begin(), results[i].end());
             }
-
-            if (dblp_result_1.size() > 0) {
-                result.insert(result.end(), dblp_result_1.begin(), dblp_result_1.end());
-            }
-            if (dblp_result_2.size() > 0) {
-                result.insert(result.end(), dblp_result_2.begin(), dblp_result_2.end());
-            }
-            if (dblp_result_3.size() > 0) {
-                result.insert(result.end(), dblp_result_3.begin(), dblp_result_3.end());
-            }
-            if (dblp_result_4.size() > 0) {
-                result.insert(result.end(), dblp_result_4.begin(), dblp_result_4.end());
-            }
-
             if (result.size() > 0) {
                 stable_sort(result.begin(), result.end(), greater);
                 int t = result[0].get_precision();

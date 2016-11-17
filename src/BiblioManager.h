@@ -15,14 +15,13 @@ private:
     static bool greater(const ArticleInfo &info_1, const ArticleInfo &info_2);
     static bool smaller(const ArticleInfo &info_1, const ArticleInfo &info_2);
     static bool longer_title(const ArticleInfo &info_1, const ArticleInfo &info_2);
-    static void thread_search_function(std::string s, std::vector<ArticleInfo> &result);
+    static void thread_search_function(int i, std::vector<std::string> &title_candidates, std::vector<std::vector<ArticleInfo>> &results);
 
 public:
     BiblioManager();
     BiblioManager(std::string &filename);
     static std::vector<ArticleInfo> search_dblp(std::string query);
     static std::vector<ArticleInfo> search_title(const std::string &filename, std::ostream &out);
-    std::vector<std::string> get_fst_page();
     std::vector<ArticleInfo> search_exact_match(const std::string &filename, bool offline);
     std::vector<ArticleInfo> search_levenshtein(std::ostream &out, const std::string &filename, bool offline);
     std::vector<ArticleInfo> search_levenshtein(const std::string &filename, bool offline);

@@ -45,13 +45,13 @@ namespace testing {
 
 // Defines a matcher that matches an empty container. The container must
 // support both size() and empty(), which all STL-like containers provide.
-    MATCHER(IsEmpty, negation ? "isn't empty" : "is empty") {
-        if (arg.empty()) {
-            return true;
-        }
-        *result_listener << "whose size is " << arg.size();
-        return false;
-    }
+MATCHER(IsEmpty, negation ? "isn't empty" : "is empty") {
+  if (arg.empty()) {
+    return true;
+  }
+  *result_listener << "whose size is " << arg.size();
+  return false;
+}
 
 }  // namespace testing
 
