@@ -5,8 +5,6 @@
 #include <gtest/gtest.h>
 #include "../src/DBLPManager.h"
 #include "../src/BiblioManager.h"
-#include "../src/tools.h"
-#include "../src/PictureParser.h"
 
 using namespace std;
 
@@ -361,6 +359,45 @@ TEST (PictureParser, Online) {
             }
             counter++;
 
+        } catch (const Biblio_exception &e) {
+            cerr << e.what() << endl;
+        }
+    }
+    out_html.close();
+    cout << ">>>-------------------------------------<<<" << endl;
+    cout << "    Passed " << passed << " tests from " << counter << endl;
+    cout << "    Passed " << passed * 100 / (float) counter << " % from total amount" << endl;
+    cout << ">>>-------------------------------------<<<" << endl;
+
+    EXPECT_EQ(0, 0);
+}
+
+TEST (PictureParser, Offline) {
+    string data_file = "../articles/test_summary.txt";
+    string path = "../articles/";
+    ifstream file(data_file);
+    ofstream out_html("result.html");
+    int passed = 0;
+    int counter = 0;
+    string line = "", filename = "", paper_title = "";
+    vector<string> tmp;
+    while (file.is_open() && !file.eof()) {
+        getline(file, line);
+        tmp = split(line, '\t');
+        filename = tmp[0];
+        paper_title = tmp[1];
+        filename = path + filename;
+        try {
+            BiblioManager manager = BiblioManager();
+            vector<ArticleInfo> result = manager.search_with_distance(levenshtein_distance, filename, true);
+            if (delete_spaces_to_lower(paper_title) == delete_spaces_to_lower(result[0].get_title())) {
+                passed++;
+            } else {
+                cout << "Failed at " << filename << endl;
+                cout << "Actual: " << paper_title << endl;
+                cout << "Got:    " << result[0].get_title() << endl;
+            }
+            counter++;
         } catch (const Biblio_exception &e) {
             cerr << e.what() << endl;
         }

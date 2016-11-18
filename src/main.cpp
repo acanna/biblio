@@ -24,13 +24,12 @@ int main(int argc, char **argv) {
         ofstream out_html("biblio.html");
         ofstream out_bib("biblio.bib");
 
-        for (const auto &filename : fileNames) // access by reference to avoid copying
+        for (const auto &filename : fileNames)
         {
             try {
-                vector<ArticleInfo> result = manager.search_levenshtein(filename, offline);
+                vector<ArticleInfo> result = manager.search_with_distance(levenshtein_distance, filename, offline);
                 manager.print_html(out_html, filename, result);
                 manager.print_bib(out_bib, result);
-
             } catch (const Biblio_exception &e) {
                 cerr << e.what() << '\n';
             } catch (...) {}

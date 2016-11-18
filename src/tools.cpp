@@ -16,11 +16,9 @@ vector<string> split(const string &str, char delimiter) {
 }
 
 string low_letters_only(string str) {
-    transform(str.begin(), str.end(), str.begin(), ::tolower);
     regex re_frmt("[^a-zA-Z]");
-    regex re_space("\\b\\s+\\b");
     str = regex_replace(str, re_frmt, "");
-    str = regex_replace(str, re_space, " ");
+    transform(str.begin(), str.end(), str.begin(), ::tolower);
     return str;
 }
 
@@ -45,6 +43,20 @@ string short_name(string s) {
 }
 
 string raw_to_formatted(string raw) {
+//
+//    regex re_space("\\b\\s+\\b");
+//    regex re_frmt("[^\\w\\.,-@\\s\\n]+");
+//    regex re_trim("^\\s*\\b(.*)\\b\\s*$");
+//    regex re_sep_word("\\b([b-zB-Z])\\s(\\w+)\\b");
+//    regex re_num_word("\\b([a-zA-Z]+)[0-9]+\\b");
+//    string result = regex_replace(raw, re_frmt, "");
+//    result = regex_replace(result, re_space, " ");
+//    result = regex_replace(result, re_trim, "$1");
+//    // эти два форматирования крайне подозрительны
+//    // возможно, они на чём-то сломают всё
+//    result = regex_replace(result, re_sep_word, "$1$2");
+//    result = regex_replace(result, re_num_word, "$1");
+
     string frmt_str = "";
     string frmt_space = " ";
     string frmt_trim = "$1";
@@ -86,8 +98,8 @@ size_t levenshtein_distance(const string &s, const string &t) {
     if (t.length() == 0) return s_length;
 
     size_t max_length = max(t_length, s_length);
-    size_t v0[max_length];
-    size_t v1[max_length];
+    vector<size_t> v0(max_length);
+    vector<size_t> v1(max_length);
     for (size_t i = 0; i < max_length; i++) {
         v0[i] = i;
     }
@@ -104,4 +116,10 @@ size_t levenshtein_distance(const string &s, const string &t) {
             v0[j] = v1[j];
     }
     return v1[t_length];
+}
+
+std::string delete_spaces_to_lower(std::string str) {
+    transform(str.begin(), str.end(), str.begin(), (int (*)(int)) tolower);
+    regex re_space("\\b\\s+\\b");
+    return regex_replace(str, re_space, " ");
 }

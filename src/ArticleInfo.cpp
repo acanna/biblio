@@ -109,3 +109,16 @@ string ArticleInfo::to_string() {
     output += "\n Precision of response: \t" + std::to_string(this->precision) + "% \n";
     return output;
 }
+
+ArticleInfo::ArticleInfo(std::string const &title) {
+    this->title = title;
+    this->authors = {};
+    this->venue = "";
+    this->volume = "";
+    this->number = "";
+    this->pages = "";
+    this->year = "";
+    this->type = "";
+    this->url = "";
+    this->precision = 0;
+}

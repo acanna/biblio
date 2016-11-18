@@ -33,6 +33,8 @@ public:
     std::string const &get_url() const;
     int get_precision() const;
     void set_precision(int precision);
+
+    ArticleInfo(std::string const &title);
     ArticleInfo(std::string const &title, std::vector<std::string> const &authors,
                 std::string const &venue, std::string const &volume, std::string const &number,
                 std::string const &pages, std::string const &year, std::string const &type,

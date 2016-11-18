@@ -3,31 +3,25 @@
 #include <iomanip>
 #include <thread>
 #include "BiblioManager.h"
-#include "tools.h"
 
 
 using namespace std;
 
 vector<ArticleInfo> BiblioManager::search_dblp(string query) {
-
     vector<ArticleInfo> result = {};
     vector<ArticleInfo> additional_result = {};
-
     DBLPManager requester_my;
-
-    query = delete_multiple_spaces(query);
-
     transform(query.begin(), query.end(), query.begin(), ::tolower);
     string new_query = query;
-    string one_more_query = query;
+
     result = requester_my.publicationRequest(new_query);
 
     replace(new_query.begin(), new_query.end(), ' ', '.');
     additional_result = requester_my.publicationRequest(new_query);
     result.insert(result.end(), additional_result.begin(), additional_result.end());
 
-    replace(one_more_query.begin(), one_more_query.end(), ' ', '$');
-    additional_result = requester_my.publicationRequest(one_more_query);
+    replace(query.begin(), query.end(), ' ', '$');
+    additional_result = requester_my.publicationRequest(query);
     result.insert(result.end(), additional_result.begin(), additional_result.end());
 
     return result;
@@ -157,99 +151,6 @@ void BiblioManager::print_html(std::ostream &out, const std::string &filename, s
     out << "</pre>\n";
     out << "\t</body>\n";
     out << "</html>\n";
-}
-
-vector<ArticleInfo> BiblioManager::search_levenshtein(ostream &out, const string &filename, bool offline) {
-    out << "-----------------------New_Article----------------------" << endl;
-    std::clock_t c_start = std::clock();
-    vector<string> title_candidates;
-
-    vector<ArticleInfo> result = {};
-    vector<ArticleInfo> dblp_result = {};
-
-    try {
-        parser = Parser(filename);
-        title_candidates = parser.get_title();
-        size_t n = title_candidates.size();
-        for (size_t i = 0; i < n - 1; ++i) {
-            title_candidates.push_back(title_candidates[i] + " " + title_candidates[i + 1]);
-        }
-    } catch (const Biblio_exception &e) {
-        throw;
-    }
-
-    string title = "";
-
-    for (string s : title_candidates) {
-        title += s + " ";
-    }
-
-    if (!offline) {
-        clock_t search_sum = 0, processing_sum = 0;
-        int search = 0;
-        try {
-            for (string &s : title_candidates) {
-
-                clock_t req_start = clock();
-                dblp_result = search_dblp(s);
-                clock_t req_end = clock();
-                out << std::fixed << std::setprecision(2) << "CPU time used for search: "
-                    << 1000.0 * (req_end - req_start) / CLOCKS_PER_SEC << " ms\n";
-                search_sum += (1000.0 * (req_end - req_start) / CLOCKS_PER_SEC);
-                search++;
-                out << "dblp_result_size: " << dblp_result.size() << endl;
-                if (dblp_result.size() > 0) {
-
-                    clock_t beg = clock();
-
-                    string ss = low_letters_only(s);
-                    size_t result_size = dblp_result.size();
-                    for (size_t i = 0; i < result_size; i++) {
-                        string cur_title = dblp_result[i].get_title();
-                        cur_title = low_letters_only(cur_title);
-
-                        size_t lev_distance = levenshtein_distance(cur_title, ss);
-                        dblp_result[i].set_precision(
-                                100 - (int) (100 * lev_distance / max(ss.size(), cur_title.size())));
-
-                    }
-                    result.insert(result.end(), dblp_result.begin(), dblp_result.end());
-
-                    clock_t end = clock();
-                    out << std::fixed << std::setprecision(2) << "CPU time used for processing: "
-                        << 1000.0 * (end - beg) / CLOCKS_PER_SEC << " ms\n";
-                    processing_sum += (1000.0 * (end - beg) / CLOCKS_PER_SEC);
-                }
-            }
-            clock_t beg = clock();
-
-            if (result.size() > 0) {
-                stable_sort(result.begin(), result.end(), greater);
-                int t = result[0].get_precision();
-                size_t i = 0;
-                while (i < result.size() && result[i].get_precision() == t) i++;
-                i--;
-                stable_sort(result.begin(), result.begin() + i, longer_title);
-            }
-
-            clock_t end = clock();
-            processing_sum += (1000.0 * (end - beg) / CLOCKS_PER_SEC);
-        }
-        catch (const Biblio_exception &e) {
-            throw;
-        }
-
-        out << "================================================" << endl;
-        out << "Average search time: " << search_sum / search << " ms" << endl;
-        out << "Average processing time: " << processing_sum / search << " ms" << endl;
-    }
-
-
-    std::clock_t c_end = std::clock();
-    out << std::fixed << std::setprecision(2) << "CPU time used: "
-        << 1000.0 * (c_end - c_start) / CLOCKS_PER_SEC << " ms\n";
-    out << "-----------------------End----------------------" << endl;
-    return result;
 }
 
 vector<ArticleInfo> BiblioManager::search_levenshtein(const string &filename, bool offline) {
@@ -429,7 +330,8 @@ vector<ArticleInfo> BiblioManager::search_exact_match(const string &filename, bo
 }
 
 BiblioManager::BiblioManager(std::string &filename) {
-    parser = Parser(filename);
+    //parser = Parser(filename);
+    picture_parser = PictureParser(filename, 300, 300, "test.png", "png", 700);
 }
 
 void BiblioManager::thread_search_function(int i, vector<string> &title_candidates, std::vector<std::vector<ArticleInfo>> &results) {
@@ -441,10 +343,10 @@ void BiblioManager::thread_search_function(int i, vector<string> &title_candidat
             dblp_result = search_dblp(query);
             size_t result_size = dblp_result.size();
             if (result_size > 0) {
-                for (size_t i = 0; i < result_size; i++) {
-                    string cur_title = dblp_result[i].get_title();
+                for (size_t k = 0; k < result_size; k++) {
+                    string cur_title = dblp_result[k].get_title();
                     size_t lev_distance = levenshtein_distance(cur_title, query);
-                    dblp_result[i].set_precision(
+                    dblp_result[k].set_precision(
                             100 - (int) (100 * lev_distance / max(query.size(), cur_title.size())));
                 }
                 results[i].insert(results[i].end(), dblp_result.begin(), dblp_result.end());
@@ -523,4 +425,40 @@ std::vector<ArticleInfo> BiblioManager::search_title(const std::string &title, s
         return final_result;
     }
     return result;
+}
+
+std::vector<ArticleInfo>
+BiblioManager::search_with_distance(std::function<size_t(const std::string &, const std::string &)> dist,
+                                    const std::string &filename, bool offline) {
+    picture_parser = PictureParser(filename, 300, 300, "test.png", "png", 700);
+    vector<ArticleInfo> result = {};
+    string title = picture_parser.get_title();
+    if (offline) {
+        result.push_back(ArticleInfo(title));
+        return result;
+    }
+    result = BiblioManager::search_dblp(title);
+    size_t result_size = result.size();
+    vector<ArticleInfo> final_result = {};
+    if (result_size > 0) {
+        title = delete_spaces_to_lower(title);
+        for (size_t i = 0; i < result_size; i++) {
+            string cur_title = delete_spaces_to_lower(result[i].get_title());
+            size_t distance = dist(cur_title, title);
+            result[i].set_precision(
+                    100 - (int) (100 * distance / max(title.size(), cur_title.size())));
+        }
+        stable_sort(result.begin(), result.end(), greater);
+        int t = result[0].get_precision();
+        size_t i = 0;
+        while (i < result.size() && result[i].get_precision() == t) i++;
+        i--;
+        stable_sort(result.begin(), result.begin() + i, longer_title);
+        // магическая константа 90 упала с неба и требует её удаления или замены
+        if (result[0].get_precision() > 90) {
+            final_result.push_back(result[0]);
+        }
+
+    }
+    return final_result;
 }

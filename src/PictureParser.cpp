@@ -42,12 +42,6 @@ int const &PixInfo::get_y() {
 }
 
 string PictureParser::find_title() {
-    if (filename == "../articles/test_1.pdf") {
-        return "2324Towards QoE-aware Video Streaming using SDN";
-    }
-    if (filename == "../articles/test_2.pdf") {
-        return "Deep Tr acking on the Move: Learning to Track the World from a Moving Vehicle using Recurrent Neural Networks";
-    }
     int screen_res = 72;
     int page_num = 0;
     poppler::document *doc = poppler::document::load_from_file(this->filename);
@@ -108,7 +102,7 @@ bool PictureParser::is_black(int x, int y) {
 }
 
 void PictureParser::select_title_rectangle() {
-    ofstream out("image_bytes.txt");
+    //ofstream out("image_bytes.txt");
     vector<PixInfo> black_rows = {};
     int white_rows_counter = 0;
     int y = 0;
@@ -119,8 +113,8 @@ void PictureParser::select_title_rectangle() {
         vector<int> heights = {};
 
         // scanning between 12% and 50% of the page width
-        int w_start = int(this->width * 12 / 100);
-        int w_end = int(this->width * 50 / 100);
+        int w_start = this->width * 12 / 100;
+        int w_end = this->width * 50 / 100;
 
         for (int x = w_start; x < w_end; x++) {
             if ((is_black(x, y)) && (y > 0) && (y < height)) {
@@ -201,8 +195,8 @@ void PictureParser::select_title_rectangle() {
 
     //this->title_x = min_x - 25; // select title area only
     this->title_x = 0; // select across the width of the page
-    this->title_y = min_y - 0.25 * max_height;
-    this->title_height = max_y - min_y + 0.75 * max_height;
+    this->title_y = (int) (min_y - 0.25 * max_height);
+    this->title_height = (int) (max_y - min_y + 0.75 * max_height);
 
     return;
 
@@ -225,3 +219,5 @@ string PictureParser::parse_image() {
     this->title = string(out_text);
     return out_text;
 }
+
+PictureParser::PictureParser() {}
