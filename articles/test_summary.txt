@@ -37,8 +37,8 @@ test_74.pdf	Development and synthesis of durable self-glowing crystals doped wit
 test_75.pdf	Development of new generation of durable radio-luminescence emitters based on actinide-doped crystals
 test_76.pdf	Confocal microscopy and spectroscopy of InGaN epilayers on sapphire
 test_77.pdf	High Optical Quality Nanoporous GaN Prepared by Photoelectrochemical Etching
-test_78.pdf	Equilibrium critical thickness for misfit dislocations in III-nitrides
-test_79.pdf	Effects of phase separation and decomposition on the minority carrier diffusion length in AlxGa1?xN films
+test_78_color_title.pdf	Equilibrium critical thickness for misfit dislocations in III-nitrides
+test_79.pdf	Effects of phase separation and decomposition on the minority carrier diffusion length in AlxGa1-xN films
 test_80.pdf	Ternary AlGaN Alloys with High Al Content and Enhanced Compositional Homogeneity Grown by Plasma-Assisted Molecular Beam Epitaxy
 test_81.pdf	Features of the Spatial Distribution of Indium in InGaN Epitaxial Layers Grown by Plasma-Assisted Molecular Beam Epitaxy
 test_82.pdf	Structural analysis of InGaN epilayers
