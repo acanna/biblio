@@ -287,18 +287,26 @@ TEST (PictureParser, Positive) {
         try {
 
             PictureParser picture_parser = PictureParser(filename, 300, 300, "test.png", "png", 700);
-            string result = picture_parser.find_title();
+            picture_parser.find_title();
+			string result = picture_parser.get_title();
 
             transform(result.begin(), result.end(), result.begin(), (int (*)(int)) tolower);
             result = raw_to_formatted(result);
 
             transform(paper_title.begin(), paper_title.end(), paper_title.begin(), (int (*)(int)) tolower);
             paper_title = raw_to_formatted(paper_title);
-
+      
+                     
             if (paper_title.find(result) != std::string::npos) {
                 passed++;
             } else {
                 cout << "Failed at " << filename << endl;
+                cout << "Exact paper title: " << endl;
+	            cout << paper_title << endl;
+                cout << "Parsed title: " << endl;
+	            cout << result <<endl;
+	            cout <<endl;
+
             }
             counter++;
         } catch (const Biblio_exception &e) {
@@ -306,6 +314,7 @@ TEST (PictureParser, Positive) {
         }
     }
 
+	cout << endl;
     cout << ">>>-------------------------------------<<<" << endl;
     cout << "    Passed " << passed << " tests from " << counter << endl;
     cout << "    Passed " << passed * 100 / (float) counter << " % from total amount" << endl;
@@ -338,14 +347,17 @@ TEST (PictureParser, Online) {
         try {
 
             PictureParser picture_parser = PictureParser(filename, 300, 300, "test.png", "png", 700);
-            string result = picture_parser.find_title();
-/*
-			transform(result.begin(), result.end(), result.begin(), (int (*)(int))tolower);
-			result = raw_to_formatted(result);
+			picture_parser.find_title();
+//            vector<string> titles = picture_parser.get_titles();
+//			string result = titles[0];
+			string result = "";
 
-			transform(paper_title.begin(), paper_title.end(), paper_title.begin(), (int (*)(int))tolower);
-			paper_title = raw_to_formatted(paper_title);
-			*/
+			//transform(result.begin(), result.end(), result.begin(), (int (*)(int))tolower);
+			//result = raw_to_formatted(result);
+
+			//transform(paper_title.begin(), paper_title.end(), paper_title.begin(), (int (*)(int))tolower);
+			//paper_title = raw_to_formatted(paper_title);
+			
             vector<ArticleInfo> result_ = BiblioManager::search_title(result, out_html);
             if (result_.size() > 0) {
                 if (low_letters_only(paper_title) == low_letters_only(result_[0].get_title())) {
