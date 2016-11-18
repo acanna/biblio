@@ -343,22 +343,14 @@ TEST (PictureParser, Online) {
         paper_title = tmp[1];
         filename = path + filename;
 
-
         try {
 
             PictureParser picture_parser = PictureParser(filename, 300, 300, "test.png", "png", 700);
 			picture_parser.find_title();
-//            vector<string> titles = picture_parser.get_titles();
-//			string result = titles[0];
-			string result = "";
-
-			//transform(result.begin(), result.end(), result.begin(), (int (*)(int))tolower);
-			//result = raw_to_formatted(result);
-
-			//transform(paper_title.begin(), paper_title.end(), paper_title.begin(), (int (*)(int))tolower);
-			//paper_title = raw_to_formatted(paper_title);
+			string result = picture_parser.get_title();
 			
             vector<ArticleInfo> result_ = BiblioManager::search_title(result, out_html);
+
             if (result_.size() > 0) {
                 if (low_letters_only(paper_title) == low_letters_only(result_[0].get_title())) {
                     passed++;
