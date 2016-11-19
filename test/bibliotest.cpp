@@ -3,12 +3,12 @@
 #include <algorithm>
 #include <regex>
 #include <gtest/gtest.h>
-#include "../src/DBLPManager.h"
+#include "../src/DBLPRequester.h"
 #include "../src/BiblioManager.h"
 
 using namespace std;
 
-DBLPManager dblp;
+DBLPRequester dblp;
 BiblioManager manager;
 
 
@@ -22,7 +22,7 @@ TEST (PaperPresent, Positive) {
     const string title = "Land Cover Classification and Forest Change Analysis, Using Satellite Imagery-A Case Study in Dehdez Area of Zagros Mountain in Iran.";
     const string venue = "J. Geographic Information System";
     const string year = "2011";
-    vector<ArticleInfo> result = dblp.publicationRequest(query);
+    vector<ArticleInfo> result = dblp.publication_request(query);
     EXPECT_EQ(result[0].get_year(), year);
     EXPECT_EQ(result[0].get_venue(), venue);
     EXPECT_EQ(result[0].get_title(), title);
@@ -30,13 +30,13 @@ TEST (PaperPresent, Positive) {
 
 TEST (PaperAbsent, Negative) {
     const string query = "QQQ";
-    vector<ArticleInfo> result = dblp.publicationRequest(query);
+    vector<ArticleInfo> result = dblp.publication_request(query);
     EXPECT_EQ(result.size(), 0);
 }
 
 TEST (WrongQuery, Negative) {
     const string query = "http://dblp.org/search/pbl/api?q";
-    vector<ArticleInfo> result = dblp.publicationRequest(query);
+    vector<ArticleInfo> result = dblp.publication_request(query);
     EXPECT_EQ(result.size(), 0);
 }
 
@@ -299,7 +299,7 @@ TEST (PictureParser, Positive) {
                 passed++;
             } else {
                 cout << "Failed at " << filename << endl;
-                cout << "Exact paper title: " << endl;
+                cout << "Exact title: " << endl;
 	            cout << paper_title << endl;
                 cout << "Parsed title: " << endl;
 	            cout << result <<endl;
@@ -358,9 +358,9 @@ TEST (PictureParser, Online) {
             } else {
                 cout << "Failed at " << filename << endl;
             }
-            if (paper_title.find(result) != std::string::npos) {
+           /* if (paper_title.find(result) != std::string::npos) {
                 passed++;
-            }
+            }*/
             counter++;
 
         } catch (const Biblio_exception &e) {

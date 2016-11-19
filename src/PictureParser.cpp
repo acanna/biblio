@@ -59,6 +59,7 @@ int PixInfo::get_y() const {
     return this->y;
 }
 
+//PictureParser::PictureParser() {}
 
 PictureParser::PictureParser(string const &filename, int const xres, int const yres,
                              string const &imagename, string const &format, int const dpi) {

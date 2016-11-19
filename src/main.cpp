@@ -1,7 +1,7 @@
 #include <iostream>
 #include <algorithm>
 #include <tclap/CmdLine.h>
-#include "DBLPManager.h"
+#include "DBLPRequester.h"
 #include "BiblioManager.h"
 
 
@@ -21,6 +21,7 @@ int main(int argc, char **argv) {
         bool offline = offlineSwitch.getValue();
 
         BiblioManager manager;
+
         ofstream out_html("biblio.html");
         ofstream out_bib("biblio.bib");
 
@@ -37,9 +38,6 @@ int main(int argc, char **argv) {
 
         out_html.close();
         out_bib.close();
-
-/*		PictureParser picture_parser = PictureParser("test_1.pdf", 300, 300, "test.png", "png", 700);
-		string result = picture_parser.find_title();*/
 
     } catch (TCLAP::ArgException &e) {
         std::cerr << "error: " << e.error() << " for arg " << e.argId() << std::endl;
