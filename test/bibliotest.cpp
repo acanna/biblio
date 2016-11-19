@@ -265,7 +265,6 @@ TEST (SimpleParser, Positive) {
 TEST (PictureParser, Positive) {
     string data_file = "../articles/test_summary.txt";
     string path = "../articles/";
-
     ifstream file(data_file);
     int passed = 0;
     int counter = 0;
@@ -273,15 +272,11 @@ TEST (PictureParser, Positive) {
     vector<string> tmp;
 
     while (file.is_open() && !file.eof()) {
-
         getline(file, line);
         tmp = split(line, '\t');
-
         filename = tmp[0];
         paper_title = tmp[1];
         filename = path + filename;
-
-
         try {
 
             PictureParser picture_parser = PictureParser(filename, 300, 300, "test.png", "png", 700);
@@ -289,11 +284,9 @@ TEST (PictureParser, Positive) {
 			string result = picture_parser.get_title();
 
             transform(result.begin(), result.end(), result.begin(), (int (*)(int)) tolower);
-            result = raw_to_formatted(result);
 
-            transform(paper_title.begin(), paper_title.end(), paper_title.begin(), (int (*)(int)) tolower);
             paper_title = raw_to_formatted(paper_title);
-      
+            transform(paper_title.begin(), paper_title.end(), paper_title.begin(), (int (*)(int)) tolower);
                      
             if (paper_title.find(result) != std::string::npos) {
                 passed++;
@@ -304,7 +297,6 @@ TEST (PictureParser, Positive) {
                 cout << "Parsed title: " << endl;
 	            cout << result <<endl;
 	            cout <<endl;
-
             }
             counter++;
         } catch (const Biblio_exception &e) {
@@ -324,45 +316,33 @@ TEST (PictureParser, Positive) {
 TEST (PictureParser, Online) {
     string data_file = "../articles/test_summary.txt";
     string path = "../articles/";
-
     ifstream file(data_file);
     ofstream out_html("result.html");
     int passed = 0;
     int counter = 0;
-    string line = "", filename = "", paper_title = "";
+    string line = "", filename = "", paper_title = "", cur_title = "";
     vector<string> tmp;
-
     while (file.is_open() && !file.eof()) {
-
         getline(file, line);
         tmp = split(line, '\t');
-
         filename = tmp[0];
         paper_title = tmp[1];
         filename = path + filename;
-
+        BiblioManager manager = BiblioManager();
         try {
-
-            PictureParser picture_parser = PictureParser(filename, 300, 300, "test.png", "png", 700);
-			picture_parser.find_title();
-			string result = picture_parser.get_title();
-			
-            vector<ArticleInfo> result_ = BiblioManager::search_title(result, out_html);
-
-            if (result_.size() > 0) {
-                if (low_letters_only(paper_title) == low_letters_only(result_[0].get_title())) {
-                    passed++;
-                } else {
-                    cout << "Failed at " << filename << endl;
-                }
+            vector<ArticleInfo> result = manager.search_with_distance(levenshtein_distance, filename, false);
+            manager.print_html(out_html, filename, result);
+            paper_title = raw_to_formatted(paper_title);
+            cur_title = raw_to_formatted(result[0].get_title());
+            if (low_letters_only(paper_title) == low_letters_only(cur_title) ||
+                paper_title.find(cur_title) != std::string::npos) {
+                passed++;
             } else {
                 cout << "Failed at " << filename << endl;
-            }
-            if (paper_title.find(result) != std::string::npos) {
-                passed++;
+                cout << "Actual: " << paper_title << endl;
+                cout << "Got:    " << result[0].get_title() << endl;
             }
             counter++;
-
         } catch (const Biblio_exception &e) {
             cerr << e.what() << endl;
         }
@@ -383,7 +363,7 @@ TEST (PictureParser, Offline) {
     ofstream out_html("result.html");
     int passed = 0;
     int counter = 0;
-    string line = "", filename = "", paper_title = "";
+    string line = "", filename = "", paper_title = "", cur_title;
     vector<string> tmp;
     while (file.is_open() && !file.eof()) {
         getline(file, line);
@@ -391,10 +371,13 @@ TEST (PictureParser, Offline) {
         filename = tmp[0];
         paper_title = tmp[1];
         filename = path + filename;
+        BiblioManager manager = BiblioManager();
         try {
-            BiblioManager manager = BiblioManager();
             vector<ArticleInfo> result = manager.search_with_distance(levenshtein_distance, filename, true);
-            if (delete_spaces_to_lower(paper_title) == delete_spaces_to_lower(result[0].get_title())) {
+            BiblioManager::print_html(out_html, filename, result);
+            paper_title = raw_to_formatted(paper_title);
+            cur_title = raw_to_formatted(result[0].get_title());
+            if (delete_spaces_to_lower(paper_title) == delete_spaces_to_lower(cur_title) || paper_title.find(cur_title) != std::string::npos) {
                 passed++;
             } else {
                 cout << "Failed at " << filename << endl;

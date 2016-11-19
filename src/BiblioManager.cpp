@@ -121,10 +121,12 @@ void BiblioManager::print_html(std::ostream &out, const std::string &filename, s
     for (size_t k = 0; k < result_size; ++k) {
         vector<string> authors = result[k].get_authors();
         size_t t = authors.size();
-        for (size_t i = 0; i < t - 1; ++i) {
-            out << authors[i] << ", ";
+        if (t > 0) {
+            for (size_t i = 0; i < t - 1; ++i) {
+                out << authors[i] << ", ";
+            }
+            out << authors[t - 1] << ":\n";
         }
-        out << authors[t - 1] << ":\n";
         out << result[k].get_title();
         if (result[k].get_type() != "") {
             out << " " << result[k].get_type() << ".";
@@ -431,6 +433,7 @@ std::vector<ArticleInfo>
 BiblioManager::search_with_distance(std::function<size_t(const std::string &, const std::string &)> dist,
                                     const std::string &filename, bool offline) {
     picture_parser = PictureParser(filename, 300, 300, "test.png", "png", 700);
+    picture_parser.find_title();
     vector<ArticleInfo> result = {};
     string title = picture_parser.get_title();
     if (offline) {
@@ -440,25 +443,31 @@ BiblioManager::search_with_distance(std::function<size_t(const std::string &, co
     result = BiblioManager::search_dblp(title);
     size_t result_size = result.size();
     vector<ArticleInfo> final_result = {};
+    string saved_title = title;
     if (result_size > 0) {
-        title = delete_spaces_to_lower(title);
+        title = low_letters_only(title);
         for (size_t i = 0; i < result_size; i++) {
-            string cur_title = delete_spaces_to_lower(result[i].get_title());
+            string cur_title = low_letters_only(result[i].get_title());
             size_t distance = dist(cur_title, title);
-            result[i].set_precision(
-                    100 - (int) (100 * distance / max(title.size(), cur_title.size())));
+            int precision = 100 - (int) (100 * distance / max(title.size(), cur_title.size()));
+            result[i].set_precision(precision);
         }
         stable_sort(result.begin(), result.end(), greater);
-        int t = result[0].get_precision();
-        size_t i = 0;
-        while (i < result.size() && result[i].get_precision() == t) i++;
-        i--;
-        stable_sort(result.begin(), result.begin() + i, longer_title);
+
+//        int t = result[0].get_precision();
+//        size_t i = 0;
+//        while (i < result.size() && result[i].get_precision() == t) i++;
+//        i--;
+//        stable_sort(result.begin(), result.begin() + i, longer_title);
+
         // магическая константа 90 упала с неба и требует её удаления или замены
         if (result[0].get_precision() > 90) {
             final_result.push_back(result[0]);
+        } else {
+            final_result.push_back(ArticleInfo(title));
         }
-
+    } else {
+        final_result.push_back(ArticleInfo(saved_title));
     }
     return final_result;
 }

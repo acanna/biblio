@@ -43,41 +43,41 @@ string short_name(string s) {
 }
 
 string raw_to_formatted(string raw) {
-//
-//    regex re_space("\\b\\s+\\b");
-//    regex re_frmt("[^\\w\\.,-@\\s\\n]+");
-//    regex re_trim("^\\s*\\b(.*)\\b\\s*$");
-//    regex re_sep_word("\\b([b-zB-Z])\\s(\\w+)\\b");
-//    regex re_num_word("\\b([a-zA-Z]+)[0-9]+\\b");
-//    string result = regex_replace(raw, re_frmt, "");
-//    result = regex_replace(result, re_space, " ");
-//    result = regex_replace(result, re_trim, "$1");
-//    // эти два форматирования крайне подозрительны
-//    // возможно, они на чём-то сломают всё
-//    result = regex_replace(result, re_sep_word, "$1$2");
-//    result = regex_replace(result, re_num_word, "$1");
 
-    string frmt_str = "";
-    string frmt_space = " ";
-    string frmt_trim = "$1";
-    string frmt_join_word = "$1$2";
-    string frmt_num_word = "$1";
-    regex re_frmt_sp("\\b\\s+\\b");
     regex re_space("\\b\\s+\\b");
-    regex re_trim_space("^ +| +$|( ) +");
-    regex re_frmt("[^\\w\\.,-@\\s]+");
-    regex re_trim("^\\s*(.*)\\s*$");
+    regex re_frmt("[^\\w\\.,-@\\s]+|[\\n\\r]+");
+    regex re_trim("^\\s*\\b(.*)\\b\\s*$");
     regex re_sep_word("\\b([b-zB-Z])\\s(\\w+)\\b");
     regex re_num_word("\\b([a-zA-Z]+)[0-9]+\\b");
+    string result = raw;
+    result = regex_replace(raw, re_frmt, "");
+    result = regex_replace(result, re_space, " ");
+    result = regex_replace(result, re_trim, "$1");
+    // эти два форматирования крайне подозрительны
+    // возможно, они на чём-то сломают всё
+    result = regex_replace(result, re_sep_word, "$1$2");
+    result = regex_replace(result, re_num_word, "$1");
 
-    string result = regex_replace(raw, re_frmt, frmt_str);
-    result = regex_replace(result, re_frmt_sp, frmt_space);
-    result = regex_replace(result, re_trim_space, frmt_trim);
-    result = regex_replace(result, re_space, frmt_space);
-    result = regex_replace(result, re_trim, frmt_trim);
-    result = regex_replace(result, re_sep_word, frmt_join_word);
-    result = regex_replace(result, re_num_word, frmt_num_word);
-    result.erase(remove(result.begin(), result.end(), '\n'), result.end());
+//    string frmt_str = "";
+//    string frmt_space = " ";
+//    string frmt_trim = "$1";
+//    string frmt_join_word = "$1$2";
+//    string frmt_num_word = "$1";
+//    regex re_frmt_sp("\\b\\s+\\b");
+//    regex re_space("\\b\\s+\\b");
+//    regex re_trim_space("^ +| +$|( ) +");
+//    regex re_frmt("[^\\w\\.,-@\\s]+|[\\n\\r]+");
+//    regex re_trim("^\\s*(.*)\\s*$");
+//    regex re_sep_word("\\b([b-zB-Z])\\s(\\w+)\\b");
+//    regex re_num_word("\\b([a-zA-Z]+)[0-9]+\\b");
+//
+//    string result = regex_replace(raw, re_frmt, frmt_str);
+//    result = regex_replace(result, re_frmt_sp, frmt_space);
+//    result = regex_replace(result, re_trim_space, frmt_trim);
+//    result = regex_replace(result, re_space, frmt_space);
+//    result = regex_replace(result, re_trim, frmt_trim);
+//    result = regex_replace(result, re_sep_word, frmt_join_word);
+//    result = regex_replace(result, re_num_word, frmt_num_word);
 
     return result;
 }
@@ -121,5 +121,5 @@ size_t levenshtein_distance(const string &s, const string &t) {
 std::string delete_spaces_to_lower(std::string str) {
     transform(str.begin(), str.end(), str.begin(), (int (*)(int)) tolower);
     regex re_space("\\b\\s+\\b");
-    return regex_replace(str, re_space, " ");
+    return regex_replace(str, re_space, "");
 }

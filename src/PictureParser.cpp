@@ -117,8 +117,8 @@ void PictureParser::find_title() {
         double width_rect = this->width * screen_res / this->xres;
         poppler::rectangle<double> rect = poppler::rectangle<double>(x_rect, y_rect, width_rect, height_rect);
         result = mypage->text(rect).to_latin1();
-        result = raw_to_formatted(result);
     }
+    result = raw_to_formatted(result);
     this->title = result;
 }
 
@@ -419,3 +419,5 @@ string PictureParser::parse_image() {
 
     return out_text;
 }
+
+PictureParser::PictureParser() {}
