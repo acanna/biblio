@@ -37,7 +37,13 @@ set(SOURCE_FILES
         src/PictureParser.cpp
         src/PictureParser.h
         src/tools.cpp
-        src/tools.h)
+        src/tools.h
+        src/DBLPRequester.h
+        src/DBLPRequester.cpp
+        src/Requester.h
+        src/Requester.cpp
+        src/SpringerRequester.cpp
+        src/SpringerRequester.h)
 
 add_library(biblio_lib ${SOURCE_FILES})
 add_executable(biblio ${SOURCE_FILES})

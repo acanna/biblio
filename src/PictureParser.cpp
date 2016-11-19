@@ -421,4 +421,3 @@ string PictureParser::parse_image() {
     return out_text;
 }
 
-PictureParser::PictureParser() {}

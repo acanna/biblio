@@ -490,7 +490,7 @@ BiblioManager::search_with_distance(std::function<size_t(const std::string &, co
         if (result[0].get_precision() > 90) {
             final_result.push_back(result[0]);
         } else {
-            final_result.push_back(ArticleInfo(title));
+            final_result.push_back(ArticleInfo(saved_title));
         }
     } else {
         final_result.push_back(ArticleInfo(saved_title));

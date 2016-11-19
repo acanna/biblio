@@ -22,7 +22,8 @@ string low_letters_only(string str) {
     return str;
 }
 
-string delete_multiple_spaces(string str) {
+string delete_multiple_spaces_to_lower(string str) {
+    transform(str.begin(), str.end(), str.begin(), ::tolower);
     regex re_frmt("\\b\\s+\\b");
     return regex_replace(str, re_frmt, " ");
 }

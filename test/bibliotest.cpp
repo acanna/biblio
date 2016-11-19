@@ -313,7 +313,7 @@ TEST (PictureParser, Positive) {
     EXPECT_EQ(0, 0);
 }
 
-TEST (PictureParser, Online) {
+TEST (PictureParser, OnlineDBLP) {
     string data_file = "../articles/test_summary.txt";
     string path = "../articles/";
     ifstream file(data_file);
@@ -334,7 +334,7 @@ TEST (PictureParser, Online) {
             manager.print_html(out_html, filename, result);
             paper_title = raw_to_formatted(paper_title);
             cur_title = raw_to_formatted(result[0].get_title());
-            if (low_letters_only(paper_title) == low_letters_only(cur_title) ||
+            if (delete_spaces_to_lower(paper_title) == delete_spaces_to_lower(cur_title) ||
                 paper_title.find(cur_title) != std::string::npos) {
                 passed++;
             } else {
