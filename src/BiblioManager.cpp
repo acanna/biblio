@@ -464,8 +464,8 @@ BiblioManager::search_with_distance(std::function<size_t(const std::string &, co
         result.push_back(ArticleInfo(title));
         return result;
     }
-    result = BiblioManager::search_dblp(title);
-//    result = BiblioManager::search_springer(title);
+    //result = BiblioManager::search_dblp(title);
+//   result = BiblioManager::search_springer(title);
 
     size_t result_size = result.size();
     vector<ArticleInfo> final_result = {};

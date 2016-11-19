@@ -377,7 +377,7 @@ TEST (PictureParser, Offline) {
             BiblioManager::print_html(out_html, filename, result);
             paper_title = raw_to_formatted(paper_title);
             cur_title = raw_to_formatted(result[0].get_title());
-            if (delete_spaces_to_lower(paper_title) == delete_spaces_to_lower(cur_title) || paper_title.find(cur_title) != std::string::npos) {
+            if (delete_multiple_spaces_to_lower(paper_title) == delete_multiple_spaces_to_lower(cur_title) || paper_title.find(cur_title) != std::string::npos) {
                 passed++;
             } else {
                 cout << "Failed at " << filename << endl;
@@ -394,6 +394,11 @@ TEST (PictureParser, Offline) {
     cout << "    Passed " << passed << " tests from " << counter << endl;
     cout << "    Passed " << passed * 100 / (float) counter << " % from total amount" << endl;
     cout << ">>>-------------------------------------<<<" << endl;
+
+    EXPECT_EQ(0, 0);
+}
+
+TEST (TinyDir, Try) {
 
     EXPECT_EQ(0, 0);
 }

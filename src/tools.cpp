@@ -50,8 +50,7 @@ string raw_to_formatted(string raw) {
     regex re_trim("^\\s*\\b(.*)\\b\\s*$");
     regex re_sep_word("\\b([b-zB-Z])\\s(\\w+)\\b");
     regex re_num_word("\\b([a-zA-Z]+)[0-9]+\\b");
-    string result = raw;
-    result = regex_replace(raw, re_frmt, "");
+    string result = regex_replace(raw, re_frmt, "");
     result = regex_replace(result, re_space, " ");
     result = regex_replace(result, re_trim, "$1");
     // эти два форматирования крайне подозрительны
