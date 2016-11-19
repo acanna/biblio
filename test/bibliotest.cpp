@@ -198,6 +198,7 @@ TEST (TestAlg_TitleLevenshtein, Threads_Timing) {
         out << std::fixed << std::setprecision(2) << "CPU time used: "
             << 1000.0 * (end - start) / CLOCKS_PER_SEC << " ms\n";
     }
+    
     out << "--------------------------------" << endl;
     std::clock_t c_end = std::clock();
     out << std::fixed << std::setprecision(2) << "CPU time used: "
@@ -209,6 +210,7 @@ TEST (TestAlg_TitleLevenshtein, Threads_Timing) {
     cout << "    Passed " << passed * 100 / (float) counter << " % from total amount" << endl;
     cout << ">>>-------------------------------------<<<" << endl;
     out.close();
+
     EXPECT_EQ(passed, counter);
 }
 
