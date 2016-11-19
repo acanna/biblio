@@ -10,22 +10,47 @@ using namespace std;
 vector<ArticleInfo> BiblioManager::search_dblp(string query) {
     vector<ArticleInfo> result = {};
     vector<ArticleInfo> additional_result = {};
-    DBLPManager requester_my;
+
+    DBLPRequester requester_my;
+
     transform(query.begin(), query.end(), query.begin(), ::tolower);
     string new_query = query;
 
-    result = requester_my.publicationRequest(new_query);
+    result = requester_my.publication_request(new_query);
 
     replace(new_query.begin(), new_query.end(), ' ', '.');
-    additional_result = requester_my.publicationRequest(new_query);
+    additional_result = requester_my.publication_request(new_query);
     result.insert(result.end(), additional_result.begin(), additional_result.end());
 
     replace(query.begin(), query.end(), ' ', '$');
-    additional_result = requester_my.publicationRequest(query);
+    additional_result = requester_my.publication_request(query);
     result.insert(result.end(), additional_result.begin(), additional_result.end());
 
     return result;
 }
+
+vector<ArticleInfo> BiblioManager::search_springer(string query) {
+    vector<ArticleInfo> result = {};
+    vector<ArticleInfo> additional_result = {};
+
+    SpringerRequester requester_my;
+
+    transform(query.begin(), query.end(), query.begin(), ::tolower);
+    string new_query = query;
+
+    result = requester_my.publication_request(new_query);
+
+    replace(new_query.begin(), new_query.end(), ' ', '.');
+    additional_result = requester_my.publication_request(new_query);
+    result.insert(result.end(), additional_result.begin(), additional_result.end());
+
+    replace(query.begin(), query.end(), ' ', '$');
+    additional_result = requester_my.publication_request(query);
+    result.insert(result.end(), additional_result.begin(), additional_result.end());
+
+    return result;
+}
+
 
 bool BiblioManager::greater(const ArticleInfo &info_1, const ArticleInfo &info_2) {
     return (info_1.get_precision() > info_2.get_precision());
@@ -39,7 +64,7 @@ bool BiblioManager::longer_title(const ArticleInfo &info_1, const ArticleInfo &i
     return info_1.get_title().size() > info_2.get_title().size();
 }
 
-BiblioManager::BiblioManager() {}
+//BiblioManager::BiblioManager() {}
 
 void BiblioManager::print_txt(std::ostream &out, const std::string &filename, std::vector<ArticleInfo> &result) {
 
@@ -217,7 +242,6 @@ vector<ArticleInfo> BiblioManager::search_levenshtein(const string &filename, bo
     return result;
 }
 
-
 vector<ArticleInfo> BiblioManager::search_levenshtein_light(const string &filename, bool offline) {
 
     vector<string> title_candidates;
@@ -275,7 +299,6 @@ vector<ArticleInfo> BiblioManager::search_levenshtein_light(const string &filena
     return result;
 }
 
-
 vector<ArticleInfo> BiblioManager::search_exact_match(const string &filename, bool offline) {
 
     vector<string> title_candidates = {};
@@ -331,10 +354,10 @@ vector<ArticleInfo> BiblioManager::search_exact_match(const string &filename, bo
     return res;
 }
 
-BiblioManager::BiblioManager(std::string &filename) {
-    //parser = Parser(filename);
+/*BiblioManager::BiblioManager(const std::string &filename) : picture_parser(filename, 300, 300, "test.png", "png", 700){
+    parser = Parser(filename);
     picture_parser = PictureParser(filename, 300, 300, "test.png", "png", 700);
-}
+}*/
 
 void BiblioManager::thread_search_function(int i, vector<string> &title_candidates, std::vector<std::vector<ArticleInfo>> &results) {
     try {
@@ -435,12 +458,15 @@ BiblioManager::search_with_distance(std::function<size_t(const std::string &, co
     picture_parser = PictureParser(filename, 300, 300, "test.png", "png", 700);
     picture_parser.find_title();
     vector<ArticleInfo> result = {};
+	picture_parser.find_title();
     string title = picture_parser.get_title();
     if (offline) {
         result.push_back(ArticleInfo(title));
         return result;
     }
     result = BiblioManager::search_dblp(title);
+//    result = BiblioManager::search_springer(title);
+
     size_t result_size = result.size();
     vector<ArticleInfo> final_result = {};
     string saved_title = title;

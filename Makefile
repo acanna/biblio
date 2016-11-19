@@ -18,7 +18,8 @@ GTEST_HEADERS = $(GTEST_DIR)/include/gtest/*.h \
                 $(GTEST_DIR)/include/gtest/internal/*.h
 TESTS_EXE = $(addprefix $(TEST_BIN)/, $(TESTS))
 
-FILES_FOR_TESTS = ArticleInfo.cpp tools.cpp Parser.cpp PictureParser.cpp BiblioManager.cpp DBLPManager.cpp
+FILES_FOR_TESTS = ArticleInfo.cpp tools.cpp Parser.cpp PictureParser.cpp BiblioManager.cpp Requester.cpp DBLPRequester.cpp SpringerRequester.cpp
+HEADERS_FOR_TESTS = $(addprefix $(SRC)/, $(FILES_FOR_TESTS:.cpp=.h))
 
 FILES = $(FILES_FOR_TESTS) main.cpp 
 
@@ -43,7 +44,7 @@ $(BIN)/jsoncpp.o: $(JSON_DIR)/jsoncpp.cpp
 $(BIN)/main.o: $(SRC)/main.cpp
 	$(CC) $(CFLAGS) $< -o $@
 
-$(BIN)/%.o: $(SRC)/%.cpp $(SRC)/%.h
+$(BIN)/%.o: $(SRC)/%.cpp $(SRC)/%.h $(HEADERS_FOR_TESTS)
 	mkdir -p $(BIN)
 	$(CC) $(CFLAGS) $< -o $@
 

@@ -3,6 +3,21 @@
 using std::vector;
 using std::string;
 
+ArticleInfo::ArticleInfo(string const &title, vector<string> const &authors,
+            	string const &venue, string const &volume, string const &number,
+                string const &pages, string const &year, string const &type, string const &url) {
+    this->title = title;
+    this->authors = authors;
+    this->venue = venue;
+    this->volume = volume;
+    this->number = number;
+    this->pages = pages;
+    this->year = year;
+    this->type = type;
+    this->url = url;
+    this->precision = 0;
+}
+
 ArticleInfo::ArticleInfo(Json::Value const &info) {
     this->title = info["title"].asString();
     Json::Value authorsList = info["authors"].get("author", "");
@@ -30,6 +45,19 @@ ArticleInfo::ArticleInfo(Json::Value const &info) {
     this->year = info["year"].asString();
     this->type = info["type"].asString();
     this->url = info["url"].asString();
+    this->precision = 0;
+}
+
+ArticleInfo::ArticleInfo(std::string const &title) {
+    this->title = title;
+    this->authors = {};
+    this->venue = "";
+    this->volume = "";
+    this->number = "";
+    this->pages = "";
+    this->year = "";
+    this->type = "";
+    this->url = "";
     this->precision = 0;
 }
 
@@ -77,22 +105,6 @@ void ArticleInfo::set_precision(int precision) {
     this->precision = precision;
 }
 
-
-ArticleInfo::ArticleInfo(string const &title, vector<string> const &authors,
-                         string const &venue, string const &volume, string const &number,
-                         string const &pages, string const &year, string const &type, string const &url) {
-    this->title = title;
-    this->authors = authors;
-    this->venue = venue;
-    this->volume = volume;
-    this->number = number;
-    this->pages = pages;
-    this->year = year;
-    this->type = type;
-    this->url = url;
-    this->precision = 0;
-}
-
 string ArticleInfo::to_string() {
     string output = "\n Title: \t" + this->title;
     output += "\n Authors: ";
@@ -108,17 +120,4 @@ string ArticleInfo::to_string() {
     output += "\n URL: \t\t" + this->url;
     output += "\n Precision of response: \t" + std::to_string(this->precision) + "% \n";
     return output;
-}
-
-ArticleInfo::ArticleInfo(std::string const &title) {
-    this->title = title;
-    this->authors = {};
-    this->venue = "";
-    this->volume = "";
-    this->number = "";
-    this->pages = "";
-    this->year = "";
-    this->type = "";
-    this->url = "";
-    this->precision = 0;
 }

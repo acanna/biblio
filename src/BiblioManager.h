@@ -4,15 +4,15 @@
 #include <functional>
 #include "Parser.h"
 #include "Biblio_exception.h"
-#include "DBLPManager.h"
+#include "DBLPRequester.h"
+#include "SpringerRequester.h"
 #include "PictureParser.h"
 
 class BiblioManager {
 
 private:
-    Parser parser;
+    Parser  parser;
     PictureParser picture_parser;
-    DBLPManager requester;
 
 private:
     static bool greater(const ArticleInfo &info_1, const ArticleInfo &info_2);
@@ -21,13 +21,15 @@ private:
     static void thread_search_function(int i, std::vector<std::string> &title_candidates, std::vector<std::vector<ArticleInfo>> &results);
 
 public:
-    BiblioManager();
-    BiblioManager(std::string &filename);
+    BiblioManager() {};
+//    BiblioManager(const std::string &filename);
     static std::vector<ArticleInfo> search_dblp(std::string query);
+    static std::vector<ArticleInfo> search_springer(std::string query);
+
+    static std::vector<ArticleInfo> search_title(const std::string &filename, std::ostream &out);
 
     std::vector<ArticleInfo> search_with_distance(std::function<size_t(const std::string &, const std::string &)> dist,
                                                   const std::string &filename, bool offline);
-    static std::vector<ArticleInfo> search_title(const std::string &filename, std::ostream &out);
     std::vector<ArticleInfo> search_exact_match(const std::string &filename, bool offline);
     std::vector<ArticleInfo> search_levenshtein(const std::string &filename, bool offline);
     std::vector<ArticleInfo> search_levenshtein_light(const std::string &filename, bool offline);
