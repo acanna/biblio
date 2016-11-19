@@ -209,6 +209,7 @@ TEST (TestAlg_TitleLevenshtein, Threads_Timing) {
     cout << "    Passed " << passed * 100 / (float) counter << " % from total amount" << endl;
     cout << ">>>-------------------------------------<<<" << endl;
     out.close();
+    
     EXPECT_EQ(passed, counter);
 }
 
