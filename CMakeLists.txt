@@ -23,14 +23,13 @@ set(SOURCE_FILES
         lib/json/json.h
         lib/json/value.h
         lib/json/jsoncpp.cpp
+        lib/tinydir/tinydir.h
 
         src/ArticleInfo.cpp
         src/ArticleInfo.h
         src/Biblio_exception.h
         src/BiblioManager.cpp
         src/BiblioManager.h
-        src/DBLPManager.cpp
-        src/DBLPManager.h
         src/main.cpp
         src/Parser.cpp
         src/Parser.h

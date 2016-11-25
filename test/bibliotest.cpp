@@ -5,6 +5,7 @@
 #include <gtest/gtest.h>
 #include "../src/DBLPRequester.h"
 #include "../src/BiblioManager.h"
+#include "../lib/tinydir/tinydir.h"
 
 using namespace std;
 
@@ -400,7 +401,30 @@ TEST (PictureParser, Offline) {
     EXPECT_EQ(0, 0);
 }
 
-TEST (TinyDir, Try) {
+void recursive_print_dir(std::string path) {
+    tinydir_dir dir;
+    tinydir_open(&dir, path.c_str());
+    while (dir.has_next)
+    {
+        tinydir_file file;
+        tinydir_readfile(&dir, &file);
 
+        cout << file.name;
+        if (file.is_dir)
+        {
+            cout << "/";
+            recursive_print_dir(path + file.name);
+        }
+        cout << endl;
+
+        tinydir_next(&dir);
+    }
+
+    tinydir_close(&dir);
+}
+
+TEST (TinyDir, Try) {
+    string path = "~/Bib/biblio";
+    recursive_print_dir(path);
     EXPECT_EQ(0, 0);
 }
