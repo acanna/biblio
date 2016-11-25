@@ -82,13 +82,6 @@ string raw_to_formatted(string raw) {
     return result;
 }
 
-string delete_junk_symbol(string str) {
-    transform(str.begin(), str.end(), str.begin(), (int (*)(int)) tolower);
-    replace(str.begin(), str.end(), '.', ' ');
-    str.erase(str.find_last_not_of(" \n\r\t") + 1);
-    return str;
-}
-
 
 size_t levenshtein_distance(const string &s, const string &t) {
     if (s == t) return 0;
