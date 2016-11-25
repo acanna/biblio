@@ -4,7 +4,7 @@ using namespace std;
 
 char buffer[MAX_BUF + 1];
 int bufferIndex;
-CURL *curl;
+//CURL *curl;
 int errorCode;
 
 size_t writeData(void *webBuffer, size_t size, size_t nmemb, void *userp) {
@@ -19,7 +19,7 @@ size_t writeData(void *webBuffer, size_t size, size_t nmemb, void *userp) {
     return segSize;
 }
 
-void curl_init() {
+void Requester::curl_init() {
     curl = curl_easy_init();
     if (!curl) {
         throw Biblio_exception("CURL initialization failed");
@@ -29,11 +29,11 @@ void curl_init() {
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeData);
 }
 
-void curl_clean_up(){
+void Requester::curl_clean_up(){
 	curl_easy_cleanup(curl);
 }
 
-char * curl_perform(string request) {
+char * Requester::curl_perform(string request) {
     errorCode = 0;
     bufferIndex = 0;
 
