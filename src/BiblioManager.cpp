@@ -185,7 +185,7 @@ void BiblioManager::thread_search_function(int i, vector<string> &title_candidat
 }
 
 std::vector<ArticleInfo>
-BiblioManager::search_distance_requesters(Requester& requester, std::function<size_t(const std::string &, const std::string &)> dist,
+BiblioManager::search_distance_requesters(std::vector<Requester*> requesters, std::function<size_t(const std::string &, const std::string &)> dist,
                                     const std::string &filename, bool offline) {
     picture_parser = PictureParser(filename, 300, 300, "test.png", "png", 700);
     vector<ArticleInfo> result = {};
@@ -195,8 +195,8 @@ BiblioManager::search_distance_requesters(Requester& requester, std::function<si
         result.push_back(ArticleInfo(title));
         return result;
     }
-
-    result = search_requester(requester, title);
+    // ищем на одном, если там нет, дальше написать поиск
+    result = search_requester(*requesters[0], title);
     size_t result_size = result.size();
     vector<ArticleInfo> final_result = {};
     string saved_title = title;

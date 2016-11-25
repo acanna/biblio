@@ -24,7 +24,7 @@ public:
     BiblioManager() {};
 //    BiblioManager(const std::string &filename);
     std::vector<ArticleInfo> search_requester(Requester& requester, std::string query);
-    std::vector<ArticleInfo> search_distance_requesters(Requester& requester, std::function<size_t(const std::string &, const std::string &)> dist,
+    std::vector<ArticleInfo> search_distance_requesters(std::vector<Requester*> requesters, std::function<size_t(const std::string &, const std::string &)> dist,
                                                   const std::string &filename, bool offline);
     static void print_html(std::ostream &out, const std::string &filename, std::vector<ArticleInfo> &result);
     void print_bib(std::ostream &out, std::vector<ArticleInfo> &result);
