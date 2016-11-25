@@ -57,47 +57,49 @@ void BiblioManager::print_bib(std::ostream &out, std::vector<ArticleInfo> &resul
 
     size_t result_size = result.size();
     for (size_t k = 0; k < result_size; ++k) {
-        vector<string> authors = result[k].get_authors();
-        size_t t = authors.size();
-        string label = "";
+        if (result[k].get_authors().size() > 0) {
+            vector<string> authors = result[k].get_authors();
+            size_t t = authors.size();
+            string label = "";
 
-        if (t > 1) {
-            label = short_name(authors[0]) + short_name(authors[1]) + result[k].get_year();
-        } else {
-            label = short_name(authors[0]) + result[k].get_year();
-        }
+            if (t > 1) {
+                label = short_name(authors[0]) + short_name(authors[1]) + result[k].get_year();
+            } else {
+                label = short_name(authors[0]) + result[k].get_year();
+            }
 
-        out << "@ARTICLE{" << label << ",\n";
-        out << "author = {";
-        for (size_t i = 0; i < t - 1; ++i) {
-            out << authors[i] << " and\n";
-        }
-        out << authors[t - 1];
-        out << "},\n";
-        out << "title = {" << result[k].get_title() << "}";
+            out << "@ARTICLE{" << label << ",\n";
+            out << "author = {";
+            for (size_t i = 0; i < t - 1; ++i) {
+                out << authors[i] << " and\n";
+            }
+            out << authors[t - 1];
+            out << "},\n";
+            out << "title = {" << result[k].get_title() << "}";
 
-        if (result[k].get_pages().size() > 0) {
-            out << ",\n" << "pages = {" << result[k].get_pages() << "}";
+            if (result[k].get_pages().size() > 0) {
+                out << ",\n" << "pages = {" << result[k].get_pages() << "}";
+            }
+            if (result[k].get_number().size() > 0) {
+                out << ",\n" << "number = {" << result[k].get_number() << "}";
+            }
+            if (result[k].get_venue().size() > 0) {
+                out << ",\n" << "venue = {" << result[k].get_venue() << "}";
+            }
+            if (result[k].get_type().size() > 0) {
+                out << ",\n" << "type = {" << result[k].get_type() << "}";
+            }
+            if (result[k].get_url().size() > 0) {
+                out << ",\n" << "url = {" << result[k].get_url() << "}";
+            }
+            if (result[k].get_volume().size() > 0) {
+                out << ",\n" << "volume = {" << result[k].get_volume() << "}";
+            }
+            if (result[k].get_year().size() > 0) {
+                out << ",\n" << "year = {" << result[k].get_year() << "}";
+            }
+            out << "\n}\n\n";
         }
-        if (result[k].get_number().size() > 0) {
-            out << ",\n" << "number = {" << result[k].get_number() << "}";
-        }
-        if (result[k].get_venue().size() > 0) {
-            out << ",\n" << "venue = {" << result[k].get_venue() << "}";
-        }
-        if (result[k].get_type().size() > 0) {
-            out << ",\n" << "type = {" << result[k].get_type() << "}";
-        }
-        if (result[k].get_url().size() > 0) {
-            out << ",\n" << "url = {" << result[k].get_url() << "}";
-        }
-        if (result[k].get_volume().size() > 0) {
-            out << ",\n" << "volume = {" << result[k].get_volume() << "}";
-        }
-        if (result[k].get_year().size() > 0) {
-            out << ",\n" << "year = {" << result[k].get_year() << "}";
-        }
-        out << "\n}\n\n";
     }
 }
 
