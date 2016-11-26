@@ -280,6 +280,7 @@ TEST (PictureParser, Offline) {
 void recursive_print_dir(std::string path) {
     tinydir_dir dir;
     tinydir_open(&dir, path.c_str());
+    
     while (dir.has_next)
     {
         tinydir_file file;
