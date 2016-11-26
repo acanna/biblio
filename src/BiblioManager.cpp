@@ -193,7 +193,7 @@ BiblioManager::search_distance_requesters(std::vector<Requester*> requesters,
     vector<ArticleInfo> final_result = {};
 
     for (Requester* requester : requesters) {
-        result = search_requester(*requester, title);
+        result = search_requester(*requester, saved_title);
         size_t result_size = result.size();
         if (result_size > 0) {
             for (size_t i = 0; i < result_size; i++) {

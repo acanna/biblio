@@ -160,37 +160,89 @@ TEST (PictureParser, Online) {
     string path = "../articles/";
     ifstream file(data_file);
     ofstream out_html("result.html");
-    int passed = 0;
     int counter = 0;
-    string line = "", filename = "", paper_title = "", cur_title = "";
+    int found_right = 0, found_wrong = 0;
+    string line = "", filename = "", paper_title = "", cur_title = "", unformatted_paper_title = "";
     vector<string> tmp;
+    vector<Requester *> req = {};
+    // dblp
+    Requester * dblp = new DBLPRequester(dblp_url);
+    req.push_back(dblp);
+    // springer
+    Requester * springer = new SpringerRequester(springer_url, springer_apikey);
+    req.push_back(springer);
     while (file.is_open() && !file.eof()) {
         getline(file, line);
         tmp = split(line, '\t');
         filename = tmp[0];
         paper_title = tmp[1];
+        unformatted_paper_title = paper_title;
         filename = path + filename;
         BiblioManager manager = BiblioManager();
         try {
-			vector<Requester *> req = {};
-			// dblp
-            Requester * dblp = new DBLPRequester(dblp_url);
-			req.push_back(dblp);
-			// springer
-            Requester * springer = new SpringerRequester(springer_url, springer_apikey);
-			req.push_back(springer);
-
             vector<ArticleInfo> result = manager.search_distance_requesters(req, levenshtein_distance, filename, false);
 
             manager.print_html(out_html, filename, result);
-            paper_title = raw_to_formatted(paper_title);
-            cur_title = raw_to_formatted(result[0].get_title());
-            if (delete_spaces_to_lower(paper_title) == delete_spaces_to_lower(cur_title) ||
-                paper_title.find(cur_title) != std::string::npos) {
+            paper_title = letters_to_lower(paper_title);
+            cur_title = letters_to_lower(result[0].get_title());
+            if (result[0].get_authors().size() > 0) {
+                if (paper_title.find(cur_title) != std::string::npos) {
+                    found_right++;
+                } else {
+                    found_wrong++;
+                    cout << "Found wrong. Failed at " << filename << endl;
+                    cout << "Actual: " << unformatted_paper_title << endl;
+                    cout << "Got:    " << result[0].get_title() << endl;
+                }
+            } else {
+                cout << "Failed at " << filename << endl;
+                cout << "Actual: " << unformatted_paper_title << endl;
+                cout << "Got:    " << result[0].get_title() << endl;
+            }
+            counter++;
+        } catch (const Biblio_exception &e) {
+            cerr << e.what() << endl;
+        }
+    }
+    out_html.close();
+    cout << ">>>-------------------------------------<<<" << endl;
+    cout << "    Found right " << found_right << " tests from " << counter << endl;
+    cout << "    Found wrong " << found_wrong << " tests from " << counter << endl;
+    cout << "    Passed " << found_right * 100 / (float) counter << " % from total amount" << endl;
+    cout << ">>>-------------------------------------<<<" << endl;
+
+    EXPECT_EQ(0, 0);
+}
+
+TEST (PictureParser, Offline) {
+    string data_file = "../articles/test_summary.txt";
+    string path = "../articles/";
+    ifstream file(data_file);
+    ofstream out_html("result.html");
+    int counter = 0;
+    int passed = 0;
+    string line = "", filename = "", paper_title = "", cur_title = "", unformatted_paper_title = "";
+    vector<string> tmp;
+    vector<Requester *> req = {};
+    while (file.is_open() && !file.eof()) {
+        getline(file, line);
+        tmp = split(line, '\t');
+        filename = tmp[0];
+        paper_title = tmp[1];
+        unformatted_paper_title = paper_title;
+        filename = path + filename;
+        BiblioManager manager = BiblioManager();
+        try {
+            vector<ArticleInfo> result = manager.search_distance_requesters(req, levenshtein_distance, filename, true);
+
+            manager.print_html(out_html, filename, result);
+            paper_title = letters_to_lower(paper_title);
+            cur_title = letters_to_lower(result[0].get_title());
+            if (paper_title.find(cur_title) != std::string::npos) {
                 passed++;
             } else {
                 cout << "Failed at " << filename << endl;
-                cout << "Actual: " << paper_title << endl;
+                cout << "Actual: " << unformatted_paper_title << endl;
                 cout << "Got:    " << result[0].get_title() << endl;
             }
             counter++;
@@ -206,53 +258,6 @@ TEST (PictureParser, Online) {
 
     EXPECT_EQ(0, 0);
 }
-
-/*
-TEST (PictureParser, Offline) {
-	const std::string URL = "http://dblp.org/search/publ/api?format=json&h=1&q=";
-    string data_file = "../articles/test_summary.txt";
-    string path = "../articles/";
-    ifstream file(data_file);
-    ofstream out_html("result.html");
-    int passed = 0;
-    int counter = 0;
-    string line = "", filename = "", paper_title = "", cur_title;
-    vector<string> tmp;
-    while (file.is_open() && !file.eof()) {
-        getline(file, line);
-        tmp = split(line, '\t');
-        filename = tmp[0];
-        paper_title = tmp[1];
-        filename = path + filename;
-        BiblioManager manager = BiblioManager();
-        try {
-            DBLPRequester dblp = DBLPRequester(URL);
-			vector<Requester *> req = {};
-			req.push_back(&dblp);
-            vector<ArticleInfo> result = manager.search_distance_requesters(req,levenshtein_distance, filename, true);
-            BiblioManager::print_html(out_html, filename, result);
-            paper_title = raw_to_formatted(paper_title);
-            cur_title = raw_to_formatted(result[0].get_title());
-            if (delete_multiple_spaces_to_lower(paper_title) == delete_multiple_spaces_to_lower(cur_title) || paper_title.find(cur_title) != std::string::npos) {
-                passed++;
-            } else {
-                cout << "Failed at " << filename << endl;
-                cout << "Actual: " << paper_title << endl;
-                cout << "Got:    " << result[0].get_title() << endl;
-            }
-            counter++;
-        } catch (const Biblio_exception &e) {
-            cerr << e.what() << endl;
-        }
-    }
-    out_html.close();
-    cout << ">>>-------------------------------------<<<" << endl;
-    cout << "    Passed " << passed << " tests from " << counter << endl;
-    cout << "    Passed " << passed * 100 / (float) counter << " % from total amount" << endl;
-    cout << ">>>-------------------------------------<<<" << endl;
-
-    EXPECT_EQ(0, 0);
-}*/
 
 // Prints all files in directory and subdirectories
 void recursive_print_dir(std::string path) {
