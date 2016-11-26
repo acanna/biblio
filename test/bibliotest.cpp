@@ -280,7 +280,7 @@ void recursive_print_dir(std::string path) {
 }
 
 TEST (TinyDir, Try) {
-    string path = "../";
+    string path = "..";
     recursive_print_dir(path);
     EXPECT_EQ(0, 0);
 }
