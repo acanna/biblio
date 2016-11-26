@@ -187,29 +187,30 @@ BiblioManager::search_distance_requesters(std::vector<Requester*> requesters,
 	string title = low_letters_only(saved_title);
 
     if (offline) {
-        result.push_back(ArticleInfo(title));
+        result.push_back(ArticleInfo(saved_title));
         return result;
     }
     vector<ArticleInfo> final_result = {};
 
-	for (size_t j = 0; j < requesters.size(); j++) {
-	    result = search_requester(*requesters[0], title);
-	    size_t result_size = result.size();
-	    if (result_size > 0) {
-	        for (size_t i = 0; i < result_size; i++) {
-	            string cur_title = low_letters_only(result[i].get_title());
-	            size_t distance = dist(cur_title, title);
-	            int precision = 100 - (int) (100 * distance / max(title.size(), cur_title.size()));
-	            result[i].set_precision(precision);
-	        }
-	        stable_sort(result.begin(), result.end(), greater);
-	
-	        if (result[0].get_precision() > 90) {
-	            final_result.push_back(result[0]);
-				break;
-			}
-		}    
-	}
+    for (Requester* requester : requesters) {
+        result = search_requester(*requester, title);
+        size_t result_size = result.size();
+        if (result_size > 0) {
+            for (size_t i = 0; i < result_size; i++) {
+                string cur_title = low_letters_only(result[i].get_title());
+                size_t distance = dist(cur_title, title);
+                int precision = 100 - (int) (100 * distance / max(title.size(), cur_title.size()));
+                result[i].set_precision(precision);
+            }
+            stable_sort(result.begin(), result.end(), greater);
+
+            if (result[0].get_precision() > 90) {
+                final_result.push_back(result[0]);
+                break;
+            }
+        }
+    }
+
 	if (final_result.size() == 0) {
 	    final_result.push_back(ArticleInfo(saved_title));
     }
