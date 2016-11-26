@@ -174,6 +174,9 @@ TEST (PictureParser, Online) {
     while (file.is_open() && !file.eof()) {
         getline(file, line);
         tmp = split(line, '\t');
+        if (tmp.size() < 2) {
+            continue;
+        }
         filename = tmp[0];
         paper_title = tmp[1];
         unformatted_paper_title = paper_title;
