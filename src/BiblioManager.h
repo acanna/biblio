@@ -1,5 +1,4 @@
-#ifndef BIBLIO_BIBLIOMANAGER_H
-#define BIBLIO_BIBLIOMANAGER_H
+#pragma once
 
 #include <functional>
 #include "Parser.h"
@@ -30,6 +29,3 @@ public:
     void print_bib(std::ostream &out, std::vector<ArticleInfo> &result);
     void print_txt(std::ostream &out, const std::string &filename, std::vector<ArticleInfo> &result);
 };
-
-
-#endif

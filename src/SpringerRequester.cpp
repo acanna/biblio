@@ -4,13 +4,18 @@
 
 using namespace std;
 
-const std::string URL = "http://api.springer.com/meta/v1/json?q=title:\"";
-const std::string APIKEY = "\"&api_key=64f779d62e09f8ec669d4c656684cded";
+//const std::string URL = "http://api.springer.com/meta/v1/json?q=title:\"";
+//const std::string APIKEY = "\"&api_key=64f779d62e09f8ec669d4c656684cded";
+
+SpringerRequester::SpringerRequester(string url, string apikey):Requester() {
+	this->url = url;
+	this->apikey = apikey;
+}
 
 string SpringerRequester::make_request(std::string query){
     regex re_frmt(" ");
     query = regex_replace(query, re_frmt, "%20");
-	return URL + query + APIKEY;
+	return this->url + "\"" + query + "\"&api_key=" + this->apikey;
 }
 
 vector<ArticleInfo> SpringerRequester::parse_response(char * buffer)  {

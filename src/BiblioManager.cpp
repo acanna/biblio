@@ -40,8 +40,6 @@ bool BiblioManager::longer_title(const ArticleInfo &info_1, const ArticleInfo &i
     return info_1.get_title().size() > info_2.get_title().size();
 }
 
-//BiblioManager::BiblioManager() {}
-
 void BiblioManager::print_txt(std::ostream &out, const std::string &filename, std::vector<ArticleInfo> &result) {
 
     size_t result_size = result.size();
@@ -158,18 +156,12 @@ void BiblioManager::print_html(std::ostream &out, const std::string &filename, s
     out << "</html>\n";
 }
 
-/*BiblioManager::BiblioManager(const std::string &filename) : picture_parser(filename, 300, 300, "test.png", "png", 700){
-    parser = Parser(filename);
-    picture_parser = PictureParser(filename, 300, 300, "test.png", "png", 700);
-}*/
-
 void BiblioManager::thread_search_function(int i, vector<string> &title_candidates, std::vector<std::vector<ArticleInfo>> &results) {
     try {
         vector<ArticleInfo> dblp_result = {};
         size_t iters = (title_candidates.size() - 1 - i) / 4;
         for (size_t j = 0; j < iters; j++) {
             string query = title_candidates[j * 4 + i];
-            //dblp_result = search_dblp(query);
             size_t result_size = dblp_result.size();
             if (result_size > 0) {
                 for (size_t k = 0; k < result_size; k++) {
@@ -185,46 +177,43 @@ void BiblioManager::thread_search_function(int i, vector<string> &title_candidat
 }
 
 std::vector<ArticleInfo>
-BiblioManager::search_distance_requesters(std::vector<Requester*> requesters, std::function<size_t(const std::string &, const std::string &)> dist,
-                                    const std::string &filename, bool offline) {
+BiblioManager::search_distance_requesters(std::vector<Requester*> requesters, 
+			std::function<size_t(const std::string &, const std::string &)> dist,       
+			const std::string &filename, bool offline) {
     picture_parser = PictureParser(filename, 300, 300, "test.png", "png", 700);
     vector<ArticleInfo> result = {};
 	picture_parser.find_title();
-    string title = picture_parser.get_title();
+    string saved_title = picture_parser.get_title();
+	string title = low_letters_only(saved_title);
+
     if (offline) {
         result.push_back(ArticleInfo(title));
         return result;
     }
-    // ищем на одном, если там нет, дальше написать поиск
-    result = search_requester(*requesters[0], title);
-    size_t result_size = result.size();
     vector<ArticleInfo> final_result = {};
-    string saved_title = title;
-    if (result_size > 0) {
-        title = low_letters_only(title);
-        for (size_t i = 0; i < result_size; i++) {
-            string cur_title = low_letters_only(result[i].get_title());
-            size_t distance = dist(cur_title, title);
-            int precision = 100 - (int) (100 * distance / max(title.size(), cur_title.size()));
-            result[i].set_precision(precision);
-        }
-        stable_sort(result.begin(), result.end(), greater);
 
-//        int t = result[0].get_precision();
-//        size_t i = 0;
-//        while (i < result.size() && result[i].get_precision() == t) i++;
-//        i--;
-//        stable_sort(result.begin(), result.begin() + i, longer_title);
-
-        // магическая константа 90 упала с неба и требует её удаления или замены
-        if (result[0].get_precision() > 90) {
-            final_result.push_back(result[0]);
-        } else {
-            final_result.push_back(ArticleInfo(saved_title));
-        }
-    } else {
-        final_result.push_back(ArticleInfo(saved_title));
+	for (size_t j = 0; j < requesters.size(); j++) {
+	    result = search_requester(*requesters[0], title);
+	    size_t result_size = result.size();
+	    if (result_size > 0) {
+	        for (size_t i = 0; i < result_size; i++) {
+	            string cur_title = low_letters_only(result[i].get_title());
+	            size_t distance = dist(cur_title, title);
+	            int precision = 100 - (int) (100 * distance / max(title.size(), cur_title.size()));
+	            result[i].set_precision(precision);
+	        }
+	        stable_sort(result.begin(), result.end(), greater);
+	
+	        if (result[0].get_precision() > 90) {
+	            final_result.push_back(result[0]);
+				break;
+			}
+		}    
+	}
+	if (final_result.size() == 0) {
+	    final_result.push_back(ArticleInfo(saved_title));
     }
+
     return final_result;
 }
 
