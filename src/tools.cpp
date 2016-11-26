@@ -2,6 +2,7 @@
 #include <iostream>
 #include <libconfig.h++>
 #include "tools.h"
+#include "../lib/tinydir/tinydir.h"
 
 using namespace std;
 using namespace libconfig;
@@ -150,4 +151,37 @@ std::string delete_spaces_to_lower(std::string str) {
     transform(str.begin(), str.end(), str.begin(), (int (*)(int)) tolower);
     regex re_space("\\b\\s+\\b");
     return regex_replace(str, re_space, "");
+}
+
+std::vector<std::string> read_pdf_files_recursive(std::string &path) {
+    vector<string> files = {};
+    read_pdf_files(files, path);
+    return files;
+}
+
+void read_pdf_files(std::vector<std::string> &v, std::string &path) {
+    if (path[path.length() - 1] != '/') {
+        path += "/";
+    }
+    tinydir_dir dir;
+    tinydir_open(&dir, path.c_str());
+    while (dir.has_next)
+    {
+        tinydir_file file;
+        tinydir_readfile(&dir, &file);
+        string filename = string(file.name);
+        if (file.is_dir)
+        {
+            if (filename != "." && filename != ".."){
+                filename = path + filename;
+                read_pdf_files(v, filename);
+            }
+        } else {
+            if (regex_match(filename,regex(".*\\.pdf$"))) {
+                v.push_back(path + filename);
+            }
+        }
+        tinydir_next(&dir);
+    }
+    tinydir_close(&dir);
 }
