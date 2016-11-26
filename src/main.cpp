@@ -1,8 +1,9 @@
 #include <iostream>
 #include <algorithm>
 #include <tclap/CmdLine.h>
-#include "DBLPRequester.h"
+#include "Requester.h"
 #include "BiblioManager.h"
+#include "tools.h"
 
 
 using namespace std;
@@ -28,11 +29,7 @@ int main(int argc, char **argv) {
         for (const auto &filename : fileNames)
         {
             try {
-                DBLPRequester dblp = DBLPRequester();
-                SpringerRequester springer = SpringerRequester();
-                vector<Requester*> requesters = {};
-                requesters.push_back(&dblp);
-                requesters.push_back(&springer);
+                vector<Requester *> requesters = read_config("..//biblio.cfg");
                 vector<ArticleInfo> result = manager.search_distance_requesters(requesters, levenshtein_distance, filename, offline);
                 manager.print_html(out_html, filename, result);
                 manager.print_bib(out_bib, result);

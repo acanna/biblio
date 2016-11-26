@@ -13,43 +13,14 @@
 #include <poppler/cpp/poppler-page-renderer.h>
 #include <poppler/cpp/poppler-rectangle.h>
 #include <poppler/cpp/poppler-font.h>
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <iostream>
+
 
 #include "Biblio_exception.h"
 #include "tools.h"
-
-/*
-class TitleRect {
-private:
-   int title_x;
-   int title_y;
-  int title_height;
-	int rate;
-
-public:
-	TitleRect(int const title_x, int const title_y, int const title_height);
-	int const &get_x();
-	int const &get_y();
-	int const &get_height();
-	int const &get_rate();
-	void set_rate(int rate);
-};*/
-
-/*
-class PixInfo {
-
-private:
-    int x;
-    int y;
-	int row_height;
-
-public:
-    PixInfo(int const x, int const y, int const row_height);
-	int get_height() const;
-    int get_x() const;
-    int get_y() const;
-	static bool is_greater(const PixInfo &pi_1, const PixInfo &pi_2);
-};
-*/
 
 class PixInfo {
 
@@ -67,6 +38,22 @@ public:
     int get_y() const;
 };
 
+class Rectangle {
+private:
+	int x;
+	int y;
+	int width;
+	int height;
+
+public:
+	Rectangle (int x, int y, int width, int height);
+    int get_x() const;
+    int get_y() const;
+    int get_height() const;
+    int get_width() const;
+	static bool _smaller(const Rectangle &rect_1, const Rectangle &rect_2);
+};
+
 class PictureParser {
 
 private:
@@ -82,16 +69,18 @@ private:
 	int title_x;
     int title_y;
     int title_height;
+    int title_width;
     std::string title;
 
 private:
     bool is_black(int x, int y);
-	bool is_dark(int x, int y);
     bool is_white(int x, int y);
     bool white_background(int x_start, int y);
-    int check_b_w_pix_ratio(int title_x, int title_y, int title_height);
-    void select_title_rectangle();
+	void draw_title_rectangle();
+    void select_title_rectangle(std::vector<Rectangle> & areas);
+	std::vector<Rectangle> select_areas(cv::Mat & rgb);
     std::string parse_image();
+	void make_white_rectangle (int x, int y, int width, int height);
 
 public:
     PictureParser() {};
