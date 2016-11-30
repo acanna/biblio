@@ -33,6 +33,11 @@ vector<Requester *> read_config(const string &filename){
 			Requester * springer = new SpringerRequester(url, apikey);
 			active_requesters.push_back(springer);
 		}
+		if (cfg.lookup("arxiv.enabled")){
+			string url = cfg.lookup("arxiv.url");
+			Requester * arxiv = new ArxivRequester(url);
+			active_requesters.push_back(arxiv);
+		}
 	}
 	catch (const SettingNotFoundException &nfex){
 	    throw Biblio_exception("Config file has wrong format");;

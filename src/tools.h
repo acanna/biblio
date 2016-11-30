@@ -7,6 +7,7 @@
 #include "Requester.h"
 #include "DBLPRequester.h"
 #include "SpringerRequester.h"
+#include "ArxivRequester.h"
 
 std::vector<Requester *> read_config(const std::string &filename);
 std::vector<std::string> split(const std::string &str, char delimiter);

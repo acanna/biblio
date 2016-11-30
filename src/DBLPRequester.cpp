@@ -2,8 +2,6 @@
 
 using namespace std;
 
-//const std::string URL = "http://dblp.org/search/publ/api?format=json&h=1&q=";
-
 DBLPRequester::DBLPRequester(string url):Requester() {
 	this->url = url;
 }
