@@ -1,5 +1,9 @@
 #pragma once
 #include "Requester.h"
+#include "Biblio_exception.h"
+#include <tinyxml2.h>
+
+
 
 class ArxivRequester: public Requester {
 

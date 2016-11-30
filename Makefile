@@ -2,7 +2,7 @@ CC = g++
 
 CFLAGS = -c -std=c++11 -pg -Wall -Wextra -Wpedantic
 CFLAGS_TEST = -std=c++11 -Wall -Wextra -Wpedantic -pthread -isystem $(GTEST_DIR)/include
-LDFLAGS = -pg -lcurl -lpoppler-cpp -ltesseract -llept -lpthread -lconfig++ -lopencv_core -lopencv_highgui -lopencv_imgproc
+LDFLAGS = -pg -lcurl -lpoppler-cpp -ltesseract -llept -lpthread -lconfig++ -lopencv_core -lopencv_highgui -lopencv_imgproc -ltinyxml2
 
 SRC = src
 BIN = bin
