@@ -81,11 +81,12 @@ string short_name(string s) {
 }
 
 string raw_to_formatted(string raw) {
-
+    regex re_endl("[\\n\\r]+");
     regex re_space("\\b\\s+\\b");
-    regex re_frmt("[^\\(\\)\\{\\}\\[\\]\\w\\.,\\-_:@\\s]+|[\\n\\r]+");
+    regex re_frmt("[^\\(\\)\\{\\}\\[\\]\\w\\.,_:@\\s\\+\\-]+");
     regex re_trim("^\\s*\\b(.*)\\b\\s*$");
-    string result = regex_replace(raw, re_frmt, "");
+    string result = regex_replace(raw, re_endl, " ");
+    result = regex_replace(result, re_frmt, "");
     result = regex_replace(result, re_space, " ");
     result = regex_replace(result, re_trim, "$1");
 
