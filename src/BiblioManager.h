@@ -3,8 +3,7 @@
 #include <functional>
 #include "Parser.h"
 #include "Biblio_exception.h"
-#include "DBLPRequester.h"
-#include "SpringerRequester.h"
+#include "Requester.h"
 #include "PictureParser.h"
 
 class BiblioManager {

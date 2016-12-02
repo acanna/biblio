@@ -18,7 +18,7 @@ GTEST_HEADERS = $(GTEST_DIR)/include/gtest/*.h \
                 $(GTEST_DIR)/include/gtest/internal/*.h
 TESTS_EXE = $(addprefix $(TEST_BIN)/, $(TESTS))
 
-FILES_FOR_TESTS = ArticleInfo.cpp tools.cpp Parser.cpp PictureParser.cpp BiblioManager.cpp Requester.cpp DBLPRequester.cpp SpringerRequester.cpp ArxivRequester.cpp
+FILES_FOR_TESTS = ArticleInfo.cpp tools.cpp Parser.cpp PictureParser.cpp BiblioManager.cpp Requester.cpp DBLPRequester.cpp SpringerRequester.cpp ArxivRequester.cpp NatureRequester.cpp
 HEADERS_FOR_TESTS = $(addprefix $(SRC)/, $(FILES_FOR_TESTS:.cpp=.h))
 
 FILES = $(FILES_FOR_TESTS) main.cpp 

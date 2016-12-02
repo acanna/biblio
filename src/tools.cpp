@@ -38,6 +38,11 @@ vector<Requester *> read_config(const string &filename){
 			Requester * arxiv = new ArxivRequester(url);
 			active_requesters.push_back(arxiv);
 		}
+		if (cfg.lookup("nature.enabled")){
+			string url = cfg.lookup("nature.url");
+			Requester * nature = new NatureRequester(url);
+			active_requesters.push_back(nature);
+		}
 	}
 	catch (const SettingNotFoundException &nfex){
 	    throw Biblio_exception("Config file has wrong format");;
