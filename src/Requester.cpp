@@ -4,7 +4,6 @@ using namespace std;
 
 char buffer[MAX_BUF + 1];
 int bufferIndex;
-//CURL *curl;
 int errorCode;
 
 size_t writeData(void *webBuffer, size_t size, size_t nmemb, void *userp) {

@@ -43,6 +43,20 @@ vector<Requester *> read_config(const string &filename){
 			Requester * nature = new NatureRequester(url);
 			active_requesters.push_back(nature);
 		}
+		if (cfg.lookup("sciencedirect.enabled")){
+			string url = cfg.lookup("sciencedirect.url");
+			string apikey = cfg.lookup("sciencedirect.apikey");
+			Requester * scidir = new ScienceDirectRequester(url, apikey);
+			active_requesters.push_back(scidir);
+		}
+
+		if (cfg.lookup("scopus.enabled")){
+			string url = cfg.lookup("scopus.url");
+			string apikey = cfg.lookup("scopus.apikey");
+			Requester * scopus = new ScopusRequester(url, apikey);
+			active_requesters.push_back(scopus);
+		}
+
 	}
 	catch (const SettingNotFoundException &nfex){
 	    throw Biblio_exception("Config file has wrong format");;

@@ -39,8 +39,8 @@ vector<ArticleInfo> SpringerRequester::parse_response(char * buffer)  {
 		vector<string> authors = {};	    
 
 		if (authorsList.size() > 0) {
-	        for (unsigned int i = 0; i < authorsList.size(); i++) {
-	            authors.push_back(authorsList[i].get("creator", "").asString());
+	        for (unsigned int j = 0; j < authorsList.size(); j++) {
+	            authors.push_back(authorsList[j].get("creator", "").asString());
 	        }
 	    } else {
 	        authors.push_back(info["creators"].get("creator", "").asString());

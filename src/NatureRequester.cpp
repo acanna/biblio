@@ -35,8 +35,8 @@ vector<ArticleInfo> NatureRequester::parse_response(char * buffer) {
 	 	vector<string> authors = {};
 		
 		if (authorsList.size() > 0) {
-	        for (unsigned int i = 0; i < authorsList.size(); i++) {
-	            authors.push_back(authorsList[i].asString());
+	        for (unsigned int j = 0; j < authorsList.size(); j++) {
+	            authors.push_back(authorsList[j].asString());
 	        }
 	    } else {
 	        authors.push_back(entry[i]["dc:creator"].get("author", "").asString());

@@ -9,6 +9,8 @@
 #include "SpringerRequester.h"
 #include "ArxivRequester.h"
 #include "NatureRequester.h"
+#include "ScopusRequester.h"
+#include "ScienceDirectRequester.h"
 
 std::vector<Requester *> read_config(const std::string &filename);
 std::vector<std::string> split(const std::string &str, char delimiter);

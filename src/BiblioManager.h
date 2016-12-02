@@ -20,7 +20,6 @@ private:
 
 public:
     BiblioManager() {};
-//    BiblioManager(const std::string &filename);
     std::vector<ArticleInfo> search_requester(Requester& requester, std::string query);
     std::vector<ArticleInfo> search_distance_requesters(std::vector<Requester*> requesters, std::function<size_t(const std::string &, const std::string &)> dist,
                                                   const std::string &filename, bool offline);
