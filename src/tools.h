@@ -13,7 +13,7 @@ std::vector<Requester *> read_config(const std::string &filename);
 std::vector<std::string> split(const std::string &str, char delimiter);
 std::string low_letters_only(std::string str);
 std::string delete_spaces_to_lower(std::string str);
-std::string delete_multiple_spaces_to_lower(std::string str);
+
 std::string short_name(std::string s);
 std::string raw_to_formatted(std::string s);
 std::string letters_to_lower(std::string s);

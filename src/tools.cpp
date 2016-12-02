@@ -64,12 +64,6 @@ string low_letters_only(string str) {
     return str;
 }
 
-string delete_multiple_spaces_to_lower(string str) {
-    transform(str.begin(), str.end(), str.begin(), ::tolower);
-    regex re_frmt("\\b\\s+\\b");
-    return regex_replace(str, re_frmt, " ");
-}
-
 string short_name(string s) {
     regex re_frmt("[^a-zA-Z\\s]");
     regex re_name("\\b([a-zA-Z]{2,3})[a-zA-Z]*");
