@@ -204,9 +204,9 @@ TEST (PictureParser, Online) {
                     cout << "Got:    " << result[0].get_title() << endl;
                 }
             } else {
-                cout << "Failed at " << filename << endl;
+                cout << "Failed at " << filename << " (NOT FOUND)" << endl;
                 cout << "Actual: " << unformatted_paper_title << endl;
-                cout << "Got:    " << result[0].get_title() << endl;
+                cout << "Got:    " <<result[0].get_title() << endl;
             }
             counter++;
         } catch (const Biblio_exception &e) {

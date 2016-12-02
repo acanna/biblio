@@ -25,6 +25,8 @@ set(SOURCE_FILES
         lib/json/jsoncpp.cpp
         lib/tinydir/tinydir.h
 
+        src/ArxivRequester.h
+        src/ArxivRequester.cpp
         src/ArticleInfo.cpp
         src/ArticleInfo.h
         src/Biblio_exception.h
@@ -46,5 +48,5 @@ set(SOURCE_FILES
 
 add_library(biblio_lib ${SOURCE_FILES})
 add_executable(biblio ${SOURCE_FILES})
-target_link_libraries(biblio gtest gtest_main ${CURL_LIBRARIES} poppler-cpp tesseract lept config++ opencv_core opencv_highgui opencv_imgproc)
+target_link_libraries(biblio gtest gtest_main ${CURL_LIBRARIES} poppler-cpp tesseract lept config++ opencv_core opencv_highgui opencv_imgproc tinyxml2)
 
