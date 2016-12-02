@@ -4,9 +4,6 @@
 
 using namespace std;
 
-//const std::string URL = "http://api.springer.com/meta/v1/json?q=title:\"";
-//const std::string APIKEY = "\"&api_key=64f779d62e09f8ec669d4c656684cded";
-
 SpringerRequester::SpringerRequester(string url, string apikey):Requester() {
 	this->url = url;
 	this->apikey = apikey;
