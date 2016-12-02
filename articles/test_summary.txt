@@ -30,7 +30,7 @@ test_22.pdf	An Algebraic Criterion for Detecting the Fact and Time a Fault Occur
 test_24.pdf	Analytical Synthesis of Robust Controllers of the Given Accuracy under External Perturbations
 test_31.pdf	Experiments on Union-Find Algorithms for the Disjoint-Set Data Structure
 test_70.pdf	AlGaN Nanostructures with Extremely High Room-Temperature Internal Quantum Efficiency of Emission Below 300 nm
-test_71.pdf	Solar Blind UV Photocathodes Based on AlGaN Heterostructures with a 300 to 330 nm Spectral Sensitivity Threshold
+test_71.pdf	Solar-Blind UV Photocathodes Based on AlGaN Heterostructures with a 300- to 330-nm Spectral Sensitivity Threshold
 test_72.pdf	Growth and applications of Group III-nitrides
 test_73.pdf	Long-lasting photoluminescence in freestanding GaN templates
 test_74.pdf	Development and synthesis of durable self-glowing crystals doped with plutonium
@@ -42,7 +42,7 @@ test_79.pdf	Effects of phase separation and decomposition on the minority carrie
 test_80.pdf	Ternary AlGaN Alloys with High Al Content and Enhanced Compositional Homogeneity Grown by Plasma-Assisted Molecular Beam Epitaxy
 test_81.pdf	Features of the Spatial Distribution of Indium in InGaN Epitaxial Layers Grown by Plasma-Assisted Molecular Beam Epitaxy
 test_82.pdf	Structural analysis of InGaN epilayers
-test_83.pdf	Spontaneous and Stimulated Emission in the Mid Ultraviolet Range of Quantum Well Heterostructures Based on AlGaN Compounds Grown by Molecular Beam Epitaxy on cSapphire Substrates
+test_83.pdf	Spontaneous and Stimulated Emission in the Mid-Ultraviolet Range of Quantum-Well Heterostructures Based on AlGaN Compounds Grown by Molecular Beam Epitaxy on c-Sapphire Substrates
 test_84.pdf	OPTICAL CHARACTERIZATION OF STRAINS IN ALN/GAN HETEROSTRUCTURES
 test_85.pdf	Indium incorporation and surface segregation during InGaN growth by molecular beam epitaxy: experiment and theory
 test_86.pdf	Control of threading dislocation density at the initial growth stage of AlN on c-sapphire in plasma-assisted MBE
@@ -54,5 +54,5 @@ test_91.pdf	Investigation of charge trapping at the oxide/semiconductor interfac
 test_92.pdf	Application of the electron probe microanalysis in nitride-based heterostructures investigation
 test_93.pdf	Chemical bonding and optical bowing in III-nitrides solid solutions
 test_94.pdf	Investigation of surface properties of Si-doped GaN films by electric force microscopy and photoluminescence
-test_95.pdf	Core–shell monodisperse spherical mSiO2/Gd2O3:Eu3+@mSiO2 particles as potential multifunctional theranostic agents
+test_95.pdf	Core-shell monodisperse spherical mSiO2/Gd2O3:Eu3+@mSiO2 particles as potential multifunctional theranostic agents
 test_96.pdf	A Microwave Photon Detector

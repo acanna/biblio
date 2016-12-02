@@ -63,6 +63,9 @@ TEST (PictureParser, Positive) {
     while (file.is_open() && !file.eof()) {
         getline(file, line);
         tmp = split(line, '\t');
+        if (tmp.size() < 2) {
+            continue;
+        }
         filename = tmp[0];
         paper_title = tmp[1];
         filename = path + filename;
@@ -116,6 +119,9 @@ TEST (PictureParser, OnlineDBLP) {
     while (file.is_open() && !file.eof()) {
         getline(file, line);
         tmp = split(line, '\t');
+        if (tmp.size() < 2) {
+            continue;
+        }
         filename = tmp[0];
         paper_title = tmp[1];
         filename = path + filename;
@@ -224,15 +230,18 @@ TEST (PictureParser, Offline) {
     ofstream out_html("result.html");
     int counter = 0;
     int passed = 0;
-    string line = "", filename = "", paper_title = "", cur_title = "", unformatted_paper_title = "";
+    string line = "", filename = "", paper_title = "", cur_title = "";
     vector<string> tmp;
     vector<Requester *> req = {};
     while (file.is_open() && !file.eof()) {
         getline(file, line);
         tmp = split(line, '\t');
+        if (tmp.size() < 2) {
+            continue;
+        }
         filename = tmp[0];
         paper_title = tmp[1];
-        unformatted_paper_title = paper_title;
+        string saved_paper_title = raw_to_formatted(paper_title);
         filename = path + filename;
         BiblioManager manager = BiblioManager();
         try {
@@ -245,7 +254,7 @@ TEST (PictureParser, Offline) {
                 passed++;
             } else {
                 cout << "Failed at " << filename << endl;
-                cout << "Actual: " << unformatted_paper_title << endl;
+                cout << "Actual: " << saved_paper_title << endl;
                 cout << "Got:    " << result[0].get_title() << endl;
             }
             counter++;
@@ -298,5 +307,34 @@ TEST (TinyDir, ReadPDF) {
     vector<string> files = read_pdf_files_recursive(path);
     for (string s : files) {
         cout << s << endl;
+    }
+}
+
+TEST (PictureParser, Dash) {
+    ofstream out_html("result.html");
+    int counter = 0;
+    int passed = 0;
+    string line = "", filename = "", paper_title = "", cur_title = "";
+    vector<string> tmp;
+    vector<Requester *> req = {};
+
+    paper_title = "Solar-Blind UV Photocathodes Based on AlGaN Heterostructures with a 300- to 330-nm Spectral Sensitivity Threshold";
+    string saved_paper_title = raw_to_formatted(paper_title);
+    filename =  "../articles/test_71.pdf";
+    BiblioManager manager = BiblioManager();
+    try {
+        vector<ArticleInfo> result = manager.search_distance_requesters(req, levenshtein_distance, filename, true);
+
+        manager.print_html(out_html, filename, result);
+        paper_title = letters_to_lower(paper_title);
+        cur_title = letters_to_lower(result[0].get_title());
+        if (paper_title.find(cur_title) != std::string::npos) {
+            passed++;
+        } cout << "Failed at " << filename << endl;
+        cout << "Actual: " << saved_paper_title << endl;
+        cout << "Got:    " << result[0].get_title() << endl;
+        counter++;
+    } catch (const Biblio_exception &e) {
+        cerr << e.what() << endl;
     }
 }
