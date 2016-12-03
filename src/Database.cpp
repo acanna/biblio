@@ -65,14 +65,10 @@ ArticleInfo * Database::get_data(std::string filename) {
 		}
 		int id = sqlite3_column_int(stmt, 0);
 	    string lastmod_db = string(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 11)));
-	
 	    struct stat t_stat;
 	    stat(filename.c_str(), &t_stat);
-	    struct tm * timeinfo = localtime(&t_stat.st_mtime);
+	    struct tm * timeinfo = localtime(&t_stat.st_mtim.tv_sec);
 	    string lastmod_file = asctime(timeinfo);
-
-		cout <<"last mod: "  << lastmod_file << endl;
-		cout <<"last mod: "  << lastmod_db << endl;
 
 	    if (lastmod_file <= lastmod_db){
 
@@ -89,24 +85,18 @@ ArticleInfo * Database::get_data(std::string filename) {
 		    string url = string(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 10)));
 		    ArticleInfo * info = new ArticleInfo(title, authors, venue, volume, 
 						number, pages, year, type, url);
-			cout << info->to_string() << endl;
 			sqlite3_finalize(stmt);
 			sqlite3_close(db);
 		    return info;
-		} 
-		/*else {
-			sqlite3_finalize(stmt);
-			cout << "Very new file!" << endl;
-			cout << "id: " << id << endl;
-			
-			request = "DELETE FROM Data WHERE id = " + id;
-			cout << request << endl;
+		} else {
+			sqlite3_finalize(stmt);	
 
+			request = "DELETE FROM Data WHERE id = " + to_string(id);
 			check_status(request.c_str(), db, rc, &stmt);
 			sqlite3_finalize(stmt);
 			sqlite3_close(db);
 			return nullptr;
-	    }*/
+	    }
 	}
 
 }
@@ -140,11 +130,8 @@ void Database::add_data(string filename, ArticleInfo info) {
     
     struct stat t_stat;
     stat(filename.c_str(), &t_stat);
-    struct tm * timeinfo = localtime(&t_stat.st_mtime);
+    struct tm * timeinfo = localtime(&t_stat.st_mtim.tv_sec);
     string lastmod_file = asctime(timeinfo);
-
-		cout <<"last mod: "  << lastmod_file << endl;
-
     string title = info.get_title();
 	vector<string> authors = info.get_authors();
    	string author = "";
@@ -166,9 +153,8 @@ void Database::add_data(string filename, ArticleInfo info) {
 		volume + "\', \'" + number + "\', \'" + pages + "\', \'" + year + "\', \'" + type + "\', \'" +
 		url+ "\', \'" +  lastmod_file + "\');";
 
-	cout << request << endl;
 
-	cout << check_status(request.c_str(), db, rc, &stmt);
+	check_status(request.c_str(), db, rc, &stmt);
 
 	sqlite3_finalize(stmt);
 	sqlite3_close(db);
