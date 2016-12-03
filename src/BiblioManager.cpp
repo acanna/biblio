@@ -48,48 +48,48 @@ void BiblioManager::print_txt(std::ostream &out, const std::string &filename, Ar
 }
 
 void BiblioManager::print_bib(std::ostream &out, ArticleInfo &result) {
-	if (result.get_authors().size() > 0) {
-	    vector<string> authors = result.get_authors();
-	    size_t t = authors.size();
-	    string label = "";
-	
-	    if (t > 1) {
-	        label = short_name(authors[0]) + short_name(authors[1]) + result.get_year();
-	    } else {
-	        label = short_name(authors[0]) + result.get_year();
-	    }
-	
-	    out << "@ARTICLE{" << label << ",\n";
-	    out << "author = {";
-	    for (size_t i = 0; i < t - 1; ++i) {
-	        out << authors[i] << " and\n";
-	    }
-	    out << authors[t - 1];
-	    out << "},\n";
-	    out << "title = {" << result.get_title() << "}";
-	
-	    if (result.get_pages().size() > 0) {
-	        out << ",\n" << "pages = {" << result.get_pages() << "}";
-	    }
-	    if (result.get_number().size() > 0) {
-	        out << ",\n" << "number = {" << result.get_number() << "}";
-	    }
-	    if (result.get_venue().size() > 0) {
-	        out << ",\n" << "venue = {" << result.get_venue() << "}";
-	    }
-	    if (result.get_type().size() > 0) {
-	        out << ",\n" << "type = {" << result.get_type() << "}";
-	    }
-	    if (result.get_url().size() > 0) {
-	        out << ",\n" << "url = {" << result.get_url() << "}";
-	    }
-	    if (result.get_volume().size() > 0) {
-	        out << ",\n" << "volume = {" << result.get_volume() << "}";
-	    }
-	    if (result.get_year().size() > 0) {
-	        out << ",\n" << "year = {" << result.get_year() << "}";
-	    }
-	    out << "\n}\n\n";
+    if (result.get_authors().size() > 0) {
+        vector<string> authors = result.get_authors();
+        size_t t = authors.size();
+        string label = "";
+    
+        if (t > 1) {
+            label = short_name(authors[0]) + short_name(authors[1]) + result.get_year();
+        } else {
+            label = short_name(authors[0]) + result.get_year();
+        }
+    
+        out << "@ARTICLE{" << label << ",\n";
+        out << "author = {";
+        for (size_t i = 0; i < t - 1; ++i) {
+            out << authors[i] << " and\n";
+        }
+        out << authors[t - 1];
+        out << "},\n";
+        out << "title = {" << result.get_title() << "}";
+    
+        if (result.get_pages().size() > 0) {
+            out << ",\n" << "pages = {" << result.get_pages() << "}";
+        }
+        if (result.get_number().size() > 0) {
+            out << ",\n" << "number = {" << result.get_number() << "}";
+        }
+        if (result.get_venue().size() > 0) {
+            out << ",\n" << "venue = {" << result.get_venue() << "}";
+        }
+        if (result.get_type().size() > 0) {
+            out << ",\n" << "type = {" << result.get_type() << "}";
+        }
+        if (result.get_url().size() > 0) {
+            out << ",\n" << "url = {" << result.get_url() << "}";
+        }
+        if (result.get_volume().size() > 0) {
+            out << ",\n" << "volume = {" << result.get_volume() << "}";
+        }
+        if (result.get_year().size() > 0) {
+            out << ",\n" << "year = {" << result.get_year() << "}";
+        }
+        out << "\n}\n\n";
     }
 }
 
@@ -164,13 +164,13 @@ void BiblioManager::thread_search_function(int i, vector<string> &title_candidat
 }
 
 ArticleInfo BiblioManager::search_distance_requesters(std::vector<Requester*> requesters, 
-			std::function<size_t(const std::string &, const std::string &)> dist,       
-			const std::string &filename, bool offline) {
+            std::function<size_t(const std::string &, const std::string &)> dist,       
+            const std::string &filename, bool offline) {
     picture_parser = PictureParser(filename, 300, 300, "test.png", "png", 700);
     vector<ArticleInfo> result = {};
-	picture_parser.find_title();
+    picture_parser.find_title();
     string saved_title = picture_parser.get_title();
-	string title = low_letters_only(saved_title);
+    string title = low_letters_only(saved_title);
 
     if (offline) {
         result.push_back(ArticleInfo(saved_title));
@@ -197,10 +197,9 @@ ArticleInfo BiblioManager::search_distance_requesters(std::vector<Requester*> re
         }
     }
 
-	if (final_result.size() == 0) {
-	    final_result.push_back(ArticleInfo(saved_title));
+    if (final_result.size() == 0) {
+        final_result.push_back(ArticleInfo(saved_title));
     }
 
     return final_result[0];
 }
-
