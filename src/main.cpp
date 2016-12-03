@@ -3,11 +3,10 @@
 #include <tclap/CmdLine.h>
 #include "Requester.h"
 #include "BiblioManager.h"
+#include "Database.h"
 #include "tools.h"
 
-
 using namespace std;
-
 
 int main(int argc, char **argv) {
     try {
@@ -42,9 +41,22 @@ int main(int argc, char **argv) {
         {
             try {
                 vector<Requester *> requesters = read_config("../biblio.cfg");
-                vector<ArticleInfo> result = manager.search_distance_requesters(requesters, levenshtein_distance, filename, offline);
-                manager.print_html(out_html, filename, result);
-                manager.print_bib(out_bib, result);
+				Database * db = connect_database("../biblio.cfg");
+
+				ArticleInfo * result_ptr = db->get_data(filename);
+
+				if (result_ptr == nullptr) {
+	                ArticleInfo result = manager.search_distance_requesters(requesters, 
+						levenshtein_distance, filename, offline);
+					db->add_data(filename, result);
+	                manager.print_html(out_html, filename, result);
+    	            manager.print_bib(out_bib, result);
+				} else {
+					ArticleInfo result = * result_ptr;
+	                manager.print_html(out_html, filename, result);
+    	            manager.print_bib(out_bib, result);
+				}
+				delete result_ptr;
             } catch (const Biblio_exception &e) {
                 cerr << e.what() << '\n';
             } catch (...) {}

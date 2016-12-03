@@ -64,6 +64,36 @@ vector<Requester *> read_config(const string &filename){
     return active_requesters;
 }
 
+Database * connect_database(const string &filename){
+	Config cfg;
+
+	try {	
+    	cfg.readFile(filename.c_str());
+    } catch (const FileIOException &ex){
+		throw Biblio_exception("Reading config file failed");
+	}  catch (const ParseException &pex){
+		string what = "Parse error at " + (string)pex.getFile() + ":" 
+			+ to_string(pex.getLine()) + " - " + (string)pex.getError();
+		throw Biblio_exception("Reading config file failed: "+ what);
+	}
+
+	Database * db;
+	try {
+		if (cfg.lookup("database.enabled")){
+			string filename = cfg.lookup("database.filename");
+			db = new Database(filename);
+		
+		}
+
+	}
+	catch (const SettingNotFoundException &nfex){
+	    throw Biblio_exception("Config file has wrong format");;
+	}
+	return db;
+}
+
+
+
 vector<string> split(const string &str, char delimiter) {
     vector<string> internal;
     stringstream ss(str); 
