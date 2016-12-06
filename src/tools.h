@@ -12,7 +12,18 @@
 #include "ScopusRequester.h"
 #include "ScienceDirectRequester.h"
 
-std::vector<Requester *> read_config(const std::string &filename);
+enum requestersEnum {
+    dblp = 1,
+    springer = 2,
+    arxiv = 3,
+    nature = 4,
+    sciencedirect = 5,
+    scopus = 6
+};
+
+std::vector<Requester *> init_requesters(std::vector<std::pair<requestersEnum, std::vector<std::string>>> & data);
+std::vector<Requester *> read_config(const std::string &filename, int &threads);
+std::vector<std::pair<requestersEnum, std::vector<std::string>>> read_config_data(const std::string &filename, int &threads);
 std::vector<std::string> split(const std::string &str, char delimiter);
 std::string low_letters_only(std::string str);
 std::string delete_spaces_to_lower(std::string str);

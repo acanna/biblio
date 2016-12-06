@@ -21,8 +21,12 @@ class Requester {
 
 protected:
 	CURL * curl;
+    char buffer[MAX_BUF + 1];
+    int bufferIndex;
+    int errorCode;
 
 protected:
+	static size_t writeData(void *webBuffer, size_t size, size_t nmemb, void *userp);
 	void curl_init();
 	void curl_clean_up();
 	char * curl_perform(std::string request) ;
@@ -31,6 +35,7 @@ protected:
 
 public:
 	Requester();
+    Requester(const Requester& r);
     virtual ~Requester();
     virtual std::vector<ArticleInfo> publication_request(const std::string &query);
 

@@ -168,7 +168,7 @@ void PictureParser::find_title() {
 	// pdf as image
     if (fonts.size() == 0) {
         poppler::image rect_image = renderer.render_page(mypage,
-                         this->xres, this->yres, this->title_x,                                             				      		     this->title_y, this->title_width, this->title_height);
+                         this->xres, this->yres, this->title_x, this->title_y, this->title_width, this->title_height);
         rect_image.save(this->imagename, this->format, this->dpi);
         result = parse_image();
 

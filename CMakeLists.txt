@@ -25,6 +25,12 @@ set(SOURCE_FILES
         lib/json/jsoncpp.cpp
         lib/tinydir/tinydir.h
 
+        src/ScienceDirectRequester.cpp
+        src/ScienceDirectRequester.h
+        src/NatureRequester.cpp
+        src/NatureRequester.h
+        src/ScopusRequester.cpp
+        src/ScopusRequester.h
         src/ArxivRequester.h
         src/ArxivRequester.cpp
         src/ArticleInfo.cpp

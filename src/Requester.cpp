@@ -2,19 +2,17 @@
 
 using namespace std;
 
-char buffer[MAX_BUF + 1];
-int bufferIndex;
-int errorCode;
-
-size_t writeData(void *webBuffer, size_t size, size_t nmemb, void *userp) {
+size_t Requester::writeData(void *webBuffer, size_t size, size_t nmemb, void *userp) {
     size_t segSize = size * nmemb;
+    int bufferIndex = (*(Requester *) userp).bufferIndex;
     if (bufferIndex + segSize > MAX_BUF) {
-        *(int *) userp = 1;
+        (*(Requester *) userp).errorCode = 1;
         return 0;
     }
-    memcpy((void *) &buffer[bufferIndex], webBuffer, segSize);
+    memcpy((void *) &(*(Requester *) userp).buffer[bufferIndex], webBuffer, segSize);
     bufferIndex += segSize;
-    buffer[bufferIndex] = 0;
+    (*(Requester *) userp).bufferIndex += segSize;
+    (*(Requester *) userp).buffer[bufferIndex] = 0;
     return segSize;
 }
 
@@ -24,7 +22,7 @@ void Requester::curl_init() {
         throw Biblio_exception("CURL initialization failed");
     }
 
-    curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *) &errorCode);
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *) this);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeData);
 }
 
@@ -68,6 +66,8 @@ char * Requester::curl_perform(string request) {
 
 Requester::Requester() {
     curl_init();
+    bufferIndex = 0;
+    errorCode = 0;
 }
 
 Requester::~Requester() {
@@ -81,5 +81,11 @@ vector<ArticleInfo> Requester::publication_request(const string &query) {
     vector<ArticleInfo> articles;
     articles = parse_response(buffer);
     return articles;
+}
+
+Requester::Requester(const Requester &r) {
+    curl_init();
+    bufferIndex = r.bufferIndex;
+    errorCode = r.errorCode;
 }
 

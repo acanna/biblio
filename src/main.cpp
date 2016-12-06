@@ -33,22 +33,26 @@ int main(int argc, char **argv) {
             }
         }
         bool offline = offlineSwitch.getValue();
-        BiblioManager manager;
+        
+        if (curl_global_init(CURL_GLOBAL_ALL) != 0) {
+            throw new Biblio_exception("Curl global init failed.\n");
+        }
+        int threads = 1;
+        //vector<Requester *> requesters = read_config("../biblio.cfg", threads);
+        std::vector<std::pair<requestersEnum, std::vector<std::string>>> data = read_config_data("../biblio.cfg", threads);
+        BiblioManager manager(threads);
 
         ofstream out_html("biblio.html");
         ofstream out_bib("biblio.bib");
 
-        for (const auto &filename : filenames)
-        {
-            try {
-                vector<Requester *> requesters = read_config("../biblio.cfg");
-                vector<ArticleInfo> result = manager.search_distance_requesters(requesters, levenshtein_distance, filename, offline);
-                manager.print_html(out_html, filename, result);
-                manager.print_bib(out_bib, result);
-            } catch (const Biblio_exception &e) {
-                cerr << e.what() << '\n';
-            } catch (...) {}
-        }
+        try {
+//            vector<ArticleInfo> result = manager.search_distance_requesters(requesters, levenshtein_distance, filenames, offline);
+            vector<ArticleInfo> result = manager.search_distance_data(data, levenshtein_distance, filenames, offline);
+            manager.print_html(out_html, result);
+            manager.print_bib(out_bib, result);
+        } catch (const Biblio_exception &e) {
+            cerr << e.what() << '\n';
+        } catch (...) {}
 
         out_html.close();
         out_bib.close();

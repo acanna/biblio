@@ -133,7 +133,7 @@ TEST (PictureParser, OnlineDBLP) {
 			req.push_back(dblp);
 
             vector<ArticleInfo> result = manager.search_distance_requesters(req, levenshtein_distance, filename, false);
-            manager.print_html(out_html, filename, result);
+            manager.print_html(out_html, result);
             paper_title = raw_to_formatted(paper_title);
             cur_title = raw_to_formatted(result[0].get_title());
             if (delete_spaces_to_lower(paper_title) == delete_spaces_to_lower(cur_title) ||
@@ -191,7 +191,7 @@ TEST (PictureParser, Online) {
         try {
             vector<ArticleInfo> result = manager.search_distance_requesters(req, levenshtein_distance, filename, false);
 
-            manager.print_html(out_html, filename, result);
+            manager.print_html(out_html, result);
             paper_title = letters_to_lower(paper_title);
             cur_title = letters_to_lower(result[0].get_title());
             if (result[0].get_authors().size() > 0) {
@@ -247,7 +247,7 @@ TEST (PictureParser, Offline) {
         try {
             vector<ArticleInfo> result = manager.search_distance_requesters(req, levenshtein_distance, filename, true);
 
-            manager.print_html(out_html, filename, result);
+            manager.print_html(out_html, result);
             paper_title = letters_to_lower(paper_title);
             cur_title = letters_to_lower(result[0].get_title());
             if (paper_title.find(cur_title) != std::string::npos) {
@@ -325,7 +325,21 @@ TEST (PictureParser, Dash) {
     try {
         vector<ArticleInfo> result = manager.search_distance_requesters(req, levenshtein_distance, filename, true);
 
-        manager.print_html(out_html, filename, result);
+        manager.print_html(out_html, result);
+        paper_title = letters_to_lower(paper_title);
+        cur_title = letters_to_lower(result[0].get_title());
+        if (paper_title.find(cur_title) != std::string::npos) {
+            passed++;
+        } cout << "Failed at " << filename << endl;
+        cout << "Actual: " << saved_paper_title << endl;
+        cout << "Got:    " << result[0].get_title() << endl;
+        counter++;
+
+        paper_title = "Core-shell monodisperse spherical mSiO2/Gd2O3:Eu3+@mSiO2 particles as potential multifunctional theranostic agents";
+        saved_paper_title = raw_to_formatted(paper_title);
+        filename = "../articles/test_95.pdf";
+        result = manager.search_distance_requesters(req, levenshtein_distance, filename, true);
+        manager.print_html(out_html, result);
         paper_title = letters_to_lower(paper_title);
         cur_title = letters_to_lower(result[0].get_title());
         if (paper_title.find(cur_title) != std::string::npos) {

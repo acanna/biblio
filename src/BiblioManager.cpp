@@ -2,12 +2,16 @@
 #include <ctime>
 #include <iomanip>
 #include <thread>
+#include <queue>
 #include "BiblioManager.h"
 
 
 using namespace std;
 
-std::vector<ArticleInfo> BiblioManager::search_requester(Requester& requester, std::string query) {
+mutex m_in;
+mutex m_out;
+
+std::vector<ArticleInfo> BiblioManager::search_requester(Requester &requester, std::string query) {
     vector<ArticleInfo> result = {};
     vector<ArticleInfo> additional_result = {};
 
@@ -101,7 +105,7 @@ void BiblioManager::print_bib(std::ostream &out, std::vector<ArticleInfo> &resul
     }
 }
 
-void BiblioManager::print_html(std::ostream &out, const std::string &filename, std::vector<ArticleInfo> &result) {
+void BiblioManager::print_html(std::ostream &out, std::vector<ArticleInfo> &result) {
 
     size_t result_size = result.size();
     out << "<html>\n";
@@ -109,112 +113,215 @@ void BiblioManager::print_html(std::ostream &out, const std::string &filename, s
     out << "\t\t<title>Biblio results</title>\n";
     out << "\t</head>\n";
     out << "\t<body>\n";
-    out << "--------------------------------------------------------------" << endl;
-    out << "<p><a href=\"" << filename << "\">" << filename << "</a></p>" << endl;
-    out << "--------------------------------------------------------------" << endl;
-    out << "<br>\n";
-    out << "<pre>\n";
+    for (size_t i = 0; i < result_size; i++) {
+        out << "--------------------------------------------------------------" << endl;
+        out << "<p><a href=\"" << result[i].get_filename() << "\">" << result[i].get_filename() << "</a></p>" << endl;
+        out << "--------------------------------------------------------------" << endl;
+        out << "<br>\n";
+        out << "<pre>\n";
 
-    if (result_size == 0) {
-        out << "<p>NOT FOUND</p>" << endl;
-    }
-
-    for (size_t k = 0; k < result_size; ++k) {
-        vector<string> authors = result[k].get_authors();
+        vector<string> authors = result[i].get_authors();
         size_t t = authors.size();
         if (t > 0) {
-            for (size_t i = 0; i < t - 1; ++i) {
-                out << authors[i] << ", ";
+            for (size_t j = 0; j < t - 1; ++j) {
+                out << authors[j] << ", ";
             }
             out << authors[t - 1] << ":\n";
         }
-        out << result[k].get_title();
-        if (result[k].get_type() != "") {
-            out << " " << result[k].get_type() << ".";
+        out << result[i].get_title();
+        if (result[i].get_type() != "") {
+            out << " " << result[i].get_type() << ".";
         }
-        if (result[k].get_venue() != "") {
-            out << " " << result[k].get_venue() << ".";
+        if (result[i].get_venue() != "") {
+            out << " " << result[i].get_venue() << ".";
         }
-        if (result[k].get_volume() != "") {
-            out << " " << result[k].get_volume() << ".";
+        if (result[i].get_volume() != "") {
+            out << " " << result[i].get_volume() << ".";
         }
-        if (result[k].get_year() != "") {
-            out << " " << result[k].get_year() << ".";
+        if (result[i].get_year() != "") {
+            out << " " << result[i].get_year() << ".";
         }
-        if (result[k].get_pages() != "") {
-            out << " " << result[k].get_pages() << ".";
+        if (result[i].get_pages() != "") {
+            out << " " << result[i].get_pages() << ".";
         }
-        if (result[k].get_number() != "") {
-            out << " " << result[k].get_number() << ".";
+        if (result[i].get_number() != "") {
+            out << " " << result[i].get_number() << ".";
         }
-        if (result[k].get_url() != "") {
-            out << "\n" << result[k].get_url() << endl;
+        if (result[i].get_url() != "") {
+            out << "\n" << result[i].get_url() << endl;
         }
+        out << "</pre>\n";
     }
-    out << "</pre>\n";
+
     out << "\t</body>\n";
     out << "</html>\n";
 }
 
-void BiblioManager::thread_search_function(int i, vector<string> &title_candidates, std::vector<std::vector<ArticleInfo>> &results) {
-    try {
-        vector<ArticleInfo> dblp_result = {};
-        size_t iters = (title_candidates.size() - 1 - i) / 4;
-        for (size_t j = 0; j < iters; j++) {
-            string query = title_candidates[j * 4 + i];
-            size_t result_size = dblp_result.size();
+void BiblioManager::thread_function(std::vector<Requester *> requesters,
+                                    std::function<size_t(const std::string &, const std::string &)> dist,
+                                    bool offline, queue<string> &in, vector<ArticleInfo> &out) {
+    string filename, picture_name;
+    regex re_name("[^0-9]");
+    vector<ArticleInfo> result = {};
+    bool found = false;
+    while(!my_empty(in)) {
+        filename = my_pop(in);
+
+        picture_name = regex_replace(filename, re_name, "");
+        PictureParser picture_parser = PictureParser(filename, 300, 300, "test_" + picture_name + ".png", "png", 700);
+        picture_parser.find_title();
+        string saved_title = picture_parser.get_title();
+        string title = low_letters_only(saved_title);
+
+        if (offline) {
+            my_push(ArticleInfo(saved_title, filename), out);
+            continue;
+        }
+        found = false;
+
+        for (int k = 0; k < requesters.size(); k++) {
+            result = search_requester(*requesters[k], saved_title);
+            size_t result_size = result.size();
             if (result_size > 0) {
-                for (size_t k = 0; k < result_size; k++) {
-                    string cur_title = dblp_result[k].get_title();
-                    size_t lev_distance = levenshtein_distance(cur_title, query);
-                    dblp_result[k].set_precision(
-                            100 - (int) (100 * lev_distance / max(query.size(), cur_title.size())));
+                for (size_t i = 0; i < result_size; i++) {
+                    string cur_title = low_letters_only(result[i].get_title());
+                    size_t distance = dist(cur_title, title);
+                    int precision = 100 - (int) (100 * distance / max(title.size(), cur_title.size()));
+                    result[i].set_precision(precision);
                 }
-                results[i].insert(results[i].end(), dblp_result.begin(), dblp_result.end());
+                stable_sort(result.begin(), result.end(), greater);
+
+                if (result[0].get_precision() > 90) {
+                    result[0].set_filename(filename);
+                    my_push(result[0], out);
+                    found = true;
+                    break;
+                }
             }
         }
-    } catch (...) {}
+
+        if (!found) {
+            my_push(ArticleInfo(saved_title, filename), out);
+        }
+
+    }
+
 }
 
 std::vector<ArticleInfo>
-BiblioManager::search_distance_requesters(std::vector<Requester*> requesters, 
-			std::function<size_t(const std::string &, const std::string &)> dist,       
-			const std::string &filename, bool offline) {
-    picture_parser = PictureParser(filename, 300, 300, "test.png", "png", 700);
-    vector<ArticleInfo> result = {};
-	picture_parser.find_title();
-    string saved_title = picture_parser.get_title();
-	string title = low_letters_only(saved_title);
+BiblioManager::search_distance_requesters(std::vector<Requester *> requesters,
+                                          std::function<size_t(const std::string &, const std::string &)> dist,
+                                          const vector<string> &filenames, bool offline) {
+    queue<string, deque<string>> in(deque<string>(filenames.begin(), filenames.end()));
+    vector<ArticleInfo> out = {};
+    vector<thread> threads;
 
-    if (offline) {
-        result.push_back(ArticleInfo(saved_title));
-        return result;
+    for(int i = 0; i < threads_num; ++i){
+        threads.push_back(std::thread(thread_function, requesters, dist, offline, ref(in), ref(out)));
     }
-    vector<ArticleInfo> final_result = {};
 
-    for (Requester* requester : requesters) {
-        result = search_requester(*requester, saved_title);
-        size_t result_size = result.size();
-        if (result_size > 0) {
-            for (size_t i = 0; i < result_size; i++) {
-                string cur_title = low_letters_only(result[i].get_title());
-                size_t distance = dist(cur_title, title);
-                int precision = 100 - (int) (100 * distance / max(title.size(), cur_title.size()));
-                result[i].set_precision(precision);
-            }
-            stable_sort(result.begin(), result.end(), greater);
+    for(auto& thread : threads){
+        thread.join();
+    }
 
-            if (result[0].get_precision() > 90) {
-                final_result.push_back(result[0]);
-                break;
+    return out;
+}
+
+BiblioManager::BiblioManager(int threads) {
+    this->threads_num = threads;
+}
+
+bool BiblioManager::my_empty(std::queue<std::string> &in) {
+    m_in.lock();
+    bool empty = in.empty();
+    m_in.unlock();
+    return empty;
+}
+
+std::string BiblioManager::my_pop(std::queue<std::string> &in) {
+    m_in.lock();
+    string name;
+    name = in.front();
+    in.pop();
+    m_in.unlock();
+    return name;
+}
+
+void BiblioManager::my_push(ArticleInfo info, std::vector<ArticleInfo> &out) {
+    m_out.lock();
+    out.push_back(info);
+    m_out.unlock();
+}
+
+std::vector<ArticleInfo>
+BiblioManager::search_distance_data(std::vector<std::pair<requestersEnum, std::vector<std::string>>> data,
+                                    std::function<size_t(const std::string &,
+                                                         const std::string &)> dist,
+                                    const std::vector<std::string> &filenames, bool offline) {
+    queue<string, deque<string>> in(deque<string>(filenames.begin(), filenames.end()));
+    vector<ArticleInfo> out = {};
+    vector<thread> threads;
+
+    for(int i = 0; i < threads_num; ++i){
+        threads.push_back(std::thread(thread_function_data, data, dist, offline, ref(in), ref(out)));
+    }
+
+    for(auto& thread : threads){
+        thread.join();
+    }
+
+    return out;
+}
+
+void BiblioManager::thread_function_data(std::vector<std::pair<requestersEnum, std::vector<std::string>>> data,
+                                         std::function<size_t(const std::string &, const std::string &)> dist,
+                                         bool offline, std::queue<std::string> &in, std::vector<ArticleInfo> &out) {
+    string filename, picture_name;
+    regex re_name("[^0-9]");
+    vector<ArticleInfo> result = {};
+    vector<Requester *> requesters = init_requesters(data);
+    bool found = false;
+    while(!my_empty(in)) {
+        filename = my_pop(in);
+
+        picture_name = regex_replace(filename, re_name, "");
+        PictureParser picture_parser = PictureParser(filename, 300, 300, "test_" + picture_name + ".png", "png", 700);
+        picture_parser.find_title();
+        string saved_title = picture_parser.get_title();
+        string title = low_letters_only(saved_title);
+
+        if (offline) {
+            my_push(ArticleInfo(saved_title, filename), out);
+            continue;
+        }
+        found = false;
+
+        for (int k = 0; k < requesters.size(); k++) {
+            result = search_requester(*requesters[k], saved_title);
+            size_t result_size = result.size();
+            if (result_size > 0) {
+                for (size_t i = 0; i < result_size; i++) {
+                    string cur_title = low_letters_only(result[i].get_title());
+                    size_t distance = dist(cur_title, title);
+                    int precision = 100 - (int) (100 * distance / max(title.size(), cur_title.size()));
+                    result[i].set_precision(precision);
+                }
+                stable_sort(result.begin(), result.end(), greater);
+
+                if (result[0].get_precision() > 90) {
+                    result[0].set_filename(filename);
+                    my_push(result[0], out);
+                    found = true;
+                    break;
+                }
             }
         }
+
+        if (!found) {
+            my_push(ArticleInfo(saved_title, filename), out);
+        }
+
     }
 
-	if (final_result.size() == 0) {
-	    final_result.push_back(ArticleInfo(saved_title));
-    }
-
-    return final_result;
 }
 

@@ -48,7 +48,8 @@ ArticleInfo::ArticleInfo(Json::Value const &info) {
     this->precision = 0;
 }
 
-ArticleInfo::ArticleInfo(std::string const &title) {
+ArticleInfo::ArticleInfo(std::string const &title, std::string const &filename) {
+    this->filename = filename;
     this->title = title;
     this->authors = {};
     this->venue = "";
@@ -106,7 +107,8 @@ void ArticleInfo::set_precision(int precision) {
 }
 
 string ArticleInfo::to_string() {
-    string output = "\n Title: \t" + this->title;
+
+    string output = "\n Filename: \t" + this->filename + "\n Title: \t" + this->title;
     output += "\n Authors: ";
     for (unsigned int i = 0; i < authors.size(); i++) {
         output += "\n\t\t" + this->authors[i];
@@ -120,4 +122,12 @@ string ArticleInfo::to_string() {
     output += "\n URL: \t\t" + this->url;
     output += "\n Precision of response: \t" + std::to_string(this->precision) + "% \n";
     return output;
+}
+
+void ArticleInfo::set_filename(std::string const &filename) {
+    this->filename = filename;
+}
+
+std::string const &ArticleInfo::get_filename() const {
+    return filename;
 }
