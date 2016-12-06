@@ -44,64 +44,56 @@ bool BiblioManager::longer_title(const ArticleInfo &info_1, const ArticleInfo &i
     return info_1.get_title().size() > info_2.get_title().size();
 }
 
-void BiblioManager::print_txt(std::ostream &out, const std::string &filename, std::vector<ArticleInfo> &result) {
-
-    size_t result_size = result.size();
+void BiblioManager::print_txt(std::ostream &out, const std::string &filename, ArticleInfo &result) {
     out << "--------------------------------------------------------------" << endl;
     out << filename << endl;
     out << "--------------------------------------------------------------" << endl;
-    for (size_t k = 0; k < result_size; ++k) {
-        out << result[k].to_string() << " \n";
-    }
+    out << result.to_string() << " \n";
 }
 
-void BiblioManager::print_bib(std::ostream &out, std::vector<ArticleInfo> &result) {
-
-    size_t result_size = result.size();
-    for (size_t k = 0; k < result_size; ++k) {
-        if (result[k].get_authors().size() > 0) {
-            vector<string> authors = result[k].get_authors();
-            size_t t = authors.size();
-            string label = "";
-
-            if (t > 1) {
-                label = short_name(authors[0]) + short_name(authors[1]) + result[k].get_year();
-            } else {
-                label = short_name(authors[0]) + result[k].get_year();
-            }
-
-            out << "@ARTICLE{" << label << ",\n";
-            out << "author = {";
-            for (size_t i = 0; i < t - 1; ++i) {
-                out << authors[i] << " and\n";
-            }
-            out << authors[t - 1];
-            out << "},\n";
-            out << "title = {" << result[k].get_title() << "}";
-
-            if (result[k].get_pages().size() > 0) {
-                out << ",\n" << "pages = {" << result[k].get_pages() << "}";
-            }
-            if (result[k].get_number().size() > 0) {
-                out << ",\n" << "number = {" << result[k].get_number() << "}";
-            }
-            if (result[k].get_venue().size() > 0) {
-                out << ",\n" << "venue = {" << result[k].get_venue() << "}";
-            }
-            if (result[k].get_type().size() > 0) {
-                out << ",\n" << "type = {" << result[k].get_type() << "}";
-            }
-            if (result[k].get_url().size() > 0) {
-                out << ",\n" << "url = {" << result[k].get_url() << "}";
-            }
-            if (result[k].get_volume().size() > 0) {
-                out << ",\n" << "volume = {" << result[k].get_volume() << "}";
-            }
-            if (result[k].get_year().size() > 0) {
-                out << ",\n" << "year = {" << result[k].get_year() << "}";
-            }
-            out << "\n}\n\n";
-        }
+void BiblioManager::print_bib(std::ostream &out, ArticleInfo &result) {
+	if (result.get_authors().size() > 0) {
+	    vector<string> authors = result.get_authors();
+	    size_t t = authors.size();
+	    string label = "";
+	
+	    if (t > 1) {
+	        label = short_name(authors[0]) + short_name(authors[1]) + result.get_year();
+	    } else {
+	        label = short_name(authors[0]) + result.get_year();
+	    }
+	
+	    out << "@ARTICLE{" << label << ",\n";
+	    out << "author = {";
+	    for (size_t i = 0; i < t - 1; ++i) {
+	        out << authors[i] << " and\n";
+	    }
+	    out << authors[t - 1];
+	    out << "},\n";
+	    out << "title = {" << result.get_title() << "}";
+	
+	    if (result.get_pages().size() > 0) {
+	        out << ",\n" << "pages = {" << result.get_pages() << "}";
+	    }
+	    if (result.get_number().size() > 0) {
+	        out << ",\n" << "number = {" << result.get_number() << "}";
+	    }
+	    if (result.get_venue().size() > 0) {
+	        out << ",\n" << "venue = {" << result.get_venue() << "}";
+	    }
+	    if (result.get_type().size() > 0) {
+	        out << ",\n" << "type = {" << result.get_type() << "}";
+	    }
+	    if (result.get_url().size() > 0) {
+	        out << ",\n" << "url = {" << result.get_url() << "}";
+	    }
+	    if (result.get_volume().size() > 0) {
+	        out << ",\n" << "volume = {" << result.get_volume() << "}";
+	    }
+	    if (result.get_year().size() > 0) {
+	        out << ",\n" << "year = {" << result.get_year() << "}";
+	    }
+	    out << "\n}\n\n";
     }
 }
 
@@ -152,7 +144,7 @@ void BiblioManager::print_html(std::ostream &out, std::vector<ArticleInfo> &resu
         }
         out << "</pre>\n";
     }
-
+    out << "</pre>\n";
     out << "\t</body>\n";
     out << "</html>\n";
 }

@@ -128,21 +128,22 @@ TEST (PictureParser, OnlineDBLP) {
         BiblioManager manager = BiblioManager();
         try {
 			// dblp
-            DBLPRequester * dblp = new DBLPRequester(URL);
-			vector<Requester *> req = {};
+            DBLPRequester *dblp = new DBLPRequester(URL);
+			vector<Requester*> req = {};
 			req.push_back(dblp);
 
-            vector<ArticleInfo> result = manager.search_distance_requesters(req, levenshtein_distance, filename, false);
-            manager.print_html(out_html, result);
+
+            ArticleInfo result = manager.search_distance_requesters(req, levenshtein_distance, filename, false);
+            manager.print_html(out_html, filename, result);
             paper_title = raw_to_formatted(paper_title);
-            cur_title = raw_to_formatted(result[0].get_title());
+            cur_title = raw_to_formatted(result.get_title());
             if (delete_spaces_to_lower(paper_title) == delete_spaces_to_lower(cur_title) ||
                 paper_title.find(cur_title) != std::string::npos) {
                 passed++;
             } else {
                 cout << "Failed at " << filename << endl;
                 cout << "Actual: " << paper_title << endl;
-                cout << "Got:    " << result[0].get_title() << endl;
+                cout << "Got:    " << result.get_title() << endl;
             }
             counter++;
         } catch (const Biblio_exception &e) {
@@ -189,24 +190,24 @@ TEST (PictureParser, Online) {
         filename = path + filename;
         BiblioManager manager = BiblioManager();
         try {
-            vector<ArticleInfo> result = manager.search_distance_requesters(req, levenshtein_distance, filename, false);
+            ArticleInfo result = manager.search_distance_requesters(req, levenshtein_distance, filename, false);
 
             manager.print_html(out_html, result);
             paper_title = letters_to_lower(paper_title);
-            cur_title = letters_to_lower(result[0].get_title());
-            if (result[0].get_authors().size() > 0) {
+            cur_title = letters_to_lower(result.get_title());
+            if (result.get_authors().size() > 0) {
                 if (paper_title.find(cur_title) != std::string::npos) {
                     found_right++;
                 } else {
                     found_wrong++;
                     cout << "Found wrong. Failed at " << filename << endl;
                     cout << "Actual: " << unformatted_paper_title << endl;
-                    cout << "Got:    " << result[0].get_title() << endl;
+                    cout << "Got:    " << result.get_title() << endl;
                 }
             } else {
                 cout << "Failed at " << filename << " (NOT FOUND)" << endl;
                 cout << "Actual: " << unformatted_paper_title << endl;
-                cout << "Got:    " <<result[0].get_title() << endl;
+                cout << "Got:    " <<result.get_title() << endl;
             }
             counter++;
         } catch (const Biblio_exception &e) {
@@ -245,17 +246,17 @@ TEST (PictureParser, Offline) {
         filename = path + filename;
         BiblioManager manager = BiblioManager();
         try {
-            vector<ArticleInfo> result = manager.search_distance_requesters(req, levenshtein_distance, filename, true);
+            ArticleInfo result = manager.search_distance_requesters(req, levenshtein_distance, filename, true);
 
             manager.print_html(out_html, result);
             paper_title = letters_to_lower(paper_title);
-            cur_title = letters_to_lower(result[0].get_title());
+            cur_title = letters_to_lower(result.get_title());
             if (paper_title.find(cur_title) != std::string::npos) {
                 passed++;
             } else {
                 cout << "Failed at " << filename << endl;
                 cout << "Actual: " << saved_paper_title << endl;
-                cout << "Got:    " << result[0].get_title() << endl;
+                cout << "Got:    " << result.get_title() << endl;
             }
             counter++;
         } catch (const Biblio_exception &e) {
@@ -323,7 +324,7 @@ TEST (PictureParser, Dash) {
     filename =  "../articles/test_71.pdf";
     BiblioManager manager = BiblioManager();
     try {
-        vector<ArticleInfo> result = manager.search_distance_requesters(req, levenshtein_distance, filename, true);
+        ArticleInfo result = manager.search_distance_requesters(req, levenshtein_distance, filename, true);
 
         manager.print_html(out_html, result);
         paper_title = letters_to_lower(paper_title);
@@ -341,12 +342,12 @@ TEST (PictureParser, Dash) {
         result = manager.search_distance_requesters(req, levenshtein_distance, filename, true);
         manager.print_html(out_html, result);
         paper_title = letters_to_lower(paper_title);
-        cur_title = letters_to_lower(result[0].get_title());
+        cur_title = letters_to_lower(result.get_title());
         if (paper_title.find(cur_title) != std::string::npos) {
             passed++;
         } cout << "Failed at " << filename << endl;
         cout << "Actual: " << saved_paper_title << endl;
-        cout << "Got:    " << result[0].get_title() << endl;
+        cout << "Got:    " << result.get_title() << endl;
         counter++;
     } catch (const Biblio_exception &e) {
         cerr << e.what() << endl;

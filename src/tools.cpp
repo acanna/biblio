@@ -74,6 +74,7 @@ vector<Requester *> read_config(const string &filename, int &threads) {
     return active_requesters;
 }
 
+
 std::vector<std::pair<requestersEnum, std::vector<std::string>>>
 read_config_data(const std::string &filename, int &threads) {
     vector<pair<requestersEnum, vector<string>>> data;
@@ -149,7 +150,36 @@ read_config_data(const std::string &filename, int &threads) {
         throw Biblio_exception("Config file has wrong format");
     }
     return data;
+
+Database * connect_database(const string &filename){
+	Config cfg;
+
+	try {	
+    	cfg.readFile(filename.c_str());
+    } catch (const FileIOException &ex){
+		throw Biblio_exception("Reading config file failed");
+	}  catch (const ParseException &pex){
+		string what = "Parse error at " + (string)pex.getFile() + ":" 
+			+ to_string(pex.getLine()) + " - " + (string)pex.getError();
+		throw Biblio_exception("Reading config file failed: "+ what);
+	}
+
+	Database * db;
+	try {
+		if (cfg.lookup("database.enabled")){
+			string filename = cfg.lookup("database.filename");
+			db = new Database(filename);
+		
+		}
+
+	}
+	catch (const SettingNotFoundException &nfex){
+	    throw Biblio_exception("Config file has wrong format");;
+	}
+	return db;
+
 }
+
 
 
 
@@ -197,6 +227,7 @@ std::vector<Requester *> init_requesters(std::vector<std::pair<requestersEnum, s
     }
     return active_requesters;
 }
+
 
 vector<string> split(const string &str, char delimiter) {
     vector<string> internal;

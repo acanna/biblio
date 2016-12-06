@@ -11,6 +11,8 @@
 #include "NatureRequester.h"
 #include "ScopusRequester.h"
 #include "ScienceDirectRequester.h"
+#include "Database.h"
+
 
 enum requestersEnum {
     dblp = 1,
@@ -24,6 +26,8 @@ enum requestersEnum {
 std::vector<Requester *> init_requesters(std::vector<std::pair<requestersEnum, std::vector<std::string>>> & data);
 std::vector<Requester *> read_config(const std::string &filename, int &threads);
 std::vector<std::pair<requestersEnum, std::vector<std::string>>> read_config_data(const std::string &filename, int &threads);
+
+Database * connect_database(const std::string &filename);
 std::vector<std::string> split(const std::string &str, char delimiter);
 std::string low_letters_only(std::string str);
 std::string delete_spaces_to_lower(std::string str);
