@@ -8,6 +8,8 @@
 #include <poppler/cpp/poppler-page.h>
 #include <poppler/cpp/poppler-page-renderer.h>
 
+//EL если этот класс больше не используется, то самое время его выпилить
+//EL если что --- потом можно будет достать из git
 class Parser {
 
 private:

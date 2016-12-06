@@ -37,10 +37,24 @@ int main(int argc, char **argv) {
         ofstream out_html("biblio.html");
         ofstream out_bib("biblio.bib");
 
+        //EL зачем для каждого файла каждый раз все по новой считывать и инициализировать?
+        // Базы и конфиги должны быть снаружи цикла
         for (const auto &filename : filenames)
         {
             try {
+                //EL не вижу delete для реквестеров
+                //А вот, если сделать RequesterManager с деструктором, то об
+                //этом можно было не думать, это были бы его проблемы
+                //Можно использовать паттерн Fabric для RequesterManager
                 vector<Requester *> requesters = read_config("../biblio.cfg");
+
+
+                //1. Дважды читать конфиг это странно
+                //2. Лучше уж сделать класс для конфига
+                //Лучше всего его сделать по паттерну Singletone,
+                //тогда не надо будет везде передавать
+                //3. нет delete для db
+                //4. функцию лучше спрятать в класс Database
 				Database * db = connect_database("../biblio.cfg");
 
 				ArticleInfo * result_ptr = db->get_data(filename);

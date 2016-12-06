@@ -104,6 +104,7 @@ bool PictureParser::white_background(int x_start, int y) {
         if (is_white(x, y)) {
             white_counter++;
         }
+        //EL хотя бы был бы const с понятным именем. а то почему десять?
         if (white_counter > 10) {
             return true;
         }
@@ -112,6 +113,7 @@ bool PictureParser::white_background(int x_start, int y) {
 }
 
 void PictureParser::draw_title_rectangle(){
+    //EL const
 	int white = 115;
 	int x = this->title_x;
 	int y = this->title_y;
@@ -130,6 +132,7 @@ void PictureParser::draw_title_rectangle(){
 
 
 void PictureParser::find_title() {
+    //EL const
     int screen_res = 72;
     int page_num = 0;
     string result = "";

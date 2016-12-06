@@ -2,10 +2,13 @@
 
 using namespace std;
 
+//EL эти кишки лучше спрятать вовнутрь класса Requester
+//в функцию writeData последним параметров передавать указатель на Requester,
+//тогда можно будет от этих глобальных переменных избавиться
 char buffer[MAX_BUF + 1];
 int bufferIndex;
 int errorCode;
-
+//эту функцию лучше сделать статической в классе Requester
 size_t writeData(void *webBuffer, size_t size, size_t nmemb, void *userp) {
     size_t segSize = size * nmemb;
     if (bufferIndex + segSize > MAX_BUF) {
