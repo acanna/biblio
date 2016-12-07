@@ -19,7 +19,7 @@ vector<ArticleInfo> DBLPRequester::parse_response(char * buffer) {
 
     if (!parsingSuccessful) {
         string what = "DBLP: Parser error: " + reader.getFormattedErrorMessages();
-        throw Biblio_exception(what);
+        throw BiblioException(what);
     }
 
     Json::Value hits = root["result"]["hits"]["hit"];

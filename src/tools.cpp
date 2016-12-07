@@ -13,11 +13,11 @@ vector<Requester *> read_config(const string &filename, int &threads) {
 	try {	
     	cfg.readFile(filename.c_str());
     } catch (const FileIOException &ex){
-		throw Biblio_exception("Reading config file failed");
+		throw BiblioException("Reading config file failed");
 	}  catch (const ParseException &pex){
 		string what = "Parse error at " + (string)pex.getFile() + ":" 
 			+ to_string(pex.getLine()) + " - " + (string)pex.getError();
-		throw Biblio_exception("Reading config file failed: "+ what);
+		throw BiblioException("Reading config file failed: "+ what);
 	}
 
     try {
@@ -69,7 +69,7 @@ vector<Requester *> read_config(const string &filename, int &threads) {
 
 	}
 	catch (const SettingNotFoundException &nfex){
-	    throw Biblio_exception("Config file has wrong format");
+	    throw BiblioException("Config file has wrong format");
 	}
     return active_requesters;
 }
@@ -83,11 +83,11 @@ read_config_data(const std::string &filename, int &threads) {
     try {
         cfg.readFile(filename.c_str());
     } catch (const FileIOException &ex) {
-        throw Biblio_exception("Reading config file failed");
+        throw BiblioException("Reading config file failed");
     } catch (const ParseException &pex) {
         string what = "Parse error at " + (string) pex.getFile() + ":"
                       + to_string(pex.getLine()) + " - " + (string) pex.getError();
-        throw Biblio_exception("Reading config file failed: " + what);
+        throw BiblioException("Reading config file failed: " + what);
     }
 
     try {
@@ -147,7 +147,7 @@ read_config_data(const std::string &filename, int &threads) {
 
     }
     catch (const SettingNotFoundException &nfex) {
-        throw Biblio_exception("Config file has wrong format");
+        throw BiblioException("Config file has wrong format");
     }
     return data;
 }
@@ -158,11 +158,11 @@ Database * connect_database(const string &filename) {
 	try {	
     	cfg.readFile(filename.c_str());
     } catch (const FileIOException &ex){
-		throw Biblio_exception("Reading config file failed");
+		throw BiblioException("Reading config file failed");
 	}  catch (const ParseException &pex){
 		string what = "Parse error at " + (string)pex.getFile() + ":" 
 			+ to_string(pex.getLine()) + " - " + (string)pex.getError();
-		throw Biblio_exception("Reading config file failed: "+ what);
+		throw BiblioException("Reading config file failed: "+ what);
 	}
 
 	Database * db;
@@ -175,7 +175,7 @@ Database * connect_database(const string &filename) {
 
 	}
 	catch (const SettingNotFoundException &nfex){
-	    throw Biblio_exception("Config file has wrong format");;
+	    throw BiblioException("Config file has wrong format");;
 	}
 	return db;
 }

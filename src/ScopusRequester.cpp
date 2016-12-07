@@ -32,7 +32,7 @@ vector<ArticleInfo> ScopusRequester::parse_response(char * buffer)  {
 
     if (!parsingSuccessful) {
         string what = "Scopus: Parser error: " + reader.getFormattedErrorMessages();
-        throw Biblio_exception(what);
+        throw BiblioException(what);
     }
 
 	Json::Value entry = root["search-results"]["entry"];

@@ -23,7 +23,7 @@ vector<ArticleInfo> NatureRequester::parse_response(char * buffer) {
 
     if (!parsingSuccessful) {
         string what = "Nature: Parser error: " + reader.getFormattedErrorMessages();
-        throw Biblio_exception(what);
+        throw BiblioException(what);
     }
 
     Json::Value entry = root["feed"]["entry"];

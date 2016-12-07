@@ -17,7 +17,7 @@ int check_status (const char * request, sqlite3 *db, int rc, sqlite3_stmt **stmt
 	if(rc != SQLITE_OK) {
 		cout << "status: " << rc << endl;
 		sqlite3_close(db);
-		throw Biblio_exception(sqlite3_errmsg(db));
+		throw BiblioException(sqlite3_errmsg(db));
 	} else while((rc = sqlite3_step(*stmt)) != SQLITE_DONE) {
 		switch(rc) {
     		case SQLITE_BUSY: 
@@ -27,7 +27,7 @@ int check_status (const char * request, sqlite3 *db, int rc, sqlite3_stmt **stmt
     		case SQLITE_ERROR:
 				sqlite3_finalize(*stmt);
     			sqlite3_close(db);
-		        throw Biblio_exception(sqlite3_errmsg(db));
+		        throw BiblioException(sqlite3_errmsg(db));
 				break;
     		case SQLITE_ROW:
                 return sqlite3_data_count(*stmt);
@@ -46,7 +46,7 @@ ArticleInfo * Database::get_data(std::string filename) {
 	rc = sqlite3_open(this->db_filename.c_str(), &db);
 	if (rc != SQLITE_OK) {
 		sqlite3_close(db);
-		throw Biblio_exception("Cannot open database " + string(sqlite3_errmsg(db)));
+		throw BiblioException("Cannot open database " + string(sqlite3_errmsg(db)));
 	}
 
 	request = "SELECT name FROM sqlite_master WHERE type='table'";
@@ -112,7 +112,7 @@ void Database::add_data(string filename, ArticleInfo info) {
 	rc = sqlite3_open(this->db_filename.c_str(), &db);
 	if (rc) {
 		sqlite3_close(db);
-		throw Biblio_exception("Cannot open database " + string(sqlite3_errmsg(db)));
+		throw BiblioException("Cannot open database " + string(sqlite3_errmsg(db)));
 	}
 
 	request = "SELECT name FROM sqlite_master WHERE type='table'";
@@ -176,7 +176,7 @@ void Database::add_data(std::vector<ArticleInfo> &data) {
 	rc = sqlite3_open(this->db_filename.c_str(), &db);
 	if (rc) {
 		sqlite3_close(db);
-		throw Biblio_exception("Cannot open database " + string(sqlite3_errmsg(db)));
+		throw BiblioException("Cannot open database " + string(sqlite3_errmsg(db)));
 	}
 
 	request = "SELECT name FROM sqlite_master WHERE type='table'";

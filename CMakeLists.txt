@@ -37,12 +37,10 @@ set(SOURCE_FILES
         src/ArxivRequester.cpp
         src/ArticleInfo.cpp
         src/ArticleInfo.h
-        src/Biblio_exception.h
+        src/BiblioException.h
         src/BiblioManager.cpp
         src/BiblioManager.h
         src/main.cpp
-        src/Parser.cpp
-        src/Parser.h
         src/PictureParser.cpp
         src/PictureParser.h
         src/tools.cpp

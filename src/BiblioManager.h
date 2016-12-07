@@ -4,7 +4,7 @@
 #include <mutex>
 #include <queue>
 #include "Parser.h"
-#include "Biblio_exception.h"
+#include "BiblioException.h"
 #include "Requester.h"
 #include "PictureParser.h"
 
@@ -12,7 +12,6 @@ class BiblioManager {
 
 private:
     int threads_num;
-    Parser  parser;
     PictureParser picture_parser;
 
 private:

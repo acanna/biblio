@@ -93,7 +93,7 @@ TEST (PictureParser, Positive) {
 	            cout << endl;
             }
             counter++;
-        } catch (const Biblio_exception &e) {
+        } catch (const BiblioException &e) {
             cerr << e.what() << endl;
         }
     }
@@ -147,7 +147,7 @@ TEST (PictureParser, OnlineDBLP) {
                 cout << "Got:    " << result.get_title() << endl;
             }
             counter++;
-        } catch (const Biblio_exception &e) {
+        } catch (const BiblioException &e) {
             cerr << e.what() << endl;
         }
     }
@@ -213,7 +213,7 @@ TEST (PictureParser, Online) {
                 cout << "Got:    " <<result.get_title() << endl;
             }
             counter++;
-        } catch (const Biblio_exception &e) {
+        } catch (const BiblioException &e) {
             cerr << e.what() << endl;
         }
     }
@@ -262,7 +262,7 @@ TEST (PictureParser, Offline) {
                 cout << "Got:    " << result.get_title() << endl;
             }
             counter++;
-        } catch (const Biblio_exception &e) {
+        } catch (const BiblioException &e) {
             cerr << e.what() << endl;
         }
     }
@@ -352,7 +352,7 @@ TEST (PictureParser, Dash) {
         cout << "Actual: " << saved_paper_title << endl;
         cout << "Got:    " << result.get_title() << endl;
         counter++;
-    } catch (const Biblio_exception &e) {
+    } catch (const BiblioException &e) {
         cerr << e.what() << endl;
     }
 }

@@ -19,7 +19,7 @@
 #include <iostream>
 
 
-#include "Biblio_exception.h"
+#include "BiblioException.h"
 #include "tools.h"
 
 class PixInfo {

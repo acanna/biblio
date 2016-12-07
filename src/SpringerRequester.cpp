@@ -24,7 +24,7 @@ vector<ArticleInfo> SpringerRequester::parse_response(char * buffer)  {
 
     if (!parsingSuccessful) {
         string what = "Springer: Parser error: " + reader.getFormattedErrorMessages();
-        throw Biblio_exception(what);
+        throw BiblioException(what);
     }
 
 	int size = stoi(root["result"][0].get("total", "").asString());

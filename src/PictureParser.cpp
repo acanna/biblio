@@ -140,7 +140,7 @@ void PictureParser::find_title() {
     poppler::document *doc = poppler::document::load_from_file(this->filename);
     const int pages_nbr = doc->pages();
     if (page_num > pages_nbr) {
-        throw Biblio_exception("PictureParser: Wrong page number indicated.\n");
+        throw BiblioException("PictureParser: Wrong page number indicated.\n");
     }
     poppler::page *mypage = doc->create_page(page_num);
 
@@ -409,7 +409,7 @@ void PictureParser::select_title_rectangle(vector<Rectangle> & areas) {
 string PictureParser::parse_image() {
     tesseract::TessBaseAPI *api = new tesseract::TessBaseAPI();
     if (api->Init(NULL, "eng")) {
-        throw Biblio_exception("PictureParser: Could not initialize tesseract.\n");
+        throw BiblioException("PictureParser: Could not initialize tesseract.\n");
     }
 
     Pix *image = pixRead(this->imagename.c_str());

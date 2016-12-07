@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sqlite3.h>
-#include "Biblio_exception.h"
+#include "BiblioException.h"
 #include "ArticleInfo.h"
 
 class Database {

@@ -34,7 +34,7 @@ int main(int argc, char **argv) {
         bool offline = offlineSwitch.getValue();
         
         if (curl_global_init(CURL_GLOBAL_ALL) != 0) {
-            throw new Biblio_exception("Curl global init failed.\n");
+            throw new BiblioException("Curl global init failed.\n");
         }
         int threads = 1;
         std::vector<std::pair<requestersEnum, std::vector<std::string>>> data = read_config_data("../biblio.cfg", threads);
@@ -73,7 +73,7 @@ int main(int argc, char **argv) {
             manager.print_html(out_html, result);
             manager.print_bib(out_bib, result);
             db->add_data(result);
-        } catch (const Biblio_exception &e) {
+        } catch (const BiblioException &e) {
             cerr << e.what() << '\n';
         }
 

@@ -26,7 +26,7 @@ size_t Requester::writeData(void *webBuffer, size_t size, size_t nmemb, void *us
 void Requester::curl_init() {
     curl = curl_easy_init();
     if (!curl) {
-        throw Biblio_exception("CURL initialization failed");
+        throw BiblioException("CURL initialization failed");
     }
 
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *) this);
@@ -65,7 +65,7 @@ char * Requester::curl_perform(string request) {
             default:
                 what = "Failed to perform query";
         }
-        throw Biblio_exception(what);
+        throw BiblioException(what);
     }
 	
 	return buffer;

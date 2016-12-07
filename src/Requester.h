@@ -14,7 +14,7 @@
 #include "../lib/json/json.h"
 #include "../lib/json/value.h"
 #include "ArticleInfo.h"
-#include "Biblio_exception.h"
+#include "BiblioException.h"
 
 #define MAX_BUF 65536
 
