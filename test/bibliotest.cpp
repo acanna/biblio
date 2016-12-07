@@ -6,7 +6,7 @@
 #include <gtest/gtest.h>
 #include "../lib/tinydir/tinydir.h"
 
-#include "../src/DBLPRequester.h"
+#include "../src/Requesters/Requester.h"
 #include "../src/BiblioManager.h"
 
 using namespace std;
@@ -140,16 +140,23 @@ TEST (PictureParser, Online) {
             paper_title = files_info[result[i].get_filename()];
             transform(paper_title.begin(), paper_title.end(), paper_title.begin(), (int (*)(int)) tolower);
 
+			cout << endl;
+			cout << "Exact title: " << endl;
+            cout << paper_title << endl;
+            cout << "Parsed title: " << endl;
+            cout << title <<endl;
+            cout << endl;
+         
 
             if (result[i].get_authors().size() != 0) {
                 found++;
             } else {
                 cout << "Failed at " << result[i].get_filename() << endl;
-                cout << "Exact title: " << endl;
+/*                cout << "Exact title: " << endl;
                 cout << paper_title << endl;
                 cout << "Parsed title: " << endl;
                 cout << title <<endl;
-                cout << endl;
+                cout << endl;*/
             }
             counter++;
         }

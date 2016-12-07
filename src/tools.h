@@ -5,12 +5,12 @@
 #include <sstream>
 
 #include "BiblioException.h"
-#include "DBLPRequester.h"
-#include "SpringerRequester.h"
-#include "ArxivRequester.h"
-#include "NatureRequester.h"
-#include "ScopusRequester.h"
-#include "ScienceDirectRequester.h"
+#include "Requesters/DBLPRequester.h"
+#include "Requesters/SpringerRequester.h"
+#include "Requesters/ArxivRequester.h"
+#include "Requesters/NatureRequester.h"
+#include "Requesters/ScopusRequester.h"
+#include "Requesters/ScienceDirectRequester.h"
 #include "Database.h"
 
 std::vector<Requester *> read_config(const std::string &filename);

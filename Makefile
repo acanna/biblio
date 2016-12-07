@@ -10,6 +10,7 @@ BIN = bin
 TEST_BIN = bin
 GTEST_DIR = lib/googletest-master/googletest
 JSON_DIR = lib/json
+REQ_DIR = Requesters
 TEST_DIR = test
 
 TESTS = bibliotest 
@@ -18,7 +19,10 @@ GTEST_HEADERS = $(GTEST_DIR)/include/gtest/*.h \
                 $(GTEST_DIR)/include/gtest/internal/*.h
 TESTS_EXE = $(addprefix $(TEST_BIN)/, $(TESTS))
 
-FILES_FOR_TESTS = ArticleInfo.cpp tools.cpp Parser.cpp PictureParser.cpp BiblioManager.cpp Requester.cpp DBLPRequester.cpp SpringerRequester.cpp ArxivRequester.cpp NatureRequester.cpp ScopusRequester.cpp ScienceDirectRequester.cpp Database.cpp
+FILES_REQUESTERS = Requester.cpp DBLPRequester.cpp SpringerRequester.cpp ArxivRequester.cpp NatureRequester.cpp ScopusRequester.cpp ScienceDirectRequester.cpp
+FILES_REQUESTERS_SOURCES = $(addprefix $(REQ_DIR)/, $(FILES_REQUESTERS))
+
+FILES_FOR_TESTS = $(FILES_REQUESTERS_SOURCES) ArticleInfo.cpp tools.cpp PictureParser.cpp BiblioManager.cpp Database.cpp 
 
 HEADERS_FOR_TESTS = $(addprefix $(SRC)/, $(FILES_FOR_TESTS:.cpp=.h))
 
@@ -47,6 +51,7 @@ $(BIN)/main.o: $(SRC)/main.cpp
 
 $(BIN)/%.o: $(SRC)/%.cpp $(SRC)/%.h $(HEADERS_FOR_TESTS)
 	mkdir -p $(BIN)
+	mkdir -p $(BIN)/$(REQ_DIR)
 	$(CC) $(CFLAGS) $< -o $@
 
 test: $(TESTS_EXE)
@@ -60,6 +65,7 @@ clean:
 
 $(TEST_BIN)/bibliotest.o : $(TEST_DIR)/bibliotest.cpp $(SOURCES_FOR_TESTS) $(GTEST_HEADERS) 
 	mkdir -p $(BIN)
+	mkdir -p $(BIN)/$(REQ_DIR)
 	$(CC) $(CFLAGS_TEST) -c $(TEST_DIR)/bibliotest.cpp -o $@
 
 $(TEST_BIN)/bibliotest : $(TEST_BIN)/bibliotest.o $(OBJECTS_FOR_TESTS) $(TEST_BIN)/gtest_main.a

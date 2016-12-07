@@ -21,13 +21,13 @@ std::vector<ArticleInfo> BiblioManager::search_requester(Requester &requester, s
 
     result = requester.publication_request(new_query);
 
-    replace(new_query.begin(), new_query.end(), ' ', '.');
+/*    replace(new_query.begin(), new_query.end(), ' ', '.');
     additional_result = requester.publication_request(new_query);
     result.insert(result.end(), additional_result.begin(), additional_result.end());
 
     replace(query.begin(), query.end(), ' ', '$');
     additional_result = requester.publication_request(query);
-    result.insert(result.end(), additional_result.begin(), additional_result.end());
+    result.insert(result.end(), additional_result.begin(), additional_result.end());*/
 
     return result;
 }
