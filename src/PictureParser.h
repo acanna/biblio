@@ -5,6 +5,7 @@
 #include <fstream>
 #include <regex>
 #include <vector>
+
 #include <tesseract/baseapi.h>
 #include <leptonica/allheaders.h>
 #include <poppler/cpp/poppler-document.h>
@@ -16,8 +17,6 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
-#include <iostream>
-
 
 #include "BiblioException.h"
 #include "tools.h"

@@ -11,8 +11,10 @@
 #include <vector>
 #include <exception>
 #include <stdexcept>
+
 #include "../lib/json/json.h"
 #include "../lib/json/value.h"
+
 #include "ArticleInfo.h"
 #include "BiblioException.h"
 
@@ -32,10 +34,9 @@ protected:
 	static size_t writeData(void *webBuffer, size_t size, size_t nmemb, void *userp);
 	void curl_init();
 	void curl_clean_up();
-    // const &
-	char * curl_perform(std::string request) ;
+	char * curl_perform(const std::string &request) ;
 	virtual std::vector<ArticleInfo> parse_response(char* buffer) = 0;
-	virtual std::string make_request(std::string query) = 0;
+	virtual std::string make_request(const std::string &query) = 0;
 
 public:
 	Requester();

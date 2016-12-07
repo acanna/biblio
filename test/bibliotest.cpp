@@ -2,16 +2,16 @@
 #include <fstream>
 #include <algorithm>
 #include <regex>
+
 #include <gtest/gtest.h>
+#include "../lib/tinydir/tinydir.h"
+
 #include "../src/DBLPRequester.h"
 #include "../src/BiblioManager.h"
-#include "../lib/tinydir/tinydir.h"
 
 using namespace std;
 
-
 BiblioManager manager;
-
 
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);

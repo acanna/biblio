@@ -1,12 +1,10 @@
-#include "ScopusRequester.h"
-#include <string>
 #include <regex>
+
+#include "ScopusRequester.h"
 
 using namespace std;
 
-
-
-ScopusRequester::ScopusRequester(string url, string apikey):Requester() {
+ScopusRequester::ScopusRequester(const string &url, const string &apikey): Requester() {
 	this->url = url;
 	this->apikey = apikey;
 
@@ -17,10 +15,10 @@ ScopusRequester::ScopusRequester(string url, string apikey):Requester() {
     curl_easy_setopt(this->curl, CURLOPT_HTTPHEADER, chunk);
 }
 
-string ScopusRequester::make_request(std::string query){
+string ScopusRequester::make_request(const string &query){
     regex re_frmt(" ");
-    query = regex_replace(query, re_frmt, "%20");
-	return this->url + "{" + query + "}&count=5&sort=relevancy";
+    string new_query = regex_replace(query, re_frmt, "%20");
+	return this->url + "{" + new_query + "}&count=5&sort=relevancy";
 }
 
 vector<ArticleInfo> ScopusRequester::parse_response(char * buffer)  {

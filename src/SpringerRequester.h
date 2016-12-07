@@ -1,4 +1,5 @@
 #pragma once
+
 #include "Requester.h"
 
 class SpringerRequester: public Requester {
@@ -8,8 +9,8 @@ protected:
 	std::string apikey;  
 
     std::vector<ArticleInfo> parse_response(char * buffer);
-	std::string make_request(std::string query);
+	std::string make_request(const std::string &query);
 
 public:
-	SpringerRequester(std::string url, std::string apikey);
+	SpringerRequester(const std::string &url, const std::string &apikey);
 };

@@ -1,16 +1,17 @@
-#include "ArxivRequester.h"
 #include <regex>
+
+#include "ArxivRequester.h"
 
 using namespace std;
 using namespace tinyxml2;
 
-ArxivRequester::ArxivRequester(string url):Requester() {
+ArxivRequester::ArxivRequester(const string &url): Requester() {
 	this->url = url;
 }
 
-string ArxivRequester::make_request(std::string query){
-    query = regex_replace(query, regex(" "), "%20");
-	return this->url + "\"" + query + "\"&start=0&max_results=5";
+string ArxivRequester::make_request(const string &query){
+    string new_query = regex_replace(query, regex(" "), "%20");
+	return this->url + "\"" + new_query + "\"&start=0&max_results=5";
 }
 
 vector<ArticleInfo> ArxivRequester::parse_response(char * buffer) {

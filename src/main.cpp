@@ -1,10 +1,10 @@
 #include <iostream>
 #include <algorithm>
+
 #include <tclap/CmdLine.h>
+
 #include "Requester.h"
 #include "BiblioManager.h"
-#include "Database.h"
-#include "tools.h"
 
 using namespace std;
 

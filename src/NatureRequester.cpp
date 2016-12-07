@@ -1,5 +1,6 @@
-#include "NatureRequester.h"
 #include <regex>
+
+#include "NatureRequester.h"
 
 using namespace std;
 
@@ -7,9 +8,9 @@ NatureRequester::NatureRequester(string url):Requester() {
 	this->url = url;
 }
 
-string NatureRequester::make_request(std::string query){
-	query = regex_replace(query, regex(" "), "+");
-	string s = this->url + "dc.title+all+" +query + "&queryType=cql&httpAccept=application/json&sortKeys=,pam,0&recordPacking=unpacked&maximumRecords=5";
+string NatureRequester::make_request(const string &query){
+	string new_query = regex_replace(query, regex(" "), "+");
+	string s = this->url + "dc.title+all+" +new_query + "&queryType=cql&httpAccept=application/json&sortKeys=,pam,0&recordPacking=unpacked&maximumRecords=5";
 	return s;
 }
 

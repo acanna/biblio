@@ -1,8 +1,10 @@
 #include <regex>
 #include <iostream>
+
 #include <libconfig.h++>
-#include "tools.h"
 #include "../lib/tinydir/tinydir.h"
+
+#include "tools.h"
 
 using namespace std;
 using namespace libconfig;

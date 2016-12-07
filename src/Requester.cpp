@@ -4,12 +4,6 @@ using namespace std;
 
 
 size_t Requester::writeData(void *webBuffer, size_t size, size_t nmemb, void *userp) {
-
-//EL эти кишки лучше спрятать вовнутрь класса Requester
-//в функцию writeData последним параметров передавать указатель на Requester,
-//тогда можно будет от этих глобальных переменных избавиться
-
-//эту функцию лучше сделать статической в классе Requester
     size_t segSize = size * nmemb;
     int bufferIndex = (*(Requester *) userp).bufferIndex;
     if (bufferIndex + segSize > MAX_BUF) {
@@ -37,7 +31,7 @@ void Requester::curl_clean_up(){
 	curl_easy_cleanup(curl);
 }
 
-char * Requester::curl_perform(string request) {
+char * Requester::curl_perform(const string &request) {
     errorCode = 0;
     bufferIndex = 0;
 

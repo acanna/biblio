@@ -1,13 +1,13 @@
-#include <iostream>
 #include <sys/stat.h>
-#include <time.h>
-#include <stdio.h>
 #include <unistd.h>
+
+#include <iostream>
+
 #include "Database.h"
 
 using namespace std;
 
-Database::Database(std::string db_filename){
+Database::Database(const string &db_filename){
     this->db_filename = db_filename;
 }
 

@@ -1,12 +1,10 @@
-#include "ScienceDirectRequester.h"
-#include <string>
 #include <regex>
+
+#include "ScienceDirectRequester.h"
 
 using namespace std;
 
-
-
-ScienceDirectRequester::ScienceDirectRequester(string url, string apikey):Requester() {
+ScienceDirectRequester::ScienceDirectRequester(const string &url, const string &apikey): Requester() {
 	this->url = url;
 	this->apikey = apikey;
 
@@ -17,10 +15,10 @@ ScienceDirectRequester::ScienceDirectRequester(string url, string apikey):Reques
     curl_easy_setopt(this->curl, CURLOPT_HTTPHEADER, chunk);
 }
 
-string ScienceDirectRequester::make_request(std::string query){
+string ScienceDirectRequester::make_request(const string &query){
     regex re_frmt(" ");
-    query = regex_replace(query, re_frmt, "%20");
-	return this->url + "{" + query + "}&count=5&sort=relevancy";
+	string new_query = regex_replace(query, re_frmt, "%20");
+	return this->url + "{" + new_query + "}&count=5&sort=relevancy";
 }
 
 vector<ArticleInfo> ScienceDirectRequester::parse_response(char * buffer)  {

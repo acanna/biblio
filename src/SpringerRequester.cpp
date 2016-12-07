@@ -1,18 +1,18 @@
-#include "SpringerRequester.h"
 #include <regex>
-#include <string>
+
+#include "SpringerRequester.h"
 
 using namespace std;
 
-SpringerRequester::SpringerRequester(string url, string apikey):Requester() {
+SpringerRequester::SpringerRequester(const string &url, const string &apikey): Requester() {
 	this->url = url;
 	this->apikey = apikey;
 }
 
-string SpringerRequester::make_request(std::string query){
+string SpringerRequester::make_request(const string &query){
     regex re_frmt(" ");
-    query = regex_replace(query, re_frmt, "%20");
-	return this->url + "\"" + query + "\"&api_key=" + this->apikey;
+    string new_query = regex_replace(query, re_frmt, "%20");
+	return this->url + "\"" + new_query + "\"&api_key=" + this->apikey;
 }
 
 vector<ArticleInfo> SpringerRequester::parse_response(char * buffer)  {

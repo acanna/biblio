@@ -3,7 +3,7 @@
 #include <functional>
 #include <mutex>
 #include <queue>
-#include "Parser.h"
+
 #include "BiblioException.h"
 #include "Requester.h"
 #include "PictureParser.h"

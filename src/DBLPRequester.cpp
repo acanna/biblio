@@ -6,7 +6,7 @@ DBLPRequester::DBLPRequester(string url):Requester() {
 	this->url = url;
 }
 
-string DBLPRequester::make_request(std::string query){
+string DBLPRequester::make_request(const string &query){
 	return this->url + query;
 }
 

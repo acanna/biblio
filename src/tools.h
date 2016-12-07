@@ -3,8 +3,8 @@
 #include <vector>
 #include <string>
 #include <sstream>
+
 #include "BiblioException.h"
-#include "Requester.h"
 #include "DBLPRequester.h"
 #include "SpringerRequester.h"
 #include "ArxivRequester.h"
