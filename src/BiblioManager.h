@@ -30,7 +30,7 @@ private:
     static std::vector<ArticleInfo> search_requester(Requester &requester, std::string query);
 
 public:
-    BiblioManager() {};
+    BiblioManager();
     BiblioManager(int threads);
     std::vector<ArticleInfo> search_distance_requesters(std::vector<Requester *> requesters,
                                                         std::function<size_t(const std::string &,

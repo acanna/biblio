@@ -316,3 +316,7 @@ void BiblioManager::thread_function_data(std::vector<std::pair<requestersEnum, s
         }
     }
 }
+
+BiblioManager::BiblioManager() {
+    threads_num = 1;
+}

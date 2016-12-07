@@ -41,17 +41,6 @@ TEST (PaperAbsent, Negative) {
     EXPECT_EQ(result.size(), 0);
 }
 
-// Do we need this test? Using this template of manager.search_distance_requesters
-// it does not work because of missing filename.
-/*TEST (WrongQuery, Negative) {
-    const string query = "http://dblp.org/search/pbl/api?q";
-	DBLPRequester dblp = DBLPRequester(query);
-	vector<Requester *> req = {};
-	req.push_back(&dblp);
-    vector<ArticleInfo> result = manager.search_distance_requesters(req, levenshtein_distance, filename, false);
-    EXPECT_EQ(result.size(), 0);
-}*/
-
 TEST (PictureParser, Positive) {
     string data_file = "../articles/test_summary.txt";
     string path = "../articles/";
@@ -107,80 +96,25 @@ TEST (PictureParser, Positive) {
     EXPECT_EQ(0, 0);
 }
 
-TEST (PictureParser, OnlineDBLP) {
-	const std::string URL = "http://dblp.org/search/publ/api?format=json&h=1&q=";
-    string data_file = "../articles/test_summary.txt";
-    string path = "../articles/";
-    ifstream file(data_file);
-    ofstream out_html("result.html");
-    int passed = 0;
-    int counter = 0;
-    string line = "", filename = "", paper_title = "", cur_title = "";
-    vector<string> tmp;
-    while (file.is_open() && !file.eof()) {
-        getline(file, line);
-        tmp = split(line, '\t');
-        if (tmp.size() < 2) {
-            continue;
-        }
-        filename = tmp[0];
-        paper_title = tmp[1];
-        filename = path + filename;
-        BiblioManager manager = BiblioManager();
-        try {
-			// dblp
-            DBLPRequester *dblp = new DBLPRequester(URL);
-			vector<Requester*> req = {};
-			req.push_back(dblp);
-
-
-            ArticleInfo result = manager.search_distance_requesters(req, levenshtein_distance, filename, false);
-            manager.print_html(out_html, filename, result);
-            paper_title = raw_to_formatted(paper_title);
-            cur_title = raw_to_formatted(result.get_title());
-            if (delete_spaces_to_lower(paper_title) == delete_spaces_to_lower(cur_title) ||
-                paper_title.find(cur_title) != std::string::npos) {
-                passed++;
-            } else {
-                cout << "Failed at " << filename << endl;
-                cout << "Actual: " << paper_title << endl;
-                cout << "Got:    " << result.get_title() << endl;
-            }
-            counter++;
-        } catch (const BiblioException &e) {
-            cerr << e.what() << endl;
-        }
-    }
-    out_html.close();
-    cout << ">>>-------------------------------------<<<" << endl;
-    cout << "    Passed " << passed << " tests from " << counter << endl;
-    cout << "    Passed " << passed * 100 / (float) counter << " % from total amount" << endl;
-    cout << ">>>-------------------------------------<<<" << endl;
-
-    EXPECT_EQ(0, 0);
-}
-
-//EL кажется, эти тесты по форме устарели. Конфиг не используется.
-
 TEST (PictureParser, Online) {
-	string dblp_url = "http://dblp.org/search/publ/api?format=json&h=1&q=";
-	string springer_url = "http://api.springer.com/meta/v1/json?q=title:";
-	string springer_apikey= "64f779d62e09f8ec669d4c656684cded";  
-    string data_file = "../articles/test_summary.txt";
+
+    if (curl_global_init(CURL_GLOBAL_ALL) != 0) {
+        throw new BiblioException("Curl global init failed.\n");
+    }
+    int threads = 1;
+    std::vector<std::pair<requestersEnum, std::vector<std::string>>> data = read_config_data("../biblio.cfg", threads);
+    BiblioManager manager(threads);
+
+    ofstream out_html("biblio.html");
+    ofstream out_bib("biblio.bib");
+    vector<string> filenames = {};
     string path = "../articles/";
-    ifstream file(data_file);
-    ofstream out_html("result.html");
+    ifstream file("../articles/test_summary.txt");
     int counter = 0;
-    int found_right = 0, found_wrong = 0;
+    int found = 0;
     string line = "", filename = "", paper_title = "", cur_title = "", unformatted_paper_title = "";
     vector<string> tmp;
-    vector<Requester *> req = {};
-    // dblp
-    Requester * dblp = new DBLPRequester(dblp_url);
-    req.push_back(dblp);
-    // springer
-    Requester * springer = new SpringerRequester(springer_url, springer_apikey);
-    req.push_back(springer);
+    map<string, string> files_info = {};
     while (file.is_open() && !file.eof()) {
         getline(file, line);
         tmp = split(line, '\t');
@@ -188,88 +122,47 @@ TEST (PictureParser, Online) {
             continue;
         }
         filename = tmp[0];
-        paper_title = tmp[1];
-        unformatted_paper_title = paper_title;
+        paper_title = raw_to_formatted(tmp[1]);
         filename = path + filename;
-        BiblioManager manager = BiblioManager();
-        try {
-            ArticleInfo result = manager.search_distance_requesters(req, levenshtein_distance, filename, false);
+        files_info.insert(make_pair(filename, paper_title));
+        filenames.push_back(filename);
+    }
+    try {
+        vector<ArticleInfo> result = manager.search_distance_data(data, levenshtein_distance, filenames, false);
+        manager.print_html(out_html, result);
+        manager.print_bib(out_bib, result);
 
-            manager.print_html(out_html, result);
-            paper_title = letters_to_lower(paper_title);
-            cur_title = letters_to_lower(result.get_title());
-            if (result.get_authors().size() > 0) {
-                if (paper_title.find(cur_title) != std::string::npos) {
-                    found_right++;
-                } else {
-                    found_wrong++;
-                    cout << "Found wrong. Failed at " << filename << endl;
-                    cout << "Actual: " << unformatted_paper_title << endl;
-                    cout << "Got:    " << result.get_title() << endl;
-                }
+        size_t result_size = result.size();
+        for (size_t i = 0; i < result_size; i++) {
+            string title = raw_to_formatted(result[i].get_title());
+            transform(title.begin(), title.end(), title.begin(), (int (*)(int)) tolower);
+
+            paper_title = files_info[result[i].get_filename()];
+            transform(paper_title.begin(), paper_title.end(), paper_title.begin(), (int (*)(int)) tolower);
+
+
+            if (result[i].get_authors().size() != 0) {
+                found++;
             } else {
-                cout << "Failed at " << filename << " (NOT FOUND)" << endl;
-                cout << "Actual: " << unformatted_paper_title << endl;
-                cout << "Got:    " <<result.get_title() << endl;
+                cout << "Failed at " << result[i].get_filename() << endl;
+                cout << "Exact title: " << endl;
+                cout << paper_title << endl;
+                cout << "Parsed title: " << endl;
+                cout << title <<endl;
+                cout << endl;
             }
             counter++;
-        } catch (const BiblioException &e) {
-            cerr << e.what() << endl;
         }
+    } catch (const BiblioException &e) {
+        cerr << e.what() << '\n';
     }
+
     out_html.close();
-    cout << ">>>-------------------------------------<<<" << endl;
-    cout << "    Found right " << found_right << " tests from " << counter << endl;
-    cout << "    Found wrong " << found_wrong << " tests from " << counter << endl;
-    cout << "    Passed " << found_right * 100 / (float) counter << " % from total amount" << endl;
-    cout << ">>>-------------------------------------<<<" << endl;
+    out_bib.close();
 
-    EXPECT_EQ(0, 0);
-}
-
-TEST (PictureParser, Offline) {
-    string data_file = "../articles/test_summary.txt";
-    string path = "../articles/";
-    ifstream file(data_file);
-    ofstream out_html("result.html");
-    int counter = 0;
-    int passed = 0;
-    string line = "", filename = "", paper_title = "", cur_title = "";
-    vector<string> tmp;
-    vector<Requester *> req = {};
-    while (file.is_open() && !file.eof()) {
-        getline(file, line);
-        tmp = split(line, '\t');
-        if (tmp.size() < 2) {
-            continue;
-        }
-        filename = tmp[0];
-        paper_title = tmp[1];
-        string saved_paper_title = raw_to_formatted(paper_title);
-        filename = path + filename;
-        BiblioManager manager = BiblioManager();
-        try {
-            ArticleInfo result = manager.search_distance_requesters(req, levenshtein_distance, filename, true);
-
-            manager.print_html(out_html, result);
-            paper_title = letters_to_lower(paper_title);
-            cur_title = letters_to_lower(result.get_title());
-            if (paper_title.find(cur_title) != std::string::npos) {
-                passed++;
-            } else {
-                cout << "Failed at " << filename << endl;
-                cout << "Actual: " << saved_paper_title << endl;
-                cout << "Got:    " << result.get_title() << endl;
-            }
-            counter++;
-        } catch (const BiblioException &e) {
-            cerr << e.what() << endl;
-        }
-    }
-    out_html.close();
     cout << ">>>-------------------------------------<<<" << endl;
-    cout << "    Passed " << passed << " tests from " << counter << endl;
-    cout << "    Passed " << passed * 100 / (float) counter << " % from total amount" << endl;
+    cout << "    Found " << found << " tests from " << counter << endl;
+    cout << "    Passed " << found * 100 / (float) counter << " % from total amount" << endl;
     cout << ">>>-------------------------------------<<<" << endl;
 
     EXPECT_EQ(0, 0);
@@ -311,48 +204,5 @@ TEST (TinyDir, ReadPDF) {
     vector<string> files = read_pdf_files_recursive(path);
     for (string s : files) {
         cout << s << endl;
-    }
-}
-
-TEST (PictureParser, Dash) {
-    ofstream out_html("result.html");
-    int counter = 0;
-    int passed = 0;
-    string line = "", filename = "", paper_title = "", cur_title = "";
-    vector<string> tmp;
-    vector<Requester *> req = {};
-
-    paper_title = "Solar-Blind UV Photocathodes Based on AlGaN Heterostructures with a 300- to 330-nm Spectral Sensitivity Threshold";
-    string saved_paper_title = raw_to_formatted(paper_title);
-    filename =  "../articles/test_71.pdf";
-    BiblioManager manager = BiblioManager();
-    try {
-        ArticleInfo result = manager.search_distance_requesters(req, levenshtein_distance, filename, true);
-
-        manager.print_html(out_html, result);
-        paper_title = letters_to_lower(paper_title);
-        cur_title = letters_to_lower(result[0].get_title());
-        if (paper_title.find(cur_title) != std::string::npos) {
-            passed++;
-        } cout << "Failed at " << filename << endl;
-        cout << "Actual: " << saved_paper_title << endl;
-        cout << "Got:    " << result[0].get_title() << endl;
-        counter++;
-
-        paper_title = "Core-shell monodisperse spherical mSiO2/Gd2O3:Eu3+@mSiO2 particles as potential multifunctional theranostic agents";
-        saved_paper_title = raw_to_formatted(paper_title);
-        filename = "../articles/test_95.pdf";
-        result = manager.search_distance_requesters(req, levenshtein_distance, filename, true);
-        manager.print_html(out_html, result);
-        paper_title = letters_to_lower(paper_title);
-        cur_title = letters_to_lower(result.get_title());
-        if (paper_title.find(cur_title) != std::string::npos) {
-            passed++;
-        } cout << "Failed at " << filename << endl;
-        cout << "Actual: " << saved_paper_title << endl;
-        cout << "Got:    " << result.get_title() << endl;
-        counter++;
-    } catch (const BiblioException &e) {
-        cerr << e.what() << endl;
     }
 }
