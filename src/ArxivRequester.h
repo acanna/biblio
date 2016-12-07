@@ -15,5 +15,6 @@ protected:
 	std::string make_request(std::string query);
 
 public:
+    //EL const &
 	ArxivRequester(std::string url);
 };

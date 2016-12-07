@@ -52,10 +52,10 @@ void BiblioManager::print_txt(std::ostream &out, const std::string &filename, Ar
 }
 
 void BiblioManager::print_bib(std::ostream &out, vector<ArticleInfo> &result) {
-	size_t result_size = result.size();
+    size_t result_size = result.size();
     for (size_t k = 0; k < result_size; k++) {
         if (result[k].get_authors().size() > 0) {
-            vector <string> authors = result[k].get_authors();
+            vector<string> authors = result[k].get_authors();
             size_t t = authors.size();
             string label = "";
 
@@ -99,6 +99,7 @@ void BiblioManager::print_bib(std::ostream &out, vector<ArticleInfo> &result) {
         }
     }
 }
+
 
 void BiblioManager::print_html(std::ostream &out, std::vector<ArticleInfo> &result) {
 
@@ -261,8 +262,10 @@ BiblioManager::search_distance_data(std::vector<std::pair<requestersEnum, std::v
         threads.push_back(std::thread(thread_function_data, data, dist, offline, ref(in), ref(out)));
     }
 
+
     for(auto& thread : threads){
         thread.join();
+
     }
 
     return out;
@@ -312,4 +315,3 @@ void BiblioManager::thread_function_data(std::vector<std::pair<requestersEnum, s
         }
     }
 }
-

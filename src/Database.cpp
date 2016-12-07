@@ -11,6 +11,7 @@ Database::Database(std::string db_filename){
     this->db_filename = db_filename;
 }
 
+//EL статической функцией в класс
 int check_status (const char * request, sqlite3 *db, int rc, sqlite3_stmt **stmt) {
 	rc = sqlite3_prepare(db, request, -1, stmt, NULL);
 	if(rc != SQLITE_OK) {

@@ -44,6 +44,18 @@ int main(int argc, char **argv) {
         ofstream out_bib("biblio.bib");
 
 
+
+                //1. Дважды читать конфиг это странно
+                //2. Лучше уж сделать класс для конфига
+                //Лучше всего его сделать по паттерну Singletone,
+                //тогда не надо будет везде передавать
+                //3. нет delete для db
+                //4. функцию лучше спрятать в класс Database
+
+                //EL не вижу delete для реквестеров
+                //А вот, если сделать RequesterManager с деструктором, то об
+                //этом можно было не думать, это были бы его проблемы
+                //Можно использовать паттерн Fabric для RequesterManager
         try {
             Database *db = connect_database("../biblio.cfg");
             vector<string> filenames_to_search = {};

@@ -18,6 +18,7 @@ int main(int argc, char **argv) {
     return RUN_ALL_TESTS();
 }
 
+
 TEST (PaperPresent, Positive) {
 	const std::string URL = "http://dblp.org/search/publ/api?format=json&h=1&q=";
 	DBLPRequester dblp = DBLPRequester(URL);    
@@ -158,6 +159,8 @@ TEST (PictureParser, OnlineDBLP) {
 
     EXPECT_EQ(0, 0);
 }
+
+//EL кажется, эти тесты по форме устарели. Конфиг не используется.
 
 TEST (PictureParser, Online) {
 	string dblp_url = "http://dblp.org/search/publ/api?format=json&h=1&q=";
