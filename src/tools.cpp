@@ -82,12 +82,12 @@ read_config_data(const std::string &filename, int &threads) {
 
     try {
         cfg.readFile(filename.c_str());
-    } catch (const FileIOException &ex){
+    } catch (const FileIOException &ex) {
         throw Biblio_exception("Reading config file failed");
-    }  catch (const ParseException &pex){
-        string what = "Parse error at " + (string)pex.getFile() + ":"
-                      + to_string(pex.getLine()) + " - " + (string)pex.getError();
-        throw Biblio_exception("Reading config file failed: "+ what);
+    } catch (const ParseException &pex) {
+        string what = "Parse error at " + (string) pex.getFile() + ":"
+                      + to_string(pex.getLine()) + " - " + (string) pex.getError();
+        throw Biblio_exception("Reading config file failed: " + what);
     }
 
     try {
@@ -96,18 +96,18 @@ read_config_data(const std::string &filename, int &threads) {
                 threads = 1;
             }
         }
-    } catch(const SettingNotFoundException &nfex) {
+    } catch (const SettingNotFoundException &nfex) {
         cerr << "Number of threads is set to 1." << endl;
     }
 
     try {
-        if (cfg.lookup("dblp.enabled")){
+        if (cfg.lookup("dblp.enabled")) {
             string url = cfg.lookup("dblp.url");
             vector<string> v;
             v.push_back(url);
             data.push_back(make_pair(dblp, v));
         }
-        if (cfg.lookup("springer.enabled")){
+        if (cfg.lookup("springer.enabled")) {
             string url = cfg.lookup("springer.url");
             string apikey = cfg.lookup("springer.apikey");
             vector<string> v;
@@ -115,19 +115,19 @@ read_config_data(const std::string &filename, int &threads) {
             v.push_back(apikey);
             data.push_back(make_pair(springer, v));
         }
-        if (cfg.lookup("arxiv.enabled")){
+        if (cfg.lookup("arxiv.enabled")) {
             string url = cfg.lookup("arxiv.url");
             vector<string> v;
             v.push_back(url);
             data.push_back(make_pair(arxiv, v));
         }
-        if (cfg.lookup("nature.enabled")){
+        if (cfg.lookup("nature.enabled")) {
             string url = cfg.lookup("nature.url");
             vector<string> v;
             v.push_back(url);
             data.push_back(make_pair(nature, v));
         }
-        if (cfg.lookup("sciencedirect.enabled")){
+        if (cfg.lookup("sciencedirect.enabled")) {
             string url = cfg.lookup("sciencedirect.url");
             string apikey = cfg.lookup("sciencedirect.apikey");
             vector<string> v;
@@ -136,7 +136,7 @@ read_config_data(const std::string &filename, int &threads) {
             data.push_back(make_pair(sciencedirect, v));
         }
 
-        if (cfg.lookup("scopus.enabled")){
+        if (cfg.lookup("scopus.enabled")) {
             string url = cfg.lookup("scopus.url");
             string apikey = cfg.lookup("scopus.apikey");
             vector<string> v;
@@ -146,12 +146,13 @@ read_config_data(const std::string &filename, int &threads) {
         }
 
     }
-    catch (const SettingNotFoundException &nfex){
+    catch (const SettingNotFoundException &nfex) {
         throw Biblio_exception("Config file has wrong format");
     }
     return data;
+}
 
-Database * connect_database(const string &filename){
+Database * connect_database(const string &filename) {
 	Config cfg;
 
 	try {	
@@ -177,11 +178,7 @@ Database * connect_database(const string &filename){
 	    throw Biblio_exception("Config file has wrong format");;
 	}
 	return db;
-
 }
-
-
-
 
 std::vector<Requester *> init_requesters(std::vector<std::pair<requestersEnum, std::vector<std::string>>> &data) {
     vector<Requester*> active_requesters = {};

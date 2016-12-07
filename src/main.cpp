@@ -37,49 +37,33 @@ int main(int argc, char **argv) {
             throw new Biblio_exception("Curl global init failed.\n");
         }
         int threads = 1;
-        //vector<Requester *> requesters = read_config("../biblio.cfg", threads);
         std::vector<std::pair<requestersEnum, std::vector<std::string>>> data = read_config_data("../biblio.cfg", threads);
         BiblioManager manager(threads);
 
         ofstream out_html("biblio.html");
         ofstream out_bib("biblio.bib");
 
-//        for (const auto &filename : filenames)
-//        {
-//            try {
-//                vector<Requester *> requesters = read_config("../biblio.cfg");
-//                Database * db = connect_database("../biblio.cfg");
-//
-//                ArticleInfo * result_ptr = db->get_data(filename);
-//
-//                if (result_ptr == nullptr) {
-//                    ArticleInfo result = manager.search_distance_requesters(requesters,
-//                                                                            levenshtein_distance, filename, offline);
-//                    db->add_data(filename, result);
-//                    manager.print_html(out_html, filename, result);
-//                    manager.print_bib(out_bib, result);
-//                } else {
-//                    ArticleInfo result = * result_ptr;
-//                    manager.print_html(out_html, filename, result);
-//                    manager.print_bib(out_bib, result);
-//                }
-//                delete result_ptr;
-//            } catch (const Biblio_exception &e) {
-//                cerr << e.what() << '\n';
-//            } catch (...) {}
-//        }
 
         try {
-//            vector<ArticleInfo> result = manager.search_distance_requesters(requesters, levenshtein_distance, filenames, offline);
-            vector<ArticleInfo> result = manager.search_distance_data(data, levenshtein_distance, filenames, offline);
+            Database *db = connect_database("../biblio.cfg");
+            vector<string> filenames_to_search = {};
+            ArticleInfo * result_ptr;
+            for (const auto &filename : filenames)
+            {
+                result_ptr = db->get_data(filename);
+                if (result_ptr == nullptr) {
+                    filenames_to_search.push_back(filename);
+                }
+            }
+            delete result_ptr;
+            vector<ArticleInfo> result = manager.search_distance_data(data, levenshtein_distance, filenames_to_search, offline);
+
             manager.print_html(out_html, result);
             manager.print_bib(out_bib, result);
+            db->add_data(result);
         } catch (const Biblio_exception &e) {
             cerr << e.what() << '\n';
         }
-
-
-
 
         out_html.close();
         out_bib.close();

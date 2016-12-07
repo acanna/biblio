@@ -25,6 +25,8 @@ set(SOURCE_FILES
         lib/json/jsoncpp.cpp
         lib/tinydir/tinydir.h
 
+        src/Database.h
+        src/Database.cpp
         src/ScienceDirectRequester.cpp
         src/ScienceDirectRequester.h
         src/NatureRequester.cpp
@@ -54,5 +56,5 @@ set(SOURCE_FILES
 
 add_library(biblio_lib ${SOURCE_FILES})
 add_executable(biblio ${SOURCE_FILES})
-target_link_libraries(biblio gtest gtest_main ${CURL_LIBRARIES} poppler-cpp tesseract lept config++ opencv_core opencv_highgui opencv_imgproc tinyxml2)
+target_link_libraries(biblio gtest gtest_main ${CURL_LIBRARIES} poppler-cpp tesseract lept config++ opencv_core opencv_highgui opencv_imgproc tinyxml2 sqlite3)
 

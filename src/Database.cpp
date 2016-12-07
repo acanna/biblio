@@ -161,4 +161,69 @@ void Database::add_data(string filename, ArticleInfo info) {
 	
 }
 
+void Database::add_data(std::vector<ArticleInfo> &data) {
+	size_t  data_size = data.size();
+	if (data_size == 0) {
+		return;
+	}
+	sqlite3 *db;
+	sqlite3_stmt *stmt = nullptr;
+	int rc;
+	string request = "";
+
+
+	rc = sqlite3_open(this->db_filename.c_str(), &db);
+	if (rc) {
+		sqlite3_close(db);
+		throw Biblio_exception("Cannot open database " + string(sqlite3_errmsg(db)));
+	}
+
+	request = "SELECT name FROM sqlite_master WHERE type='table'";
+	int is_table = check_status(request.c_str(), db, rc, &stmt);
+	sqlite3_finalize(stmt);
+
+	if (is_table == 0) {
+		request = "CREATE TABLE Data(id INTEGER PRIMARY KEY AUTOINCREMENT, "
+				"filename TEXT, title TEXT, authors TEXT, venue TEXT, "
+				"volume TEXT, number TEXT, pages TEXT, year TEXT, "
+				"type TEXT, url TEXT, lastmod TEXT);";
+
+		check_status(request.c_str(), db, rc, &stmt);
+		sqlite3_finalize(stmt);
+	}
+
+	struct stat t_stat;
+	for (size_t i = 0; i < data_size; i++) {
+
+		string filename = data[i].get_filename();
+		string venue = data[i].get_venue();
+		string volume = data[i].get_volume();
+		string number = data[i].get_number();
+		string pages = data[i].get_pages();
+		string year = data[i].get_year();
+		string type = data[i].get_type();
+		string url = data[i].get_url();
+
+		stat(filename.c_str(), &t_stat);
+		struct tm *timeinfo = localtime(&t_stat.st_mtim.tv_sec);
+		string lastmod_file = asctime(timeinfo);
+		string title = data[i].get_title();
+		vector<string> authors = data[i].get_authors();
+		string author = "";
+		for (size_t k = 0; k < authors.size(); k++) {
+			author += authors[k] + " ";
+		}
+
+		request = "INSERT INTO Data(filename, title, authors, venue, "
+						  "volume, number, pages, year, type, url, lastmod) VALUES ( \'" +
+				  filename + "\', \'" + title + "\', \'" + author + "\', \'" + venue + "\', \'" +
+				  volume + "\', \'" + number + "\', \'" + pages + "\', \'" + year + "\', \'" + type + "\', \'" +
+				  url + "\', \'" + lastmod_file + "\');";
+
+		check_status(request.c_str(), db, rc, &stmt);
+		sqlite3_finalize(stmt);
+	}
+	sqlite3_close(db);
+}
+
 

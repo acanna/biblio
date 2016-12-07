@@ -15,5 +15,6 @@ public:
     Database(std::string db_filename);
     ArticleInfo * get_data(std::string filename);
     void add_data(std::string filename, ArticleInfo info);
+    void add_data(std::vector<ArticleInfo> &data);
 };
 
