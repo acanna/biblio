@@ -27,7 +27,7 @@ enum requestersEnum {
 };
 
 std::vector<Requester *> init_requesters(std::vector<std::pair<requestersEnum, std::vector<std::string>>> & data);
-std::vector<Requester *> read_config(const std::string &filename, int &threads);
+
 std::vector<std::pair<requestersEnum, std::vector<std::string>>> read_config_data(const std::string &filename, int &threads);
 
 Database * connect_database(const std::string &filename);
