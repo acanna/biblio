@@ -5,6 +5,7 @@
 
 #include "Requesters/Requester.h"
 #include "BiblioManager.h"
+#include "Config.h"
 
 using namespace std;
 
@@ -37,6 +38,9 @@ int main(int argc, char **argv) {
             throw new BiblioException("Curl global init failed.\n");
         }
         int threads = 1;
+
+		Config::init("../biblio.cfg");
+
         std::vector<std::pair<requestersEnum, std::vector<std::string>>> data = read_config_data("../biblio.cfg", threads);
         BiblioManager manager(threads);
 
@@ -67,7 +71,7 @@ int main(int argc, char **argv) {
                     filenames_to_search.push_back(filename);
                 }
             }
-            delete result_ptr;
+           delete result_ptr;
             vector<ArticleInfo> result = manager.search_distance_data(data, levenshtein_distance, filenames_to_search, offline);
 
             manager.print_html(out_html, result);
@@ -83,5 +87,6 @@ int main(int argc, char **argv) {
     } catch (TCLAP::ArgException &e) {
         std::cerr << "error: " << e.error() << " for arg " << e.argId() << std::endl;
     }
+
     return 0;
 }
