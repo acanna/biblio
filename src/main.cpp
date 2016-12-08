@@ -5,7 +5,7 @@
 
 #include "Requesters/Requester.h"
 #include "BiblioManager.h"
-#include "Config.h"
+#include "Database.h"
 
 using namespace std;
 
@@ -47,27 +47,39 @@ int main(int argc, char **argv) {
         ofstream out_html("biblio.html");
         ofstream out_bib("biblio.bib");
 
-                //3. нет delete для db
-                //4. функцию лучше спрятать в класс Database
-
         try {
-            Database *db = connect_database("../biblio.cfg");
+        	bool using_db = false;
+			Database * db = Database::connect_database();
+			if (db != nullptr) {
+				using_db = true;
+			}
+			
             vector<string> filenames_to_search = {};
-            ArticleInfo * result_ptr;
-            for (const auto &filename : filenames)
-            {
-                result_ptr = db->get_data(filename);
-                if (result_ptr == nullptr) {
+			vector<ArticleInfo> data_from_db ={};
+            ArticleInfo *result_ptr;
+
+            for (const auto &filename : filenames) {	
+				if (using_db) {
+					result_ptr = db->get_data(filename);
+                } 
+				if (result_ptr != nullptr){
+					data_from_db.push_back(*result_ptr);
+				}
+                else if ((!using_db) || (result_ptr == nullptr)) {
                     filenames_to_search.push_back(filename);
-                }
+				}
             }
-            if (result_ptr != nullptr) {
-                delete result_ptr;
-            }
+
             vector<ArticleInfo> result = manager.search_distance(levenshtein_distance, filenames_to_search, offline);
+	        manager.print_html(out_html, data_from_db);
+            manager.print_bib(out_bib, data_from_db);
             manager.print_html(out_html, result);
             manager.print_bib(out_bib, result);
-            db->add_data(result);
+			if (using_db) {
+            	db->add_data(result);
+				delete db;
+	            delete result_ptr;
+			}
         } catch (const BiblioException &e) {
             cerr << e.what() << '\n';
         }

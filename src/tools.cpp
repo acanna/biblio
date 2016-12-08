@@ -1,40 +1,12 @@
 #include <regex>
 #include <iostream>
 
-#include "Config.h"
 #include "../lib/tinydir/tinydir.h"
 
+#include "Config.h"
 #include "tools.h"
 
 using namespace std;
-
-Database * connect_database(const string &filename) {
-    Config& cfg = Config::get_instance();
-
-/*	try {	
-    	cfg.readFile(filename.c_str());
-    } catch (const FileIOException &ex){
-		throw BiblioException("Reading config file failed");
-	}  catch (const ParseException &pex){
-		string what = "Parse error at " + (string)pex.getFile() + ":" 
-			+ to_string(pex.getLine()) + " - " + (string)pex.getError();
-		throw BiblioException("Reading config file failed: "+ what);
-	}
-*/
-	Database * db;
-//	try {
-		if (cfg.lookup("database.enabled")){
-			string filename = cfg.lookup("database.filename");
-			db = new Database(filename);
-		}
-
-//	}
-//	catch (const SettingNotFoundException &nfex){
-//	    throw BiblioException("Config file has wrong format");;
-//	}
-	return db;
-}
-
 
 vector<string> split(const string &str, char delimiter) {
     vector<string> internal;
@@ -55,7 +27,7 @@ string low_letters_only(string str) {
     return str;
 }
 
-string short_name(string s) {
+string short_name(const string s) {
     regex re_frmt("[^a-zA-Z\\s]");
     regex re_name("\\b([a-zA-Z]{2,3})[a-zA-Z]*");
     string res = regex_replace(s, re_frmt, "");
@@ -70,7 +42,7 @@ string short_name(string s) {
     return res;
 }
 
-string raw_to_formatted(string raw) {
+string raw_to_formatted(const string raw) {
     regex re_last_num("[0-9]([\\n\\r]+)");
     regex re_repl("[\\n\\r]+");
     regex re_space("\\b\\s+\\b");

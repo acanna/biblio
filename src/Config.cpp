@@ -21,7 +21,14 @@ void Config::init(string s){
 	filename = s;
 }
 
+bool Config::exists(string s){
+	return cfg.exists(s);
+}
+
 libconfig::Setting& Config::lookup(string s) {
+	if (!cfg.exists(s)) {
+		throw BiblioException("Wrong config file - missing " + s);
+	}
 	return cfg.lookup(s);
 }
 

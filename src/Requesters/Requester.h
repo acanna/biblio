@@ -1,27 +1,20 @@
 #pragma once
 
-//EL хочется порядка в инклюдах в во всех файлах. 
-//например: сначала стандартная библиотека C, потом C++, сторонние библиотеки, потом из своего проекта
-//https://google.github.io/styleguide/cppguide.html#Names_and_Order_of_Includes
 #include <cstdio>
 #include <cstring>
-#include <curl/curl.h>
 #include <iostream>
 #include <fstream> 
 #include <vector>
 #include <exception>
 #include <stdexcept>
-
+#include <curl/curl.h>
 #include "../../lib/json/json.h"
 #include "../../lib/json/value.h"
-
 #include "../ArticleInfo.h"
 #include "../BiblioException.h"
 
 #define MAX_BUF 65536
 
-//EL Было бы хорошо сложить всех наследников реквестера в одну директорию.
-//EL в этом классе явно не хватает const и ссылок 
 class Requester {
 
 protected:
@@ -31,7 +24,7 @@ protected:
     int errorCode;
 
 protected:
-	static size_t writeData(void *webBuffer, size_t size, size_t nmemb, void *userp);
+	static size_t writeData(void *webBuffer, const size_t size, const size_t nmemb, void *userp);
 	void curl_init();
 	void curl_clean_up();
 	char * curl_perform(const std::string &request) ;

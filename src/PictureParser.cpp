@@ -77,7 +77,7 @@ string const &PictureParser::get_title() {
 
 bool PictureParser::is_black(int x, int y) {
     int black = 60; // (color <= black) <=> (black pix)
-    // (color > black) <=> (white pix)
+				    // (color > black) <=> (white pix)
 
     //	avoid other colors
     if ((((this->data[y * (this->width) * 4 + x * 4]) & 255) > black) ||
@@ -92,7 +92,7 @@ bool PictureParser::is_black(int x, int y) {
 
 bool PictureParser::is_white(int x, int y) {
     int white = 230; // (color >= white) <=> (white pix)
-    // (color < white) <=> (black pix)
+				     // (color < white) <=> (black pix)
 
     return ( ((int) (this->data[y * (this->width) * 4 + x * 4]) & 255) *
              ((int) (this->data[y * (this->width) * 4 + x * 4 + 3]) & 255) / 255 >= white);
@@ -100,12 +100,14 @@ bool PictureParser::is_white(int x, int y) {
 
 bool PictureParser::white_background(int x_start, int y) {
     int white_counter = 0;
+	int const enough_white_space = 10;
+
     for (int x = x_start; x < (int)(this->width / 2); x++){
         if (is_white(x, y)) {
             white_counter++;
         }
-        //EL хотя бы был бы const с понятным именем. а то почему десять?
-        if (white_counter > 10) {
+
+        if (white_counter > enough_white_space) {
             return true;
         }
     }
@@ -113,8 +115,7 @@ bool PictureParser::white_background(int x_start, int y) {
 }
 
 void PictureParser::draw_title_rectangle(){
-    //EL const
-	int white = 115;
+	int const white = 115;
 	int x = this->title_x;
 	int y = this->title_y;
 	int width = this->title_width;
@@ -132,8 +133,7 @@ void PictureParser::draw_title_rectangle(){
 
 
 void PictureParser::find_title() {
-    //EL const
-    int screen_res = 72;
+    int const screen_res = 72;
     int page_num = 0;
     string result = "";
 
@@ -371,8 +371,6 @@ void PictureParser::select_title_rectangle(vector<Rectangle> & areas) {
             max_y = next_y + max_height;
         }
     }
-
-
 
 
 	// final title area obtained by row-by-row scanning

@@ -3,7 +3,7 @@
 using namespace std;
 
 
-size_t Requester::writeData(void *webBuffer, size_t size, size_t nmemb, void *userp) {
+size_t Requester::writeData(void *webBuffer, const size_t size, const size_t nmemb, void *userp) {
     size_t segSize = size * nmemb;
     int bufferIndex = (*(Requester *) userp).bufferIndex;
     if (bufferIndex + segSize > MAX_BUF) {

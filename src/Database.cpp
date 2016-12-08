@@ -11,8 +11,20 @@ Database::Database(const string &db_filename){
     this->db_filename = db_filename;
 }
 
-//EL статической функцией в класс
-int check_status (const char * request, sqlite3 *db, int rc, sqlite3_stmt **stmt) {
+Database * Database::connect_database() {
+    Config& cfg = Config::get_instance();
+	string name = "database";
+	Database * db;
+	if (cfg.exists(name) && cfg.lookup("database.enabled")){
+		string filename = cfg.lookup("database.filename");
+		db = new Database(filename);
+		return db;
+	} else {
+		return nullptr;
+	}
+}
+
+int Database::check_status (const char * request, sqlite3 *db, int rc, sqlite3_stmt **stmt) {
 	rc = sqlite3_prepare(db, request, -1, stmt, NULL);
 	if(rc != SQLITE_OK) {
 		cout << "status: " << rc << endl;
@@ -57,6 +69,7 @@ ArticleInfo * Database::get_data(std::string filename) {
 		sqlite3_close(db);
 		return nullptr;
     } else {
+
 	    request = "SELECT * FROM Data WHERE filename = \'" + filename + "\'";
 		int is_paper = check_status(request.c_str(), db, rc, &stmt);
 		if (is_paper == 0) {
@@ -70,6 +83,7 @@ ArticleInfo * Database::get_data(std::string filename) {
 	    stat(filename.c_str(), &t_stat);
 	    struct tm * timeinfo = localtime(&t_stat.st_mtim.tv_sec);
 	    string lastmod_file = asctime(timeinfo);
+
 
 	    if (lastmod_file <= lastmod_db){
 
@@ -86,6 +100,7 @@ ArticleInfo * Database::get_data(std::string filename) {
 		    string url = string(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 10)));
 		    ArticleInfo * info = new ArticleInfo(title, authors, venue, volume, 
 						number, pages, year, type, url);
+			info->set_filename(filename);
 			sqlite3_finalize(stmt);
 			sqlite3_close(db);
 		    return info;
@@ -192,7 +207,7 @@ void Database::add_data(std::vector<ArticleInfo> &data) {
 		check_status(request.c_str(), db, rc, &stmt);
 		sqlite3_finalize(stmt);
 	}
-
+/* сперва стереть*/
 	struct stat t_stat;
 	for (size_t i = 0; i < data_size; i++) {
 

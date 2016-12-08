@@ -36,7 +36,7 @@ OBJECTS_FOR_TESTS = $(addprefix $(BIN)/, $(FILES_FOR_TESTS:.cpp=.o)) $(BIN)/json
 
 EXECUTABLE = $(BIN)/main
 
-all: $(EXECUTABLE)
+all: prepare $(EXECUTABLE)
 
 $(EXECUTABLE): $(OBJECTS) 
 	$(CC) $(OBJECTS) -o $@ $(LDFLAGS) 
@@ -50,11 +50,13 @@ $(BIN)/main.o: $(SRC)/main.cpp
 	$(CC) $(CFLAGS) $< -o $@
 
 $(BIN)/%.o: $(SRC)/%.cpp $(SRC)/%.h $(HEADERS_FOR_TESTS)
-	mkdir -p $(BIN)
-	mkdir -p $(BIN)/$(REQ_DIR)
 	$(CC) $(CFLAGS) $< -o $@
 
-test: $(TESTS_EXE)
+prepare:
+	mkdir -p $(BIN)
+	mkdir -p $(BIN)/$(REQ_DIR)
+
+test: prepare $(TESTS_EXE)
 
 clean:
 	rm -rf $(BIN)
@@ -64,8 +66,6 @@ clean:
 ###########################################################################################
 
 $(TEST_BIN)/bibliotest.o : $(TEST_DIR)/bibliotest.cpp $(SOURCES_FOR_TESTS) $(GTEST_HEADERS) 
-	mkdir -p $(BIN)
-	mkdir -p $(BIN)/$(REQ_DIR)
 	$(CC) $(CFLAGS_TEST) -c $(TEST_DIR)/bibliotest.cpp -o $@
 
 $(TEST_BIN)/bibliotest : $(TEST_BIN)/bibliotest.o $(OBJECTS_FOR_TESTS) $(TEST_BIN)/gtest_main.a
