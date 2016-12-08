@@ -12,11 +12,11 @@
 #include <exception>
 #include <stdexcept>
 
-#include "../lib/json/json.h"
-#include "../lib/json/value.h"
+#include "../../lib/json/json.h"
+#include "../../lib/json/value.h"
 
-#include "ArticleInfo.h"
-#include "BiblioException.h"
+#include "../ArticleInfo.h"
+#include "../BiblioException.h"
 
 #define MAX_BUF 65536
 

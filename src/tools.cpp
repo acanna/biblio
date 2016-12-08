@@ -1,20 +1,19 @@
 #include <regex>
 #include <iostream>
 
-#include <libconfig.h++>
+#include "Config.h"
 #include "../lib/tinydir/tinydir.h"
 
 #include "tools.h"
 
 using namespace std;
-using namespace libconfig;
 
 std::vector<std::pair<requestersEnum, std::vector<std::string>>>
 read_config_data(const std::string &filename, int &threads) {
     vector<pair<requestersEnum, vector<string>>> data;
-    Config cfg;
+    Config& cfg = Config::get_instance();
 
-    try {
+/*    try {
         cfg.readFile(filename.c_str());
     } catch (const FileIOException &ex) {
         throw BiblioException("Reading config file failed");
@@ -23,18 +22,18 @@ read_config_data(const std::string &filename, int &threads) {
                       + to_string(pex.getLine()) + " - " + (string) pex.getError();
         throw BiblioException("Reading config file failed: " + what);
     }
-
-    try {
+*/
+//    try {
         if (cfg.lookupValue("threads", threads)) {
             if (threads < 1) {
                 threads = 1;
             }
         }
-    } catch (const SettingNotFoundException &nfex) {
-        cerr << "Number of threads is set to 1." << endl;
-    }
+//    } catch (const SettingNotFoundException &nfex) {
+//        cerr << "Number of threads is set to 1." << endl;
+//    }
 
-    try {
+//    try {
         if (cfg.lookup("dblp.enabled")) {
             string url = cfg.lookup("dblp.url");
             vector<string> v;
@@ -79,17 +78,17 @@ read_config_data(const std::string &filename, int &threads) {
             data.push_back(make_pair(scopus, v));
         }
 
-    }
-    catch (const SettingNotFoundException &nfex) {
+//    }
+/*    catch (const SettingNotFoundException &nfex) {
         throw BiblioException("Config file has wrong format");
-    }
+    }*/
     return data;
 }
 
 Database * connect_database(const string &filename) {
-	Config cfg;
+    Config& cfg = Config::get_instance();
 
-	try {	
+/*	try {	
     	cfg.readFile(filename.c_str());
     } catch (const FileIOException &ex){
 		throw BiblioException("Reading config file failed");
@@ -98,19 +97,18 @@ Database * connect_database(const string &filename) {
 			+ to_string(pex.getLine()) + " - " + (string)pex.getError();
 		throw BiblioException("Reading config file failed: "+ what);
 	}
-
+*/
 	Database * db;
-	try {
+//	try {
 		if (cfg.lookup("database.enabled")){
 			string filename = cfg.lookup("database.filename");
 			db = new Database(filename);
-		
 		}
 
-	}
-	catch (const SettingNotFoundException &nfex){
-	    throw BiblioException("Config file has wrong format");;
-	}
+//	}
+//	catch (const SettingNotFoundException &nfex){
+//	    throw BiblioException("Config file has wrong format");;
+//	}
 	return db;
 }
 

@@ -5,7 +5,7 @@
 #include <queue>
 
 #include "BiblioException.h"
-#include "Requester.h"
+#include "Requesters/Requester.h"
 #include "PictureParser.h"
 
 class BiblioManager {
