@@ -13,9 +13,9 @@ Database::Database(const string &db_filename){
 
 Database * Database::connect_database() {
     Config& cfg = Config::get_instance();
-
+	string name = "database";
 	Database * db;
-	if (cfg.lookup("database.enabled")){
+	if (cfg.exists(name) && cfg.lookup("database.enabled")){
 		string filename = cfg.lookup("database.filename");
 		db = new Database(filename);
 		return db;
@@ -207,7 +207,7 @@ void Database::add_data(std::vector<ArticleInfo> &data) {
 		check_status(request.c_str(), db, rc, &stmt);
 		sqlite3_finalize(stmt);
 	}
-
+/* сперва стереть*/
 	struct stat t_stat;
 	for (size_t i = 0; i < data_size; i++) {
 

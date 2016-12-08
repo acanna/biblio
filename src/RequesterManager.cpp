@@ -2,22 +2,22 @@
 
 RequesterManager::RequesterManager() {
 	this->req = {};
-	if (cfg.lookup("dblp.enabled")) {
+	if (cfg.exists("dblp") && cfg.lookup("dblp.enabled")) {
 	    req.push_back(get_requester("dblp"));
 	}
-	if (cfg.lookup("springer.enabled")) {
+	if (cfg.exists("springer") && cfg.lookup("springer.enabled")) {
 	    req.push_back(get_requester("springer"));
 	}
-	if (cfg.lookup("arxiv.enabled")) {
+	if (cfg.exists("arxiv") && cfg.lookup("arxiv.enabled")) {
 	    req.push_back(get_requester("arxiv"));
 	}
-	if (cfg.lookup("nature.enabled")) {
+	if (cfg.exists("nature") && cfg.lookup("nature.enabled")) {
 	    req.push_back(get_requester("nature"));
 	}
-	if (cfg.lookup("sciencedirect.enabled")) {
+	if (cfg.exists("sciencedirect") && cfg.lookup("sciencedirect.enabled")) {
 	    req.push_back(get_requester("scincedirect"));	}
 	}
-	if (cfg.lookup("scopus.enabled")) { 
+	if (cfg.exists("scopus") && cfg.lookup("scopus.enabled")) { 
 	    req.push_back(get_requester("scopus"));
 	}
 }
@@ -33,6 +33,9 @@ std::vector<Requester *> get_all_requesters(){
 }
 
 static Requester * get_requester(std::string s){
+	if (!cfg.exists("s")){
+		return nullptr;
+	}
 	switch (s) {
 		case "dblp": 
 			if (cfg.lookup("dblp.enabled")){

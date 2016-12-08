@@ -16,6 +16,7 @@ private:
 public: 
 	static Config & get_instance (); 
 	static void init(std::string filename);
+	bool exists(std::string & s);
 	libconfig::Setting& lookup(std::string s);
 	bool lookupValue(std::string s, int & res);
 };
