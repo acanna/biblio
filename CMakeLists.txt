@@ -24,17 +24,26 @@ set(SOURCE_FILES
         lib/json/value.h
         lib/json/jsoncpp.cpp
         lib/tinydir/tinydir.h
-
+        src/Requesters/ArxivRequester.cpp
+        src/Requesters/ArxivRequester.h
+        src/Requesters/DBLPRequester.cpp
+        src/Requesters/DBLPRequester.h
+        src/Requesters/NatureRequester.cpp
+        src/Requesters/NatureRequester.h
+        src/Requesters/Requester.cpp
+        src/Requesters/Requester.h
+        src/Requesters/ScienceDirectRequester.h
+        src/Requesters/ScienceDirectRequester.cpp
+        src/Requesters/ScopusRequester.h
+        src/Requesters/ScopusRequester.cpp
+        src/Requesters/SpringerRequester.cpp
+        src/Requesters/SpringerRequester.h
+        src/RequesterManager.cpp
+        src/RequesterManager.h
+        src/Config.cpp
+        src/Config.h
         src/Database.h
         src/Database.cpp
-        src/ScienceDirectRequester.cpp
-        src/ScienceDirectRequester.h
-        src/NatureRequester.cpp
-        src/NatureRequester.h
-        src/ScopusRequester.cpp
-        src/ScopusRequester.h
-        src/ArxivRequester.h
-        src/ArxivRequester.cpp
         src/ArticleInfo.cpp
         src/ArticleInfo.h
         src/BiblioException.h
@@ -44,13 +53,7 @@ set(SOURCE_FILES
         src/PictureParser.cpp
         src/PictureParser.h
         src/tools.cpp
-        src/tools.h
-        src/DBLPRequester.h
-        src/DBLPRequester.cpp
-        src/Requester.h
-        src/Requester.cpp
-        src/SpringerRequester.cpp
-        src/SpringerRequester.h)
+        src/tools.h)
 
 add_library(biblio_lib ${SOURCE_FILES})
 add_executable(biblio ${SOURCE_FILES})

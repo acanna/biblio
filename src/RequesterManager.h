@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Requesters/Requester.h"
+#include "Config.h"
 
 class RequesterManager {
 private:
@@ -10,5 +11,4 @@ public:
 	RequesterManager();
 	~RequesterManager();
 	std::vector<Requester *> get_all_requesters();
-	static Requester * get_requester(std::string s);
 };

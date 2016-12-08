@@ -1,24 +1,41 @@
 #include "RequesterManager.h"
+#include "Requesters/DBLPRequester.h"
+#include "Requesters/SpringerRequester.h"
+#include "Requesters/ArxivRequester.h"
+#include "Requesters/NatureRequester.h"
+#include "Requesters/ScienceDirectRequester.h"
+#include "Requesters/ScopusRequester.h"
+
+using namespace std;
 
 RequesterManager::RequesterManager() {
-	this->req = {};
-	if (cfg.lookup("dblp.enabled")) {
-	    req.push_back(get_requester("dblp"));
+	req = {};
+	if (Config::get_instance().lookup("dblp.enabled")) {
+		string url = Config::get_instance().lookup("dblp.url");
+	    req.push_back(new DBLPRequester(url));
 	}
-	if (cfg.lookup("springer.enabled")) {
-	    req.push_back(get_requester("springer"));
+	if (Config::get_instance().lookup("springer.enabled")) {
+		string url = Config::get_instance().lookup("springer.url");
+		string apikey = Config::get_instance().lookup("springer.apikey");
+	    req.push_back(new SpringerRequester(url, apikey));
 	}
-	if (cfg.lookup("arxiv.enabled")) {
-	    req.push_back(get_requester("arxiv"));
+	if (Config::get_instance().lookup("arxiv.enabled")) {
+		string url = Config::get_instance().lookup("arxiv.url");
+	    req.push_back(new ArxivRequester(url));
 	}
-	if (cfg.lookup("nature.enabled")) {
-	    req.push_back(get_requester("nature"));
+	if (Config::get_instance().lookup("nature.enabled")) {
+		string url = Config::get_instance().lookup("nature.url");
+	    req.push_back(new NatureRequester(url));
 	}
-	if (cfg.lookup("sciencedirect.enabled")) {
-	    req.push_back(get_requester("scincedirect"));	}
+	if (Config::get_instance().lookup("sciencedirect.enabled")) {
+		string url = Config::get_instance().lookup("sciencedirect.url");
+		string apikey = Config::get_instance().lookup("sciencedirect.apikey");
+	    req.push_back(new ScienceDirectRequester(url, apikey));
 	}
-	if (cfg.lookup("scopus.enabled")) { 
-	    req.push_back(get_requester("scopus"));
+	if (Config::get_instance().lookup("scopus.enabled")) {
+		string url = Config::get_instance().lookup("scopus.url");
+		string apikey = Config::get_instance().lookup("scopus.apikey");
+	    req.push_back(new ScopusRequester(url, apikey));
 	}
 }
 
@@ -28,61 +45,7 @@ RequesterManager::~RequesterManager(){
 	}
 }
 
-std::vector<Requester *> get_all_requesters(){
+std::vector<Requester *> RequesterManager::get_all_requesters(){
 	return req;
 }
 
-static Requester * get_requester(std::string s){
-	switch (s) {
-		case "dblp": 
-			if (cfg.lookup("dblp.enabled")){
-	  			string url = cfg.lookup("dblp.url");
-	  			return new DBLPRequester(url);
-	    	} else {
-				return nullptr;
-			}
-			break;
-		case "springer":	
-	  		if (cfg.lookup("springer.enabled")){
-	  			string url = cfg.lookup("springer.url");
-	  			string apikey = cfg.lookup("springer.apikey");
-	  			return new SpringerRequester(url, apikey);
-	    	} else {
-				return nullptr;
-			}
-			break;
-		case "arxiv":	
-	  		if (cfg.lookup("arxiv.enabled")){
-	  			string url = cfg.lookup("arxiv.url");
-	  			return new ArxivRequester(url);
-	    	} else {
-				return nullptr;
-			}
-			break;
-		case "nature":	
-	  		if (cfg.lookup("nature.enabled")){
-	  			string url = cfg.lookup("nature.url");
-	  			return new NatureRequester(url);
-	    	} else {
-				return nullptr;
-			}
-			break;
-		case "sciencedirect":	
-	  		if (cfg.lookup("sciencedirect.enabled")){
-	  			string url = cfg.lookup("sciencedirect.url");
-	  			string apikey = cfg.lookup("sciencedirect.apikey");
-	  			return new ScienceDirectRequester(url, apikey);
-	    	} else {
-				return nullptr;
-			}
-			break;
-		case "scopus":	 
-	  		if (cfg.lookup("scopus.enabled")){
-	  			string url = cfg.lookup("scopus.url");
-	  			string apikey = cfg.lookup("scopus.apikey");
-	  			return new ScopusRequester(url, apikey);
-	     	} else {
-				return nullptr;
-			}
-	}
-}

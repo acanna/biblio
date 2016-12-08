@@ -5,6 +5,7 @@
 #include <queue>
 
 #include "BiblioManager.h"
+#include "RequesterManager.h"
 
 
 using namespace std;
@@ -154,76 +155,6 @@ void BiblioManager::print_html(std::ostream &out, std::vector<ArticleInfo> &resu
     out << "</html>\n";
 }
 
-void BiblioManager::thread_function(std::vector<Requester *> requesters,
-                                    std::function<size_t(const std::string &, const std::string &)> dist,
-                                    bool offline, queue<string> &in, vector<ArticleInfo> &out) {
-    string filename, picture_name;
-    regex re_name("[^0-9]");
-    vector<ArticleInfo> result = {};
-    bool found = false;
-    while(!my_empty(in)) {
-        filename = my_pop(in);
-
-        picture_name = regex_replace(filename, re_name, "");
-        PictureParser picture_parser = PictureParser(filename, 300, 300, "test_" + picture_name + ".png", "png", 700);
-        picture_parser.find_title();
-        string saved_title = picture_parser.get_title();
-        string title = low_letters_only(saved_title);
-
-        if (offline) {
-            my_push(ArticleInfo(saved_title, filename), out);
-            continue;
-        }
-        found = false;
-
-        for (size_t k = 0; k < requesters.size(); k++) {
-            result = search_requester(*requesters[k], saved_title);
-            size_t result_size = result.size();
-            if (result_size > 0) {
-                for (size_t i = 0; i < result_size; i++) {
-                    string cur_title = low_letters_only(result[i].get_title());
-                    size_t distance = dist(cur_title, title);
-                    int precision = 100 - (int) (100 * distance / max(title.size(), cur_title.size()));
-                    result[i].set_precision(precision);
-                }
-                stable_sort(result.begin(), result.end(), greater);
-
-                if (result[0].get_precision() > 90) {
-                    result[0].set_filename(filename);
-                    my_push(result[0], out);
-                    found = true;
-                    break;
-                }
-            }
-        }
-
-        if (!found) {
-            my_push(ArticleInfo(saved_title, filename), out);
-        }
-
-    }
-
-}
-
-std::vector<ArticleInfo>
-BiblioManager::search_distance_requesters(std::vector<Requester *> requesters,
-                                          std::function<size_t(const std::string &, const std::string &)> dist,
-                                          const vector<string> &filenames, bool offline) {
-    queue<string, deque<string>> in(deque<string>(filenames.begin(), filenames.end()));
-    vector<ArticleInfo> out = {};
-    vector<thread> threads;
-
-    for(int i = 0; i < threads_num; ++i){
-        threads.push_back(std::thread(thread_function, requesters, dist, offline, ref(in), ref(out)));
-    }
-
-    for(auto& thread : threads){
-        thread.join();
-    }
-
-    return out;
-}
-
 BiblioManager::BiblioManager(int threads) {
     this->threads_num = threads;
 }
@@ -251,18 +182,16 @@ void BiblioManager::my_push(ArticleInfo info, std::vector<ArticleInfo> &out) {
 }
 
 std::vector<ArticleInfo>
-BiblioManager::search_distance_data(std::vector<std::pair<requestersEnum, std::vector<std::string>>> data,
-                                    std::function<size_t(const std::string &,
-                                                         const std::string &)> dist,
-                                    const std::vector<std::string> &filenames, bool offline) {
+BiblioManager::search_distance(std::function<size_t(const std::string &,
+                                                    const std::string &)> dist,
+                               const std::vector<std::string> &filenames, bool offline) {
     queue<string, deque<string>> in(deque<string>(filenames.begin(), filenames.end()));
     vector<ArticleInfo> out = {};
     vector<thread> threads;
 
     for(int i = 0; i < threads_num; ++i){
-        threads.push_back(std::thread(thread_function_data, data, dist, offline, ref(in), ref(out)));
+        threads.push_back(std::thread(thread_function, dist, offline, ref(in), ref(out)));
     }
-
 
     for(auto& thread : threads){
         thread.join();
@@ -272,13 +201,13 @@ BiblioManager::search_distance_data(std::vector<std::pair<requestersEnum, std::v
     return out;
 }
 
-void BiblioManager::thread_function_data(std::vector<std::pair<requestersEnum, std::vector<std::string>>> data,
-                                         std::function<size_t(const std::string &, const std::string &)> dist,
-                                         bool offline, std::queue<std::string> &in, std::vector<ArticleInfo> &out) {
+void BiblioManager::thread_function(std::function<size_t(const std::string &, const std::string &)> dist, bool offline,
+                                    std::queue<std::string> &in, std::vector<ArticleInfo> &out) {
     string filename, picture_name;
     regex re_name("[^0-9]");
     vector<ArticleInfo> result = {};
-    vector<Requester *> requesters = init_requesters(data);
+    RequesterManager req_manager = RequesterManager();
+    vector<Requester *> requesters = req_manager.get_all_requesters();
     bool found = false;
     while(!my_empty(in)) {
         filename = my_pop(in);

@@ -8,6 +8,7 @@
 
 #include "../src/Requesters/Requester.h"
 #include "../src/BiblioManager.h"
+#include "../src/Config.h"
 
 using namespace std;
 
@@ -101,8 +102,8 @@ TEST (PictureParser, Online) {
     if (curl_global_init(CURL_GLOBAL_ALL) != 0) {
         throw new BiblioException("Curl global init failed.\n");
     }
-    int threads = 1;
-    std::vector<std::pair<requestersEnum, std::vector<std::string>>> data = read_config_data("../biblio.cfg", threads);
+    int threads = 4;
+    Config::init("../biblio.cfg");
     BiblioManager manager(threads);
 
     ofstream out_html("biblio.html");
@@ -128,7 +129,7 @@ TEST (PictureParser, Online) {
         filenames.push_back(filename);
     }
     try {
-        vector<ArticleInfo> result = manager.search_distance_data(data, levenshtein_distance, filenames, false);
+        vector<ArticleInfo> result = manager.search_distance(levenshtein_distance, filenames, false);
         manager.print_html(out_html, result);
         manager.print_bib(out_bib, result);
 

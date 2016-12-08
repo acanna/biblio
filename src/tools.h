@@ -13,24 +13,10 @@
 #include "Requesters/ScienceDirectRequester.h"
 #include "Database.h"
 
-std::vector<Requester *> read_config(const std::string &filename);
+
 //EL хорошо бы убрать внутрь Database
 Database * connect_database(const std::string &filename);
 
-enum requestersEnum {
-    dblp = 1,
-    springer = 2,
-    arxiv = 3,
-    nature = 4,
-    sciencedirect = 5,
-    scopus = 6
-};
-
-std::vector<Requester *> init_requesters(std::vector<std::pair<requestersEnum, std::vector<std::string>>> & data);
-
-std::vector<std::pair<requestersEnum, std::vector<std::string>>> read_config_data(const std::string &filename, int &threads);
-
-Database * connect_database(const std::string &filename);
 std::vector<std::string> split(const std::string &str, char delimiter);
 
 //const & у string

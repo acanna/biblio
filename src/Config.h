@@ -11,7 +11,7 @@ private:
  
 	Config ();
 	Config(Config const &);
-	Config& operator = (Config const &);
+	Config& operator= (Config const &);
 
 public: 
 	static Config & get_instance (); 
