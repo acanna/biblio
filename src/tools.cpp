@@ -196,9 +196,9 @@ string short_name(string s) {
 
 string raw_to_formatted(string raw) {
     regex re_last_num("[0-9]([\\n\\r]+)");
-    regex re_repl("[\\n\\r\\-]+");
+    regex re_repl("[\\n\\r]+");
     regex re_space("\\b\\s+\\b");
-    regex re_frmt("[^\\w\\s0-9]+");
+    regex re_frmt("[^\\w\\s0-9\\-]+");
     regex re_trim("^\\s*\\b(.*)\\b\\s*$");
     string result = "";
     result = regex_replace(raw, re_last_num, "$1");
