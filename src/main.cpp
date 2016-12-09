@@ -20,14 +20,24 @@ int main(int argc, char **argv) {
         // Parse the argv array.
         cmd.parse(argc, (const char *const *) argv);
         vector<string> filenames = {};
+        string absolut_path = get_exe_path() + "/";
         // Get the value parsed by each arg.
         if (files.isSet()) {
             filenames = files.getValue();
+            size_t filenames_size = filenames.size();
+            for (size_t i = 0; i < filenames_size; i++) {
+                if (filenames[i][0] != '/') {
+                    filenames[i] = absolut_path + filenames[i];
+                }
+            }
         }
         else {
             vector<string> dirs = directories.getValue();
             vector<string> files_in_dir = {};
             for (string dir : dirs) {
+                if (dir[0] != '/') {
+                    dir = absolut_path + dir;
+                }
                 files_in_dir = read_pdf_files_recursive(dir);
                 filenames.insert(filenames.end(), files_in_dir.begin(), files_in_dir.end());
             }
@@ -57,7 +67,6 @@ int main(int argc, char **argv) {
             vector<string> filenames_to_search = {};
 			vector<ArticleInfo> data_from_db ={};
             ArticleInfo *result_ptr;
-
             for (const auto &filename : filenames) {	
 				if (using_db) {
 					result_ptr = db->get_data(filename);
@@ -69,7 +78,6 @@ int main(int argc, char **argv) {
                     filenames_to_search.push_back(filename);
 				}
             }
-
             vector<ArticleInfo> result = manager.search_distance(levenshtein_distance, filenames_to_search, offline);
 	        manager.print_html(out_html, data_from_db);
             manager.print_bib(out_bib, data_from_db);
@@ -78,7 +86,6 @@ int main(int argc, char **argv) {
 			if (using_db) {
             	db->add_data(result);
 				delete db;
-	            delete result_ptr;
 			}
         } catch (const BiblioException &e) {
             cerr << e.what() << '\n';

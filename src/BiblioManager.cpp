@@ -111,6 +111,7 @@ void BiblioManager::print_html(std::ostream &out, std::vector<ArticleInfo> &resu
     out << "\t\t<title>Biblio results</title>\n";
     out << "\t</head>\n";
     out << "\t<body>\n";
+
     for (size_t i = 0; i < result_size; i++) {
         out << "--------------------------------------------------------------" << endl;
         out << "<p><a href=\"" << result[i].get_filename() << "\">" << result[i].get_filename() << "</a></p>" << endl;
@@ -150,7 +151,7 @@ void BiblioManager::print_html(std::ostream &out, std::vector<ArticleInfo> &resu
         }
         out << "</pre>\n";
     }
-    out << "</pre>\n";
+    
     out << "\t</body>\n";
     out << "</html>\n";
 }

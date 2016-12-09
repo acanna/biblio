@@ -22,7 +22,7 @@ TESTS_EXE = $(addprefix $(TEST_BIN)/, $(TESTS))
 FILES_REQUESTERS = Requester.cpp DBLPRequester.cpp SpringerRequester.cpp ArxivRequester.cpp NatureRequester.cpp ScopusRequester.cpp ScienceDirectRequester.cpp
 FILES_REQUESTERS_SOURCES = $(addprefix $(REQ_DIR)/, $(FILES_REQUESTERS))
 
-FILES_FOR_TESTS = Config.cpp $(FILES_REQUESTERS_SOURCES) ArticleInfo.cpp tools.cpp PictureParser.cpp BiblioManager.cpp Database.cpp 
+FILES_FOR_TESTS = Config.cpp $(FILES_REQUESTERS_SOURCES) ArticleInfo.cpp tools.cpp PictureParser.cpp BiblioManager.cpp Database.cpp RequesterManager.cpp
 
 HEADERS_FOR_TESTS = $(addprefix $(SRC)/, $(FILES_FOR_TESTS:.cpp=.h))
 

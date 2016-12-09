@@ -1,3 +1,6 @@
+#include <limits.h>
+#include <unistd.h>
+
 #include <regex>
 #include <iostream>
 
@@ -7,6 +10,16 @@
 #include "tools.h"
 
 using namespace std;
+
+
+std::string get_exe_path()
+{
+    char result[ PATH_MAX ];
+    ssize_t count = readlink( "/proc/self/exe", result, PATH_MAX );
+    string s = string( result, (count > 0) ? count : 0 );
+    regex re_delete_filename("(.*)/\\w+$");
+    return regex_replace(s, re_delete_filename, "$1");
+}
 
 vector<string> split(const string &str, char delimiter) {
     vector<string> internal;
@@ -115,7 +128,8 @@ void read_pdf_files(std::vector<std::string> &v, std::string &path) {
                 read_pdf_files(v, filename);
             }
         } else {
-            if (regex_match(filename,regex(".*\\.pdf$"))) {
+
+            if (string(file.extension) == "pdf") {
                 v.push_back(path + filename);
             }
         }

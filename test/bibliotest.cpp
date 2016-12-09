@@ -194,7 +194,7 @@ void recursive_print_dir(std::string path) {
                 recursive_print_dir(path + filename);
             }
         } else {
-            cout << path + file.name << endl;
+            cout << path << file.name << endl;
         }
         tinydir_next(&dir);
     }
@@ -208,9 +208,13 @@ TEST (TinyDir, Try) {
 }
 
 TEST (TinyDir, ReadPDF) {
-    string path = "../";
+    string path = "/home/acan/Bib/biblio/bin/../articles";
     vector<string> files = read_pdf_files_recursive(path);
     for (string s : files) {
         cout << s << endl;
     }
+}
+
+TEST (ExecPath, Try) {
+    cout << get_exe_path() << endl;
 }
