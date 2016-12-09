@@ -13,6 +13,7 @@ int main(int argc, char **argv) {
     try {
         TCLAP::CmdLine cmd("This util will generate .bib file for your articles in PDF format.", ' ', "0.1");
         TCLAP::SwitchArg offlineSwitch("f", "offline", "Does only offline part.", cmd, false);
+        TCLAP::SwitchArg purgeSwitch("p", "purge", "Purges database from non-existent files.", cmd, false);
         TCLAP::UnlabeledMultiArg<string> files("files", "Names of PDF files you want to get bibliographic information for.", true, "files");
         TCLAP::MultiArg<string> directories("d", "directory", "Directories for recursive search of PDF documents.", true, "path");
         // User can input files or directories but not both.
@@ -43,6 +44,7 @@ int main(int argc, char **argv) {
             }
         }
         bool offline = offlineSwitch.getValue();
+        bool purge = purgeSwitch.getValue();
         
         if (curl_global_init(CURL_GLOBAL_ALL) != 0) {
             throw new BiblioException("Curl global init failed.\n");
