@@ -151,7 +151,7 @@ void BiblioManager::print_html(std::ostream &out, std::vector<ArticleInfo> &resu
         }
         out << "</pre>\n";
     }
-    
+
     out << "\t</body>\n";
     out << "</html>\n";
 }

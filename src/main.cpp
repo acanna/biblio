@@ -2,19 +2,19 @@
 #include <algorithm>
 
 #include <tclap/CmdLine.h>
+#include <unistd.h>
 
 #include "Requesters/Requester.h"
 #include "BiblioManager.h"
-#include "Database.h"
 
 using namespace std;
 
 int main(int argc, char **argv) {
     try {
-        TCLAP::CmdLine cmd("This util will generate .bib files for your articles in PDF format.", ' ', "0.1");
+        TCLAP::CmdLine cmd("This util will generate .bib file for your articles in PDF format.", ' ', "0.1");
         TCLAP::SwitchArg offlineSwitch("f", "offline", "Does only offline part.", cmd, false);
-        TCLAP::UnlabeledMultiArg<string> files("files", "file names", true, "files");
-        TCLAP::MultiArg<string> directories("d", "directory", "directories for recursive search of PDF documents", true, "path");
+        TCLAP::UnlabeledMultiArg<string> files("files", "Names of PDF files you want to get bibliographic information for.", true, "files");
+        TCLAP::MultiArg<string> directories("d", "directory", "Directories for recursive search of PDF documents.", true, "path");
         // User can input files or directories but not both.
         cmd.xorAdd(files, directories);
         // Parse the argv array.
@@ -48,10 +48,8 @@ int main(int argc, char **argv) {
             throw new BiblioException("Curl global init failed.\n");
         }
 
-        int threads = 4;
-
+        int threads = sysconf(_SC_NPROCESSORS_ONLN);
 		Config::init("../biblio.cfg");
-
         BiblioManager manager(threads);
 
         ofstream out_html("biblio.html");
