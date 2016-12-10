@@ -7,6 +7,7 @@
 #include "BiblioException.h"
 #include "Requesters/Requester.h"
 #include "PictureParser.h"
+#include "tools.h"
 
 class BiblioManager {
 
