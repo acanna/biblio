@@ -16,20 +16,67 @@ mutex m_out;
 std::vector<ArticleInfo> BiblioManager::search_requester(Requester &requester, std::string query) {
     vector<ArticleInfo> result = {};
     vector<ArticleInfo> additional_result = {};
+    string new_query = "";
 
     transform(query.begin(), query.end(), query.begin(), ::tolower);
-    string new_query = query;
+    result = requester.publication_request(query);
+    /*vector<string> words = split(query, ' ');
 
-    result = requester.publication_request(new_query);
-
-/*    replace(new_query.begin(), new_query.end(), ' ', '.');
+    // discard first word
+    new_query = "";
+    for (unsigned int i = 1; i < words.size()-1; i++) {
+        new_query += words[i] + " ";
+    }
+    new_query += words[words.size()-1];
+    additional_result = requester.publication_request(new_query);
+    result.insert(result.end(), additional_result.begin(), additional_result.end());
+  
+    // discard last word
+    new_query = "";
+    for (unsigned int i = 0; i < words.size()-2; i++) {
+        new_query += words[i] + " ";
+    }
+    new_query += words[words.size()-2];
     additional_result = requester.publication_request(new_query);
     result.insert(result.end(), additional_result.begin(), additional_result.end());
 
-    replace(query.begin(), query.end(), ' ', '$');
-    additional_result = requester.publication_request(query);
-    result.insert(result.end(), additional_result.begin(), additional_result.end());*/
+    // discard first two words
+    new_query = "";
+    for (unsigned int i = 2; i < words.size()-1; i++) {
+        new_query += words[i] + " ";
+    }
+    new_query += words[words.size()-1];
+    additional_result = requester.publication_request(new_query);
+    result.insert(result.end(), additional_result.begin(), additional_result.end());
+  
+    // discard last two words
+    new_query = "";
+    for (unsigned int i = 0; i < words.size()-3; i++) {
+        new_query += words[i] + " ";
+    }
+    new_query += words[words.size()-3];
+    additional_result = requester.publication_request(new_query);
+    result.insert(result.end(), additional_result.begin(), additional_result.end());
 
+    if (words.size() > 10){
+        // discard first five words
+        new_query = "";
+        for (unsigned int i = 5; i < words.size()-1; i++) {
+            new_query += words[i] + " ";
+        }
+        new_query += words[words.size()-1];
+        additional_result = requester.publication_request(new_query);
+        result.insert(result.end(), additional_result.begin(), additional_result.end());
+      
+        // discard last five words
+        new_query = "";
+        for (unsigned int i = 0; i < words.size()-6; i++) {
+            new_query += words[i] + " ";
+        }
+        new_query += words[words.size()-6];
+        additional_result = requester.publication_request(new_query);
+        result.insert(result.end(), additional_result.begin(), additional_result.end());
+    }*/
     return result;
 }
 

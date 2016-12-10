@@ -34,6 +34,9 @@ void Requester::curl_clean_up(){
 char * Requester::curl_perform(const string &request) {
     errorCode = 0;
     bufferIndex = 0;
+    for (unsigned int i = 0; i < MAX_BUF; i++) {
+        buffer[i] = 0; 
+    }
 
 	curl_easy_setopt(curl, CURLOPT_URL, request.c_str());
     CURLcode result = curl_easy_perform(curl);
