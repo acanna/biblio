@@ -14,6 +14,7 @@ int main(int argc, char **argv) {
         TCLAP::CmdLine cmd("This util will generate .bib files for your articles in PDF format.", ' ', "0.1");
         TCLAP::SwitchArg offlineSwitch("f", "offline", "Does only offline part.", cmd, false);
         TCLAP::SwitchArg purgeSwitch("p", "purge", "Purges database from non-existent files.", cmd, false);
+        TCLAP::SwitchArg dbSwitch("b", "database", "Disable database", cmd, false);
         TCLAP::UnlabeledMultiArg<string> files("files", "file names", true, "files");
         TCLAP::MultiArg<string> directories("d", "directory", "directories for recursive search of PDF documents", true, "path");
         // User can input files or directories but not both.
@@ -45,6 +46,7 @@ int main(int argc, char **argv) {
         }
         bool offline = offlineSwitch.getValue();
         bool purge = purgeSwitch.getValue();
+        bool without_db = dbSwitch.getValue();
         
         if (curl_global_init(CURL_GLOBAL_ALL) != 0) {
             throw new BiblioException("Curl global init failed.\n");
@@ -62,15 +64,15 @@ int main(int argc, char **argv) {
         if (purge) {
     		Database::purge();
         } else {	
-            bool using_db = false;
-            //Возможность поменять использование БД через конфиг выставив флаг using_db
-            //Наверное, через консоль приоритетнее чем через конфиг? 
-            //Или пусть консоль позволяет переписать поле в конфиге?   
+            bool using_db = false; 
             try {
-    			Database * db = Database::connect_database();
-    			if (db != nullptr) {
-    				using_db = true;
-    			}       
+                Database * db;
+    			if (!without_db){                
+                    db = Database::connect_database();
+        			if (db != nullptr) {
+        				using_db = true;
+        			}  
+                }     
                 vector<string> filenames_to_search = {};
     			vector<ArticleInfo> data_from_db ={};
                 ArticleInfo *result_ptr = nullptr;
@@ -96,7 +98,7 @@ int main(int argc, char **argv) {
                 manager.print_html(out_html, result);
                 manager.print_bib(out_bib, result);
     
-    			if (using_db) {
+    			if ((using_db)&&(!without_db)) {
                 	db->add_data(result);
     				delete db;
     			}
