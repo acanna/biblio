@@ -1,8 +1,6 @@
 #include <sys/stat.h>
 #include <unistd.h>
-
 #include <iostream>
-
 #include "Database.h"
 
 using namespace std;
@@ -89,8 +87,7 @@ ArticleInfo * Database::get_data(std::string filename) {
 
 		    string title = string(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2))); 
 		    string author_string = string(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3)));
-		    vector <string> authors = {};
-		    authors.push_back(author_string); 
+		    vector <string> authors = split(author_string, '|');
 		    string venue = string(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 4)));
 		    string volume = string(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 5)));
 		    string number = string(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 6)));
@@ -114,7 +111,6 @@ ArticleInfo * Database::get_data(std::string filename) {
 			return nullptr;
 	    }
 	}
-
 }
 
 void Database::add_data(string filename, ArticleInfo info) {
@@ -144,17 +140,25 @@ void Database::add_data(string filename, ArticleInfo info) {
 		sqlite3_finalize(stmt);
 	} 
     
+    request = "DELETE FROM DATA WHERE filename = \'" +  filename + "\';";
+
+	check_status(request.c_str(), db, rc, &stmt);
+	sqlite3_finalize(stmt);
+
     struct stat t_stat;
     stat(filename.c_str(), &t_stat);
     struct tm * timeinfo = localtime(&t_stat.st_mtim.tv_sec);
     string lastmod_file = asctime(timeinfo);
     string title = info.get_title();
 	vector<string> authors = info.get_authors();
-   	string author = "";
-	for (unsigned int i = 0; i < authors.size(); i++){
-    	author += authors[i] + " ";
-	}
 
+   	string author = "";
+	if (authors.size() > 0) {
+    	for (unsigned int i = 0; i < authors.size()-1; i++){
+        	author += authors[i] + "|";
+    	}
+        author += authors[authors.size() -1];
+    }
     string venue = info.get_venue();
     string volume = info.get_volume();
     string number = info.get_number();
@@ -207,7 +211,7 @@ void Database::add_data(std::vector<ArticleInfo> &data) {
 		check_status(request.c_str(), db, rc, &stmt);
 		sqlite3_finalize(stmt);
 	}
-/* сперва стереть*/
+
 	struct stat t_stat;
 	for (size_t i = 0; i < data_size; i++) {
 
@@ -226,9 +230,16 @@ void Database::add_data(std::vector<ArticleInfo> &data) {
 		string title = data[i].get_title();
 		vector<string> authors = data[i].get_authors();
 		string author = "";
-		for (size_t k = 0; k < authors.size(); k++) {
-			author += authors[k] + " ";
-		}
+		if (authors.size() > 0) {
+            for (size_t k = 0; k < authors.size() - 1; k++) {
+    			author += authors[k] + "|";
+    		}
+            author += authors[authors.size() - 1];
+        }
+        request = "DELETE FROM DATA WHERE filename = \'" +  filename + "\';";
+
+	    check_status(request.c_str(), db, rc, &stmt);
+	    sqlite3_finalize(stmt);
 
 		request = "INSERT INTO Data(filename, title, authors, venue, "
 						  "volume, number, pages, year, type, url, lastmod) VALUES ( \'" +
@@ -242,4 +253,70 @@ void Database::add_data(std::vector<ArticleInfo> &data) {
 	sqlite3_close(db);
 }
 
+inline bool exists (const std::string& name) {
+    struct stat buffer;
+    return (stat (name.c_str(), &buffer) == 0); 
+}
+
+void Database::purge() {
+    Config& cfg = Config::get_instance();
+	string name = "database";
+	string filename;
+    if (!cfg.exists(name) || !cfg.lookupValue("database.filename", filename)) {
+		throw BiblioException ("No database found in config file");
+	}
+    sqlite3 *db;
+	sqlite3_stmt *stmt;
+	int rc;
+	string request = "";
+
+	rc = sqlite3_open(filename.c_str(), &db);
+	if (rc != SQLITE_OK) {
+		sqlite3_close(db);
+		throw BiblioException("Cannot open database " + string(sqlite3_errmsg(db)));
+	}
+
+	request = "SELECT name FROM sqlite_master WHERE type='table'";
+	int is_table = check_status(request.c_str(), db, rc, &stmt);
+	sqlite3_finalize(stmt);
+
+    if (is_table == 0) {
+		sqlite3_close(db);
+		return;
+    } else {
+        vector <int> ids_to_purche = {};
+	    request = "SELECT * FROM Data ";
+        rc = sqlite3_prepare(db, request.c_str(), -1, & stmt, NULL);
+	    if(rc != SQLITE_OK) {
+    		cout << "status: " << rc << endl;
+    		sqlite3_close(db);
+    		throw BiblioException(sqlite3_errmsg(db));
+    	} else while((rc = sqlite3_step(stmt)) != SQLITE_DONE) {
+    		switch(rc) {
+        		case SQLITE_BUSY: 
+        			cout << "Please wait..." << endl;
+        			sleep(1);
+        			break;	
+        		case SQLITE_ERROR:
+    				sqlite3_finalize(stmt);
+        			sqlite3_close(db);
+    		        throw BiblioException(sqlite3_errmsg(db));
+    				break;
+        		case SQLITE_ROW:
+                    string paper_filename = string(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1)));
+                    cout << "Next paper: " <<  sqlite3_column_int(stmt, 0) << " "  << paper_filename << endl;
+                    if (!exists(paper_filename)) {
+                        ids_to_purche.push_back(sqlite3_column_int(stmt, 0));
+                    }
+    		}
+    	}
+        sqlite3_finalize(stmt);
+        for (unsigned int i = 0; i < ids_to_purche.size(); i++) {
+           request = "DELETE FROM DATA WHERE id = " + to_string(ids_to_purche[i]);
+           cout << request <<endl;
+	       check_status(request.c_str(), db, rc, &stmt);
+	       sqlite3_finalize(stmt);
+        }
+    }   
+}
 

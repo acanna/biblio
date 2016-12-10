@@ -36,6 +36,10 @@ bool Config::lookupValue(string s, int & res) {
 	return cfg.lookupValue(s, res);
 }
 
+bool Config::lookupValue(string s, string & res) {
+	return cfg.lookupValue(s, res);
+}
+
  Config & Config::get_instance() {
 	static Config config;
 	return config;

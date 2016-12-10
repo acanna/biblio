@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "DBLPRequester.h"
 
 using namespace std;
@@ -7,7 +8,9 @@ DBLPRequester::DBLPRequester(string url):Requester() {
 }
 
 string DBLPRequester::make_request(const string &query){
-	return this->url + query;
+    string new_query = query;
+    replace(new_query.begin(), new_query.end(), ' ', '.');
+	return this->url + new_query;
 }
 
 vector<ArticleInfo> DBLPRequester::parse_response(char * buffer) {

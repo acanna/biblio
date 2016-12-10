@@ -11,6 +11,13 @@
 
 using namespace std;
 
+bool need_to_complete_data(const ArticleInfo * info){
+    string year = info->get_year();
+    if (year != "") { 
+        return false;
+    }
+    return true;
+}
 
 std::string get_exe_path()
 {

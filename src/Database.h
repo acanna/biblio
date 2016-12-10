@@ -8,6 +8,7 @@
 #include "BiblioException.h"
 #include "ArticleInfo.h"
 #include "Config.h"
+#include "tools.h"
 
 class Database {
 
@@ -21,5 +22,6 @@ public:
     ArticleInfo * get_data(std::string filename);
     void add_data(std::string filename, ArticleInfo info);
     void add_data(std::vector<ArticleInfo> &data);
+    static void purge();
 };
 
