@@ -28,6 +28,11 @@ std::string get_exe_path()
     return regex_replace(s, re_delete_filename, "$1");
 }
 
+std::string get_absolute_path(string & s) {
+    char actualpath [PATH_MAX+1];
+    return string(realpath(s.c_str(), actualpath));
+}
+
 vector<string> split(const string &str, char delimiter) {
     vector<string> internal;
     stringstream ss(str); 

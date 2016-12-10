@@ -205,15 +205,15 @@ BiblioManager::search_distance(std::function<size_t(const std::string &,
 void BiblioManager::thread_function(std::function<size_t(const std::string &, const std::string &)> dist, bool offline,
                                     std::queue<std::string> &in, std::vector<ArticleInfo> &out) {
     string filename, picture_name;
-    regex re_name("[^0-9]");
+    regex re_name(".*/([^/]+).pdf$");
     vector<ArticleInfo> result = {};
     RequesterManager req_manager = RequesterManager();
     vector<Requester *> requesters = req_manager.get_all_requesters();
     bool found = false;
     while(!my_empty(in)) {
         filename = my_pop(in);
-        picture_name = regex_replace(filename, re_name, "");
-        PictureParser picture_parser = PictureParser(filename, 300, 300, "test_" + picture_name + ".png", "png", 700);
+        picture_name = regex_replace(filename, re_name, "$1");
+        PictureParser picture_parser = PictureParser(filename, 300, 300, picture_name + ".png", "png", 700);
         picture_parser.find_title();
         string saved_title = picture_parser.get_title();
         string title = low_letters_only(saved_title);
