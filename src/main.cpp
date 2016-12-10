@@ -13,17 +13,19 @@ int main(int argc, char **argv) {
     try {
         TCLAP::CmdLine cmd("This util will generate .bib files for your articles in PDF format.", ' ', "0.1");
         TCLAP::SwitchArg offlineSwitch("f", "offline", "Does only offline part.", cmd, false);
-        TCLAP::SwitchArg purgeSwitch("p", "purge", "Purges database from non-existent files.", cmd, false);
+        TCLAP::SwitchArg purgeSwitch("p", "purge", "Purges database from non-existent files.", false);
         TCLAP::SwitchArg dbSwitch("b", "database", "Disable database", cmd, false);
         TCLAP::UnlabeledMultiArg<string> files("files", "file names", true, "files");
         TCLAP::MultiArg<string> directories("d", "directory", "directories for recursive search of PDF documents", true, "path");
-        // User can input files or directories but not both.
-        cmd.xorAdd(files, directories);
-        // Parse the argv array.
+        vector<TCLAP::Arg*>  xorlist;
+        xorlist.push_back(&purgeSwitch);
+        xorlist.push_back(&files);
+        xorlist.push_back(&directories);
+        cmd.xorAdd(xorlist);
+
         cmd.parse(argc, (const char *const *) argv);
         vector<string> filenames = {};
         string absolut_path = get_exe_path() + "/";
-        // Get the value parsed by each arg.
         if (files.isSet()) {
             filenames = files.getValue();
             size_t filenames_size = filenames.size();
