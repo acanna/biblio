@@ -34,5 +34,4 @@ public:
                                              const std::vector<std::string> &filenames, bool offline);
     static void print_html(std::ostream &out, std::vector<ArticleInfo> &result);
     void print_bib(std::ostream &out, std::vector<ArticleInfo> &result);
-    void print_txt(std::ostream &out, const std::string &filename, ArticleInfo &result);
 };

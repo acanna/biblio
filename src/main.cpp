@@ -25,25 +25,21 @@ int main(int argc, char **argv) {
 
         cmd.parse(argc, (const char *const *) argv);
         vector<string> filenames = {};
-        string absolut_path = get_exe_path() + "/";
         if (files.isSet()) {
             filenames = files.getValue();
-            size_t filenames_size = filenames.size();
-            for (size_t i = 0; i < filenames_size; i++) {
-                if (filenames[i][0] != '/') {
-                    filenames[i] = absolut_path + filenames[i];
-                }
-            }
         }
         else {
             vector<string> dirs = directories.getValue();
             vector<string> files_in_dir = {};
             for (string dir : dirs) {
-                if (dir[0] != '/') {
-                    dir = absolut_path + dir;
-                }
                 files_in_dir = read_pdf_files_recursive(dir);
                 filenames.insert(filenames.end(), files_in_dir.begin(), files_in_dir.end());
+            }
+        }
+        size_t filenames_size = filenames.size();
+        for (size_t i = 0; i < filenames_size; i++) {
+            if (filenames[i][0] != '/') {
+                filenames[i] = get_absolute_path(filenames[i]);
             }
         }
         bool offline = offlineSwitch.getValue();

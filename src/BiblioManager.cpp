@@ -93,13 +93,6 @@ bool BiblioManager::longer_title(const ArticleInfo &info_1, const ArticleInfo &i
     return info_1.get_title().size() > info_2.get_title().size();
 }
 
-void BiblioManager::print_txt(std::ostream &out, const std::string &filename, ArticleInfo &result) {
-    out << "--------------------------------------------------------------" << endl;
-    out << filename << endl;
-    out << "--------------------------------------------------------------" << endl;
-    out << result.to_string() << " \n";
-}
-
 void BiblioManager::print_bib(std::ostream &out, vector<ArticleInfo> &result) {
     size_t result_size = result.size();
     for (size_t k = 0; k < result_size; k++) {
