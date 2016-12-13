@@ -83,6 +83,7 @@ private:
 
 public:
     PictureParser() {};
+	~PictureParser();
     PictureParser(std::string const &filename, int const xres, int const yres,
                   std::string const &imagename, std::string const &format, int const dpi);
     std::string const &get_title();

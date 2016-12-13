@@ -19,15 +19,6 @@ bool need_to_complete_data(const ArticleInfo * info){
     return true;
 }
 
-std::string get_exe_path()
-{
-    char result[ PATH_MAX ];
-    ssize_t count = readlink( "/proc/self/exe", result, PATH_MAX );
-    string s = string( result, (count > 0) ? count : 0 );
-    regex re_delete_filename("(.*)/\\w+$");
-    return regex_replace(s, re_delete_filename, "$1");
-}
-
 std::string get_absolute_path(string & s) {
     char actualpath [PATH_MAX+1];
     return string(realpath(s.c_str(), actualpath));
@@ -159,6 +150,12 @@ std::string letters_to_lower(std::string s) {
     result = regex_replace(result, re_trim, "$1");
     transform(result.begin(), result.end(), result.begin(), ::tolower);
     return result;
+}
+
+std::string get_random_filename() {
+    std::ostringstream oss;
+    oss << clock();
+    return oss.str();
 }
 
 

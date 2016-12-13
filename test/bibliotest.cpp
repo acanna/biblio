@@ -207,11 +207,11 @@ TEST (TinyDir, ReadPDF) {
     }
 }
 
-TEST (ExecPath, Try) {
-    cout << get_exe_path() << endl;
-}
-
 TEST (RealPath, Try) {
     string s = "../articles/test_1.pdf";
     cout << get_absolute_path(s) << endl;
+}
+
+TEST (TimeFilename, Try) {
+    for (int i = 0; i < 10; i++) cout << get_random_filename() << endl;
 }

@@ -421,3 +421,8 @@ string PictureParser::parse_image() {
     return out_text;
 }
 
+PictureParser::~PictureParser() {
+    remove(imagename.c_str());
+    remove(("_" + imagename).c_str());
+}
+
