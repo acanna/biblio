@@ -18,6 +18,7 @@ private:
     static void my_push(ArticleInfo info, std::vector<ArticleInfo> &out);
     static std::string my_pop(std::queue<std::string> &in);
     static bool my_empty(std::queue<std::string> &in);
+    static void my_cout(std::string &filename);
 
     static bool greater(const ArticleInfo &info_1, const ArticleInfo &info_2);
     static bool smaller(const ArticleInfo &info_1, const ArticleInfo &info_2);
@@ -33,5 +34,6 @@ public:
                                                                   const std::string &)> dist,
                                              const std::vector<std::string> &filenames, bool offline);
     static void print_html(std::ostream &out, std::vector<ArticleInfo> &result);
+    static void cout_not_found_articles(std::vector<ArticleInfo> &result);
     void print_bib(std::ostream &out, std::vector<ArticleInfo> &result);
 };

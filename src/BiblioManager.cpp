@@ -12,6 +12,7 @@ using namespace std;
 
 mutex m_in;
 mutex m_out;
+mutex m_cout;
 
 std::vector<ArticleInfo> BiblioManager::search_requester(Requester &requester, std::string query) {
     vector<ArticleInfo> result = {};
@@ -251,6 +252,7 @@ void BiblioManager::thread_function(std::function<size_t(const std::string &, co
     bool found = false;
     while(!my_empty(in)) {
         filename = my_pop(in);
+        my_cout(filename);
         PictureParser picture_parser = PictureParser(filename, 300, 300, get_random_filename() + ".png", "png", 700);
         picture_parser.find_title();
         string saved_title = picture_parser.get_title();
@@ -287,4 +289,27 @@ void BiblioManager::thread_function(std::function<size_t(const std::string &, co
 
 BiblioManager::BiblioManager() {
     threads_num = 1;
+}
+
+void BiblioManager::my_cout(string &filename) {
+    m_cout.lock();
+    cout << "Processing file " << filename << endl;
+    m_cout.unlock();
+}
+
+void BiblioManager::cout_not_found_articles(std::vector<ArticleInfo> &result) {
+    cout << endl;
+    cout << "=========================================================================" << endl;
+    cout << "                       Start not found articles                          " << endl;
+    cout << "=========================================================================" << endl;
+    size_t result_size = result.size();
+    for (size_t k = 0; k < result_size; k++) {
+        if (result[k].get_authors().size() == 0) {
+            cout << "filename: " << result[k].get_filename() << endl;
+            cout << "title: " << result[k].get_title() << endl << endl;
+        }
+    }
+    cout << "=========================================================================" << endl;
+    cout << "                         End not found articles                          " << endl;
+    cout << "=========================================================================" << endl;
 }

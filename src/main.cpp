@@ -2,10 +2,10 @@
 #include <algorithm>
 
 #include <tclap/CmdLine.h>
+#include <unistd.h>
 
 #include "Requesters/Requester.h"
 #include "BiblioManager.h"
-#include "Database.h"
 
 using namespace std;
 
@@ -17,6 +17,8 @@ int main(int argc, char **argv) {
         TCLAP::SwitchArg dbSwitch("b", "database", "Disable database", cmd, false);
         TCLAP::UnlabeledMultiArg<string> files("files", "file names", true, "files");
         TCLAP::MultiArg<string> directories("d", "directory", "directories for recursive search of PDF documents", true, "path");
+        TCLAP::ValueArg<string> config_file("c", "config", "name of the config file",false,"../biblio.cfg","filename");
+        cmd.add(&config_file);
         vector<TCLAP::Arg*>  xorlist;
         xorlist.push_back(&purgeSwitch);
         xorlist.push_back(&files);
@@ -49,11 +51,8 @@ int main(int argc, char **argv) {
         if (curl_global_init(CURL_GLOBAL_ALL) != 0) {
             throw new BiblioException("Curl global init failed.\n");
         }
-
-        int threads = 4;
-
-		Config::init("../biblio.cfg");
-
+		Config::init(config_file.getValue());
+        int threads = sysconf(_SC_NPROCESSORS_ONLN);;
         BiblioManager manager(threads);
 
         ofstream out_html("biblio.html");
@@ -91,7 +90,8 @@ int main(int argc, char **argv) {
     				}
                 }
                 vector<ArticleInfo> result = manager.search_distance(levenshtein_distance, filenames_to_search, offline);
-    	        manager.print_html(out_html, data_from_db);
+    	        BiblioManager::cout_not_found_articles(result);
+                manager.print_html(out_html, data_from_db);
                 manager.print_bib(out_bib, data_from_db);
                 manager.print_html(out_html, result);
                 manager.print_bib(out_bib, result);
