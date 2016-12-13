@@ -40,9 +40,7 @@ int main(int argc, char **argv) {
         }
         size_t filenames_size = filenames.size();
         for (size_t i = 0; i < filenames_size; i++) {
-            if (filenames[i][0] != '/') {
-                filenames[i] = get_absolute_path(filenames[i]);
-            }
+            filenames[i] = get_absolute_path(filenames[i]);
         }
         bool offline = offlineSwitch.getValue();
         bool purge = purgeSwitch.getValue();
@@ -56,6 +54,7 @@ int main(int argc, char **argv) {
         BiblioManager manager(threads);
 
         ofstream out_html("biblio.html");
+        BiblioManager::start_print_html(out_html);
         ofstream out_bib("biblio.bib");
 
         if (purge) {
@@ -103,6 +102,7 @@ int main(int argc, char **argv) {
             } catch (const BiblioException &e) {
                 cerr << e.what() << '\n';
             }
+            BiblioManager::end_print_html(out_html);
             out_html.close();
             out_bib.close();          
         } 

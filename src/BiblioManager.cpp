@@ -139,34 +139,49 @@ void BiblioManager::print_bib(std::ostream &out, vector<ArticleInfo> &result) {
                 out << ",\n" << "year = {" << result[k].get_year() << "}";
             }
             out << "\n}\n\n";
+        } else {
+            out << "@ARTICLE{" << result[k].get_filename() << ",\n";
+            out << "title = {" << result[k].get_title() << "}";
+            out << "\n}\n\n";
         }
     }
 }
 
-
-void BiblioManager::print_html(std::ostream &out, std::vector<ArticleInfo> &result) {
-
-    size_t result_size = result.size();
+void BiblioManager::start_print_html(std::ostream &out) {
+    out << "<!DOCTYPE html>\n";
     out << "<html>\n";
     out << "\t<head>\n";
+    out << "\t\t<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n";
     out << "\t\t<title>Biblio results</title>\n";
     out << "\t</head>\n";
     out << "\t<body>\n";
+    out << "\t\t<table border=\"1\" width=\"100%\" cellpadding=\"5\" bgcolor=\"#42D6FF\">\n";
+}
 
+void BiblioManager::end_print_html(std::ostream &out) {
+    out << "\t\t</table>" << endl;
+    out << "\t</body>\n";
+    out << "</html>\n";
+}
+
+void BiblioManager::print_html(std::ostream &out, std::vector<ArticleInfo> &result) {
+    size_t result_size = result.size();
     for (size_t i = 0; i < result_size; i++) {
-        out << "--------------------------------------------------------------" << endl;
-        out << "<p><a href=\"" << result[i].get_filename() << "\">" << result[i].get_filename() << "</a></p>" << endl;
-        out << "--------------------------------------------------------------" << endl;
-        out << "<br>\n";
-        out << "<pre>\n";
-
+        out << "\t\t\t<tr>\n";
+        out << "\t\t\t\t<td align=\"center\"><a href=\"" << result[i].get_filename() << "\">" << result[i].get_filename() << "</a></td>\n";
+        if (i % 2 == 0) {
+            out << "\t\t\t\t<td bgcolor=\"#FFE780\">\n";
+        } else {
+            out << "\t\t\t\t<td bgcolor=\"#FBF9CB\">\n";
+        }
+        out << "\t\t\t\t\t<pre>  ";
         vector<string> authors = result[i].get_authors();
         size_t t = authors.size();
         if (t > 0) {
             for (size_t j = 0; j < t - 1; ++j) {
                 out << authors[j] << ", ";
             }
-            out << authors[t - 1] << ":\n";
+            out << authors[t - 1] << ":\n  ";
         }
         out << result[i].get_title();
         if (result[i].get_type() != "") {
@@ -188,13 +203,12 @@ void BiblioManager::print_html(std::ostream &out, std::vector<ArticleInfo> &resu
             out << " " << result[i].get_number() << ".";
         }
         if (result[i].get_url() != "") {
-            out << "\n" << result[i].get_url() << endl;
+            out << "\n  " << "<a href=\"" << result[i].get_url() << "\">" << result[i].get_url() << "</a>";
         }
         out << "</pre>\n";
+        out << "\t\t\t\t</td>\n";
+        out << "\t\t\t</tr>\n";
     }
-
-    out << "\t</body>\n";
-    out << "</html>\n";
 }
 
 BiblioManager::BiblioManager(int threads) {
@@ -298,10 +312,9 @@ void BiblioManager::my_cout(string &filename) {
 }
 
 void BiblioManager::cout_not_found_articles(std::vector<ArticleInfo> &result) {
-    cout << endl;
     cout << "=========================================================================" << endl;
     cout << "                       Start not found articles                          " << endl;
-    cout << "=========================================================================" << endl;
+    cout << "=========================================================================" << endl << endl;
     size_t result_size = result.size();
     for (size_t k = 0; k < result_size; k++) {
         if (result[k].get_authors().size() == 0) {
@@ -313,3 +326,4 @@ void BiblioManager::cout_not_found_articles(std::vector<ArticleInfo> &result) {
     cout << "                         End not found articles                          " << endl;
     cout << "=========================================================================" << endl;
 }
+

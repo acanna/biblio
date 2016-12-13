@@ -33,6 +33,8 @@ public:
     std::vector<ArticleInfo> search_distance(std::function<size_t(const std::string &,
                                                                   const std::string &)> dist,
                                              const std::vector<std::string> &filenames, bool offline);
+    static void start_print_html(std::ostream &out);
+    static void end_print_html(std::ostream &out);
     static void print_html(std::ostream &out, std::vector<ArticleInfo> &result);
     static void cout_not_found_articles(std::vector<ArticleInfo> &result);
     void print_bib(std::ostream &out, std::vector<ArticleInfo> &result);
