@@ -10,17 +10,23 @@
 
 using namespace std;
 
+//EL: хорошо бы это инкапсулировать в маленький класс с полями, которые эти мутексы защищают
+// и с функциями, которые их лочат/анлочат. глобальные переменные это не true!
+// какой-нибудь BiblioThreadContext
 mutex m_in;
 mutex m_out;
 mutex m_cout;
 
 std::vector<ArticleInfo> BiblioManager::search_requester(Requester &requester, std::string query) {
     vector<ArticleInfo> result = {};
+    //EL: эти переменные все еще нужны? вроде нет.
     vector<ArticleInfo> additional_result = {};
     string new_query = "";
 
     transform(query.begin(), query.end(), query.begin(), ::tolower);
     result = requester.publication_request(query);
+    //EL: если это больше не надо, то давайте это удалим! В гите все равно оно будет жить вечно.
+
     /*vector<string> words = split(query, ' ');
 
     // discard first word
@@ -95,6 +101,7 @@ bool BiblioManager::longer_title(const ArticleInfo &info_1, const ArticleInfo &i
 }
 
 void BiblioManager::print_bib(std::ostream &out, vector<ArticleInfo> &result) {
+    //EL: кажется, что у вектора size за O(1) выполняется
     size_t result_size = result.size();
     for (size_t k = 0; k < result_size; k++) {
         if (result[k].get_authors().size() > 0) {
@@ -166,6 +173,7 @@ void BiblioManager::end_print_html(std::ostream &out) {
 
 void BiblioManager::print_html(std::ostream &out, std::vector<ArticleInfo> &result) {
     size_t result_size = result.size();
+    //EL: for(auto& info: result)
     for (size_t i = 0; i < result_size; i++) {
         out << "\t\t\t<tr>\n";
         out << "\t\t\t\t<td align=\"center\"><a href=\"" << result[i].get_filename() << "\">" << result[i].get_filename() << "</a></td>\n";
@@ -257,6 +265,7 @@ BiblioManager::search_distance(std::function<size_t(const std::string &,
     return out;
 }
 
+//EL: последним параметром я бы как раз передавал класс с мутексами и очередями.
 void BiblioManager::thread_function(std::function<size_t(const std::string &, const std::string &)> dist, bool offline,
                                     std::queue<std::string> &in, std::vector<ArticleInfo> &out) {
     string filename;
@@ -307,6 +316,9 @@ BiblioManager::BiblioManager() {
 
 void BiblioManager::my_cout(string &filename) {
     m_cout.lock();
+    //EL: круто! еще выводить счетчик 4/56 (всего 56 статей, сейчас обработали 4)
+    //EL: треад закончил работу и прибавил единичку к счеткику (вполне хватит мутекса m_cout, 
+    //новый не нужен)
     cout << "Processing file " << filename << endl;
     m_cout.unlock();
 }

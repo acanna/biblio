@@ -15,6 +15,7 @@ private:
     int threads_num;
 
 private:
+    //EL: я бы сделал маленький класс, в который бы инкапсулировал очереди, вектора и мутексы
     static void my_push(ArticleInfo info, std::vector<ArticleInfo> &out);
     static std::string my_pop(std::queue<std::string> &in);
     static bool my_empty(std::queue<std::string> &in);

@@ -86,6 +86,7 @@ public:
 	~PictureParser();
     PictureParser(std::string const &filename, int const xres, int const yres,
                   std::string const &imagename, std::string const &format, int const dpi);
+    //EL: так и не понял, зачем два метода, а не один? const string& find_title();
     std::string const &get_title();
     void find_title();
 };
