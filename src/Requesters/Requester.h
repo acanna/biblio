@@ -28,6 +28,7 @@ protected:
 	void curl_init();
 	void curl_clean_up();
 	char * curl_perform(const std::string &request) ;
+    //EL: буфер это поле класса, зачем его передавать?
 	virtual std::vector<ArticleInfo> parse_response(char* buffer) = 0;
 	virtual std::string make_request(const std::string &query) = 0;
 

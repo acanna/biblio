@@ -4,6 +4,7 @@ using namespace std;
 
 
 size_t Requester::writeData(void *webBuffer, const size_t size, const size_t nmemb, void *userp) {
+    //EL: если тут сделать  Requester *req = (Requesrer)userp, а потом пользоваться req, то код станет понятней
     size_t segSize = size * nmemb;
     int bufferIndex = (*(Requester *) userp).bufferIndex;
     if (bufferIndex + segSize > MAX_BUF) {
@@ -64,7 +65,7 @@ char * Requester::curl_perform(const string &request) {
         }
         throw BiblioException(what);
     }
-	
+	//EL: зачем здесь возвращается буфер? это же поле этого же класса
 	return buffer;
 }
 

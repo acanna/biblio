@@ -81,6 +81,8 @@ int main(int argc, char **argv) {
     				if (result_ptr != nullptr) {
                         if (! need_to_complete_data(result_ptr)) {
     					    data_from_db.push_back(*result_ptr);
+                            //здесь бы сделать deleter result_ptr
+                            //ведь копия уже создана
                         } else {
                             filenames_to_search.push_back(filename);
                         }

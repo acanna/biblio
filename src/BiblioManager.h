@@ -16,8 +16,6 @@ private:
 
 private:
     static bool greater(const ArticleInfo &info_1, const ArticleInfo &info_2);
-    static bool smaller(const ArticleInfo &info_1, const ArticleInfo &info_2);
-    static bool longer_title(const ArticleInfo &info_1, const ArticleInfo &info_2);
     static void thread_function(std::function<size_t(const std::string &, const std::string &)> dist, bool offline);
     static std::vector<ArticleInfo> search_requester(Requester &requester, std::string query);
 

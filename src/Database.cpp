@@ -5,11 +5,15 @@
 
 using namespace std;
 
+//EL: постоянно делается open/close db, это не тру!
+//EL: один раз в начале программы октрыли (например, в конструкторе)
+//EL: в конце закрыли (например, в деструкторе)
 Database::Database(const string &db_filename){
     this->db_filename = db_filename;
 }
 
 Database * Database::connect_database() {
+    //EL: загадочно! не похоже, чтобы этот метод открывал db
     Config& cfg = Config::get_instance();
 	string name = "database";
 	Database * db;
@@ -22,6 +26,7 @@ Database * Database::connect_database() {
 	}
 }
 
+//EL: db должно быть полем
 int Database::check_status (const char * request, sqlite3 *db, int rc, sqlite3_stmt **stmt) {
 	rc = sqlite3_prepare(db, request, -1, stmt, NULL);
 	if(rc != SQLITE_OK) {
@@ -52,7 +57,7 @@ ArticleInfo * Database::get_data(std::string filename) {
 	sqlite3_stmt *stmt;
 	int rc;
 	string request = "";
-
+    //EL: зачем каждый раз открывать базу?
 	rc = sqlite3_open(this->db_filename.c_str(), &db);
 	if (rc != SQLITE_OK) {
 		sqlite3_close(db);
@@ -95,8 +100,10 @@ ArticleInfo * Database::get_data(std::string filename) {
 		    string year = string(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 8)));
 		    string type = string(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 9)));
 		    string url = string(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 10)));
-		    ArticleInfo * info = new ArticleInfo(title, authors, venue, volume, 
+
+    	    ArticleInfo * info = new ArticleInfo(title, authors, venue, volume, 
 						number, pages, year, type, url);
+            //EL: не нашел места в программе, где есть парный delete к этому new
 			info->set_filename(filename);
 			sqlite3_finalize(stmt);
 			sqlite3_close(db);
@@ -181,6 +188,9 @@ void Database::add_data(string filename, ArticleInfo info) {
 	
 }
 
+//EL: если сделать нормальное открытие/закрытие db и реализовать этот метод
+//не через copy-paste, а вызовом в цикле Database::add_data(string filename, ArticleInfo info) 
+//то будет короче и лучше
 void Database::add_data(std::vector<ArticleInfo> &data) {
 	size_t  data_size = data.size();
 	if (data_size == 0) {
@@ -306,6 +316,7 @@ void Database::purge() {
                     string paper_filename = string(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1)));
                     cout << "Next paper: " <<  sqlite3_column_int(stmt, 0) << " "  << paper_filename << endl;
                     if (!exists(paper_filename)) {
+                        //EL: purche?
                         ids_to_purche.push_back(sqlite3_column_int(stmt, 0));
                     }
     		}

@@ -12,70 +12,8 @@
 using namespace std;
 
 std::vector<ArticleInfo> BiblioManager::search_requester(Requester &requester, std::string query) {
-    vector<ArticleInfo> result = {};
-    vector<ArticleInfo> additional_result = {};
-    string new_query = "";
-
     transform(query.begin(), query.end(), query.begin(), ::tolower);
-    result = requester.publication_request(query);
-    /*vector<string> words = split(query, ' ');
-
-    // discard first word
-    new_query = "";
-    for (unsigned int i = 1; i < words.size()-1; i++) {
-        new_query += words[i] + " ";
-    }
-    new_query += words[words.size()-1];
-    additional_result = requester.publication_request(new_query);
-    result.insert(result.end(), additional_result.begin(), additional_result.end());
-  
-    // discard last word
-    new_query = "";
-    for (unsigned int i = 0; i < words.size()-2; i++) {
-        new_query += words[i] + " ";
-    }
-    new_query += words[words.size()-2];
-    additional_result = requester.publication_request(new_query);
-    result.insert(result.end(), additional_result.begin(), additional_result.end());
-
-    // discard first two words
-    new_query = "";
-    for (unsigned int i = 2; i < words.size()-1; i++) {
-        new_query += words[i] + " ";
-    }
-    new_query += words[words.size()-1];
-    additional_result = requester.publication_request(new_query);
-    result.insert(result.end(), additional_result.begin(), additional_result.end());
-  
-    // discard last two words
-    new_query = "";
-    for (unsigned int i = 0; i < words.size()-3; i++) {
-        new_query += words[i] + " ";
-    }
-    new_query += words[words.size()-3];
-    additional_result = requester.publication_request(new_query);
-    result.insert(result.end(), additional_result.begin(), additional_result.end());
-
-    if (words.size() > 10){
-        // discard first five words
-        new_query = "";
-        for (unsigned int i = 5; i < words.size()-1; i++) {
-            new_query += words[i] + " ";
-        }
-        new_query += words[words.size()-1];
-        additional_result = requester.publication_request(new_query);
-        result.insert(result.end(), additional_result.begin(), additional_result.end());
-      
-        // discard last five words
-        new_query = "";
-        for (unsigned int i = 0; i < words.size()-6; i++) {
-            new_query += words[i] + " ";
-        }
-        new_query += words[words.size()-6];
-        additional_result = requester.publication_request(new_query);
-        result.insert(result.end(), additional_result.begin(), additional_result.end());
-    }*/
-    return result;
+    return requester.publication_request(query);;
 }
 
 
@@ -83,17 +21,8 @@ bool BiblioManager::greater(const ArticleInfo &info_1, const ArticleInfo &info_2
     return (info_1.get_precision() > info_2.get_precision());
 }
 
-bool BiblioManager::smaller(const ArticleInfo &info_1, const ArticleInfo &info_2) {
-    return info_1.get_precision() <= info_2.get_precision();
-}
-
-bool BiblioManager::longer_title(const ArticleInfo &info_1, const ArticleInfo &info_2) {
-    return info_1.get_title().size() > info_2.get_title().size();
-}
-
 void BiblioManager::print_bib(std::ostream &out, vector<ArticleInfo> &result) {
-    size_t result_size = result.size();
-    for (size_t k = 0; k < result_size; k++) {
+    for (size_t k = 0; k < result.size(); k++) {
         if (result[k].get_authors().size() > 0) {
             vector<string> authors = result[k].get_authors();
             size_t t = authors.size();
@@ -162,8 +91,7 @@ void BiblioManager::end_print_html(std::ostream &out) {
 }
 
 void BiblioManager::print_html(std::ostream &out, std::vector<ArticleInfo> &result) {
-    size_t result_size = result.size();
-    for (size_t i = 0; i < result_size; i++) {
+    for (size_t i = 0; i < result.size(); i++) {
         out << "\t\t\t<tr>\n";
         out << "\t\t\t\t<td align=\"center\"><a href=\"" << result[i].get_filename() << "\">" << result[i].get_filename() << "</a></td>\n";
         if (i % 2 == 0) {
