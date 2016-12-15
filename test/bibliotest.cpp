@@ -102,7 +102,7 @@ TEST (PictureParser, Online) {
     if (curl_global_init(CURL_GLOBAL_ALL) != 0) {
         throw new BiblioException("Curl global init failed.\n");
     }
-    int threads = 4;
+    int threads = 1;
     Config::init("../biblio.cfg");
     BiblioManager manager(threads);
 
@@ -129,7 +129,7 @@ TEST (PictureParser, Online) {
         filenames.push_back(filename);
     }
     try {
-        vector<ArticleInfo> result = manager.search_distance(levenshtein_distance, filenames, false);
+        vector<ArticleInfo> result = manager.search_distance(levenshtein_distance, false);
         manager.print_html(out_html, result);
         manager.print_bib(out_bib, result);
 
@@ -200,7 +200,7 @@ TEST (TinyDir, Try) {
 }
 
 TEST (TinyDir, ReadPDF) {
-    string path = "/home/acan/Bib/biblio/bin/../articles";
+    string path = "/home/acan/Dropbox/biblio/articles_for_testing_ready";
     vector<string> files = read_pdf_files_recursive(path);
     for (string s : files) {
         cout << s << endl;

@@ -6,6 +6,7 @@
 
 #include "Requesters/Requester.h"
 #include "BiblioManager.h"
+#include "BiblioThreadContext.h"
 
 using namespace std;
 
@@ -50,7 +51,7 @@ int main(int argc, char **argv) {
             throw new BiblioException("Curl global init failed.\n");
         }
 		Config::init(config_file.getValue());
-        int threads = sysconf(_SC_NPROCESSORS_ONLN);;
+        int threads = sysconf(_SC_NPROCESSORS_ONLN);
         BiblioManager manager(threads);
 
         ofstream out_html("biblio.html");
@@ -88,7 +89,9 @@ int main(int argc, char **argv) {
                         filenames_to_search.push_back(filename);
     				}
                 }
-                vector<ArticleInfo> result = manager.search_distance(levenshtein_distance, filenames_to_search, offline);
+                queue<string, deque<string>> in(deque<string>(filenames.begin(), filenames.end()));
+                BiblioThreadContext::init(in);
+                vector<ArticleInfo> result = manager.search_distance(levenshtein_distance, offline);
     	        BiblioManager::cout_not_found_articles(result);
                 manager.print_html(out_html, data_from_db);
                 manager.print_bib(out_bib, data_from_db);

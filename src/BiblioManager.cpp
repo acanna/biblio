@@ -6,13 +6,10 @@
 
 #include "BiblioManager.h"
 #include "RequesterManager.h"
+#include "BiblioThreadContext.h"
 
 
 using namespace std;
-
-mutex m_in;
-mutex m_out;
-mutex m_cout;
 
 std::vector<ArticleInfo> BiblioManager::search_requester(Requester &requester, std::string query) {
     vector<ArticleInfo> result = {};
@@ -215,38 +212,12 @@ BiblioManager::BiblioManager(int threads) {
     this->threads_num = threads;
 }
 
-bool BiblioManager::my_empty(std::queue<std::string> &in) {
-    m_in.lock();
-    bool empty = in.empty();
-    m_in.unlock();
-    return empty;
-}
-
-std::string BiblioManager::my_pop(std::queue<std::string> &in) {
-    m_in.lock();
-    string name;
-    name = in.front();
-    in.pop();
-    m_in.unlock();
-    return name;
-}
-
-void BiblioManager::my_push(ArticleInfo info, std::vector<ArticleInfo> &out) {
-    m_out.lock();
-    out.push_back(info);
-    m_out.unlock();
-}
-
 std::vector<ArticleInfo>
 BiblioManager::search_distance(std::function<size_t(const std::string &,
-                                                    const std::string &)> dist,
-                               const std::vector<std::string> &filenames, bool offline) {
-    queue<string, deque<string>> in(deque<string>(filenames.begin(), filenames.end()));
-    vector<ArticleInfo> out = {};
+                                                    const std::string &)> dist, bool offline) {
     vector<thread> threads;
-
     for(int i = 0; i < threads_num; ++i){
-        threads.push_back(std::thread(thread_function, dist, offline, ref(in), ref(out)));
+        threads.push_back(std::thread(thread_function, dist, offline));
     }
 
     for(auto& thread : threads){
@@ -254,25 +225,24 @@ BiblioManager::search_distance(std::function<size_t(const std::string &,
 
     }
 
-    return out;
+    return BiblioThreadContext::instance().get_output();
 }
 
-void BiblioManager::thread_function(std::function<size_t(const std::string &, const std::string &)> dist, bool offline,
-                                    std::queue<std::string> &in, std::vector<ArticleInfo> &out) {
+void
+BiblioManager::thread_function(std::function<size_t(const std::string &, const std::string &)> dist, bool offline) {
     string filename;
     vector<ArticleInfo> result = {};
     RequesterManager req_manager = RequesterManager();
     vector<Requester *> requesters = req_manager.get_all_requesters();
     bool found = false;
-    while(!my_empty(in)) {
-        filename = my_pop(in);
-        my_cout(filename);
+    while(!BiblioThreadContext::instance().my_empty()) {
+        filename = BiblioThreadContext::instance().my_pop();
         PictureParser picture_parser = PictureParser(filename, 300, 300, get_random_filename() + ".png", "png", 700);
         picture_parser.find_title();
         string saved_title = picture_parser.get_title();
         string title = low_letters_only(saved_title);
-        if (offline) {
-            my_push(ArticleInfo(saved_title, filename), out);
+        if (offline || saved_title.size() == 0) {
+            BiblioThreadContext::instance().my_push(ArticleInfo(saved_title, filename));
             continue;
         }
         found = false;
@@ -289,14 +259,14 @@ void BiblioManager::thread_function(std::function<size_t(const std::string &, co
                 stable_sort(result.begin(), result.end(), greater);
                 if (result[0].get_precision() > 90) {
                     result[0].set_filename(filename);
-                    my_push(result[0], out);
+                    BiblioThreadContext::instance().my_push(result[0]);
                     found = true;
                     break;
                 }
             }
         }
         if (!found) {
-            my_push(ArticleInfo(saved_title, filename), out);
+            BiblioThreadContext::instance().my_push(ArticleInfo(saved_title, filename));
         }
     }
 }
@@ -305,23 +275,19 @@ BiblioManager::BiblioManager() {
     threads_num = 1;
 }
 
-void BiblioManager::my_cout(string &filename) {
-    m_cout.lock();
-    cout << "Processing file " << filename << endl;
-    m_cout.unlock();
-}
-
 void BiblioManager::cout_not_found_articles(std::vector<ArticleInfo> &result) {
     cout << "=========================================================================" << endl;
     cout << "                       Start not found articles                          " << endl;
     cout << "=========================================================================" << endl << endl;
-    size_t result_size = result.size();
+    size_t result_size = result.size(), found = result_size;
     for (size_t k = 0; k < result_size; k++) {
         if (result[k].get_authors().size() == 0) {
+            found--;
             cout << "filename: " << result[k].get_filename() << endl;
             cout << "title: " << result[k].get_title() << endl << endl;
         }
     }
+    cout << "Found information about " << found << " articles from " << result_size << endl;
     cout << "=========================================================================" << endl;
     cout << "                         End not found articles                          " << endl;
     cout << "=========================================================================" << endl;
