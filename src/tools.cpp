@@ -19,7 +19,7 @@ bool need_to_complete_data(const ArticleInfo * info){
     return true;
 }
 
-std::string get_absolute_path(string & s) {
+std::string get_absolute_path(const string &s) {
     char actualpath [PATH_MAX+1];
     return string(realpath(s.c_str(), actualpath));
 }

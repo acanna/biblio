@@ -17,26 +17,26 @@ Config::Config(){
     }
 }
 
-void Config::init(string s){
+void Config::init(const string &s){
 	filename = s;
 }
 
-bool Config::exists(string s){
+bool Config::exists(const string &s) const {
 	return cfg.exists(s);
 }
 
-libconfig::Setting& Config::lookup(string s) {
+libconfig::Setting& Config::lookup(const string & s) const {
 	if (!cfg.exists(s)) {
 		throw BiblioException("Wrong config file - missing " + s);
 	}
 	return cfg.lookup(s);
 }
 
-bool Config::lookupValue(string s, int & res) {
+bool Config::lookupValue(const string & s, int & res) const {
 	return cfg.lookupValue(s, res);
 }
 
-bool Config::lookupValue(string s, string & res) {
+bool Config::lookupValue(const string & s, string & res) const {
 	return cfg.lookupValue(s, res);
 }
 

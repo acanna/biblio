@@ -20,7 +20,7 @@ std::string delete_spaces_to_lower(std::string str);
 std::string short_name(const std::string s);
 std::string raw_to_formatted(const std::string s);
 std::string letters_to_lower(const std::string s);
-std::string get_absolute_path(std::string & s);
+std::string get_absolute_path(const std::string &s);
 size_t levenshtein_distance(const std::string &s, const std::string &t);
 std::vector<std::string> read_pdf_files_recursive(std::string &path);
 void read_pdf_files(std::vector<std::string>& v, std::string& path);
