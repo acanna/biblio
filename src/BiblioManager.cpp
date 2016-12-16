@@ -14,7 +14,7 @@ using namespace std;
 std::vector<ArticleInfo> BiblioManager::search_requester(Requester &requester, std::string query) {
     transform(query.begin(), query.end(), query.begin(), ::tolower);
 
-    //EL: эти переменные все еще нужны? вроде нет.
+    //EL: пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ? пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ.
 	vector<ArticleInfo> result = {};
     vector<ArticleInfo> additional_result = {};
 
@@ -22,7 +22,7 @@ std::vector<ArticleInfo> BiblioManager::search_requester(Requester &requester, s
 	result = requester.publication_request(query);
     vector<string> words = split(query, ' ');
   
-	//EL: если это больше не надо, то давайте это удалим! 
+	//EL: пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ, пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ! 
 	// discard first word
 	string new_query = "";
 	for (unsigned int i = 1; i < words.size()-1; i++) {
@@ -238,16 +238,15 @@ BiblioManager::thread_function(std::function<size_t(const std::string &, const s
         picture_parser.find_title();
         string saved_title = picture_parser.get_title();
         string title = low_letters_only(saved_title);
-        if (offline || saved_title.size() == 0) {
+        if (offline || title.size() == 0) {
             BiblioThreadContext::instance().my_push(ArticleInfo(saved_title, filename));
             continue;
         }
         found = false;
         for (size_t k = 0; k < requesters.size(); k++) {
             result = search_requester(*requesters[k], saved_title);
-            size_t result_size = result.size();
-            if (result_size > 0) {
-                for (size_t i = 0; i < result_size; i++) {
+            if (result.size() > 0) {
+                for (size_t i = 0; i < result.size(); i++) {
                     string cur_title = low_letters_only(result[i].get_title());
                     size_t distance = dist(cur_title, title);
                     int precision = 100 - (int) (100 * distance / max(title.size(), cur_title.size()));
