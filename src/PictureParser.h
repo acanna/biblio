@@ -39,18 +39,18 @@ public:
 
 class Rectangle {
 private:
-	int x;
-	int y;
-	int width;
-	int height;
+    int x;
+    int y;
+    int width;
+    int height;
 
 public:
-	Rectangle (int x, int y, int width, int height);
+    Rectangle (int x, int y, int width, int height);
     int get_x() const;
     int get_y() const;
     int get_height() const;
     int get_width() const;
-	static bool _smaller(const Rectangle &rect_1, const Rectangle &rect_2);
+    static bool _smaller(const Rectangle &rect_1, const Rectangle &rect_2);
 };
 
 class PictureParser {
@@ -65,7 +65,7 @@ private:
     int height;
     std::string format;
     char *data;
-	int title_x;
+    int title_x;
     int title_y;
     int title_height;
     int title_width;
@@ -75,15 +75,15 @@ private:
     bool is_black(int x, int y);
     bool is_white(int x, int y);
     bool white_background(int x_start, int y);
-	void draw_title_rectangle();
+    void draw_title_rectangle();
     void select_title_rectangle(std::vector<Rectangle> & areas);
-	std::vector<Rectangle> select_areas(cv::Mat & rgb);
+    std::vector<Rectangle> select_areas(cv::Mat & rgb);
     std::string parse_image();
-	void make_white_rectangle (int x, int y, int width, int height);
+    void make_white_rectangle (int x, int y, int width, int height);
 
 public:
     PictureParser() {};
-	~PictureParser();
+    ~PictureParser();
     PictureParser(std::string const &filename, int const xres, int const yres,
                   std::string const &imagename, std::string const &format, int const dpi);
     //EL: так и не понял, зачем два метода, а не один? const string& find_title();

@@ -10,7 +10,7 @@
 class ArticleInfo {
 
 private:
-	std::string filename;
+    std::string filename;
     std::string title;
     std::vector<std::string> authors;
     std::string venue;
@@ -23,14 +23,14 @@ private:
     int precision;
 
 public:
-	ArticleInfo(std::string const &title, std::vector<std::string> const &authors,
-				std::string const &venue, std::string const &volume, std::string const &number, 
-				std::string const &pages, std::string const &year, std::string const &type, 
-				std::string const &url);
+    ArticleInfo(std::string const &title, std::vector<std::string> const &authors,
+                std::string const &venue, std::string const &volume, std::string const &number,
+                std::string const &pages, std::string const &year, std::string const &type,
+                std::string const &url);
     //EL такое ощущение, что этот конструктор больше не нужен. используется более универсальный.
     ArticleInfo(Json::Value const &info);
     ArticleInfo(std::string const &title, std::string const &filename);
-	std::string const &get_filename() const;
+    std::string const &get_filename() const;
     std::string const &get_title() const;
     std::vector<std::string> const &get_authors() const;
     std::string const &get_venue() const;
@@ -42,7 +42,7 @@ public:
     std::string const &get_url() const;
     int get_precision() const;
     void set_precision(int precision);
-	void set_filename(std::string const& filename);
+    void set_filename(std::string const& filename);
     std::string to_string();
 };
 

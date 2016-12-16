@@ -5,12 +5,12 @@
 class NatureRequester: public Requester {
 
 protected:
-	std::string url;
+    std::string url;
 
     std::vector<ArticleInfo> parse_response(char * buffer);
-	std::string make_request(const std::string &query);
+    std::string make_request(const std::string &query);
 
 public:
     //EL: const&
-	NatureRequester(std::string url);
+    NatureRequester(std::string url);
 };

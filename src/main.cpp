@@ -7,7 +7,6 @@
 #include "Requesters/Requester.h"
 #include "BiblioManager.h"
 #include "BiblioThreadContext.h"
-#include "Config.h"
 
 using namespace std;
 
@@ -51,7 +50,7 @@ int main(int argc, char **argv) {
         if (curl_global_init(CURL_GLOBAL_ALL) != 0) {
             throw new BiblioException("Curl global init failed.\n");
         }
-		Config::init(config_file.getValue());
+        Config::init(config_file.getValue());
         int threads = sysconf(_SC_NPROCESSORS_ONLN);
         BiblioManager manager(threads);
 
@@ -60,51 +59,51 @@ int main(int argc, char **argv) {
         ofstream out_bib("biblio.bib");
 
         if (purge) {
-    		Database::purge();
+            Database::purge();
         } else {	
             bool using_db = false; 
             try {
                 Database * db;
-    			if (!without_db){                
+                if (!without_db){
                     db = Database::connect_database();
-        			if (db != nullptr) {
-        				using_db = true;
-        			}  
+                    if (db != nullptr) {
+                        using_db = true;
+                    }
                 }     
                 vector<string> filenames_to_search = {};
-    			vector<ArticleInfo> data_from_db ={};
+                vector<ArticleInfo> data_from_db ={};
                 ArticleInfo *result_ptr = nullptr;
         
                 for (const auto &filename : filenames) {	
-    				if (using_db) {
-    					result_ptr = db->get_data(filename);
+                    if (using_db) {
+                        result_ptr = db->get_data(filename);
                     } 
-    				if (result_ptr != nullptr) {
+                    if (result_ptr != nullptr) {
                         if (! need_to_complete_data(result_ptr)) {
-    					    data_from_db.push_back(*result_ptr);
+                            data_from_db.push_back(*result_ptr);
                             //здесь бы сделать deleter result_ptr
                             //ведь копия уже создана
                         } else {
                             filenames_to_search.push_back(filename);
                         }
-    				}
+                    }
                     else if ((!using_db) || (result_ptr == nullptr)) {
                         filenames_to_search.push_back(filename);
-    				}
+                    }
                 }
                 queue<string, deque<string>> in(deque<string>(filenames.begin(), filenames.end()));
                 BiblioThreadContext::init(in);
                 vector<ArticleInfo> result = manager.search_distance(levenshtein_distance, offline);
-    	        BiblioManager::cout_not_found_articles(result);
+                BiblioManager::cout_not_found_articles(result);
                 manager.print_html(out_html, data_from_db);
                 manager.print_bib(out_bib, data_from_db);
                 manager.print_html(out_html, result);
                 manager.print_bib(out_bib, result);
     
-    			if ((using_db)&&(!without_db)) {
-                	db->add_data(result);
-    				delete db;
-    			}
+                if ((using_db)&&(!without_db)) {
+                    db->add_data(result);
+                    delete db;
+                }
             } catch (const BiblioException &e) {
                 cerr << e.what() << '\n';
             }

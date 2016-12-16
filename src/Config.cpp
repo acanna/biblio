@@ -18,29 +18,29 @@ Config::Config(){
 }
 
 void Config::init(const string &s){
-	filename = s;
+    filename = s;
 }
 
 bool Config::exists(const string &s) const {
-	return cfg.exists(s);
+    return cfg.exists(s);
 }
 
 libconfig::Setting& Config::lookup(const string & s) const {
-	if (!cfg.exists(s)) {
-		throw BiblioException("Wrong config file - missing " + s);
-	}
-	return cfg.lookup(s);
+    if (!cfg.exists(s)) {
+        throw BiblioException("Wrong config file - missing " + s);
+    }
+    return cfg.lookup(s);
 }
 
 bool Config::lookupValue(const string & s, int & res) const {
-	return cfg.lookupValue(s, res);
+    return cfg.lookupValue(s, res);
 }
 
 bool Config::lookupValue(const string & s, string & res) const {
-	return cfg.lookupValue(s, res);
+    return cfg.lookupValue(s, res);
 }
 
  Config & Config::get_instance() {
-	static Config config;
-	return config;
+    static Config config;
+    return config;
 }

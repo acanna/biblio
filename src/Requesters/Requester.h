@@ -20,22 +20,22 @@
 class Requester {
 
 protected:
-	CURL * curl;
+    CURL * curl;
     char buffer[MAX_BUF + 1];
     int bufferIndex;
     int errorCode;
 
 protected:
-	static size_t writeData(void *webBuffer, const size_t size, const size_t nmemb, void *userp);
-	void curl_init();
-	void curl_clean_up();
-	char * curl_perform(const std::string &request) ;
+    static size_t writeData(void *webBuffer, const size_t size, const size_t nmemb, void *userp);
+    void curl_init();
+    void curl_clean_up();
+    char * curl_perform(const std::string &request) ;
     //EL: буфер это поле класса, зачем его передавать?
-	virtual std::vector<ArticleInfo> parse_response(char* buffer) = 0;
-	virtual std::string make_request(const std::string &query) = 0;
+    virtual std::vector<ArticleInfo> parse_response(char* buffer) = 0;
+    virtual std::string make_request(const std::string &query) = 0;
 
 public:
-	Requester();
+    Requester();
     Requester(const Requester& r);
     virtual ~Requester();
     virtual std::vector<ArticleInfo> publication_request(const std::string &query);

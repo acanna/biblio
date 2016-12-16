@@ -29,7 +29,7 @@ void Requester::curl_init() {
 }
 
 void Requester::curl_clean_up(){
-	curl_easy_cleanup(curl);
+    curl_easy_cleanup(curl);
 }
 
 char * Requester::curl_perform(const string &request) {
@@ -39,7 +39,7 @@ char * Requester::curl_perform(const string &request) {
         buffer[i] = 0; 
     }
 
-	curl_easy_setopt(curl, CURLOPT_URL, request.c_str());
+    curl_easy_setopt(curl, CURLOPT_URL, request.c_str());
     CURLcode result = curl_easy_perform(curl);
     
     if (result != CURLE_OK) {
@@ -65,8 +65,8 @@ char * Requester::curl_perform(const string &request) {
         }
         throw BiblioException(what);
     }
-	//EL: зачем здесь возвращается буфер? это же поле этого же класса
-	return buffer;
+    //EL: зачем здесь возвращается буфер? это же поле этого же класса
+    return buffer;
 }
 
 Requester::Requester() {
@@ -81,7 +81,7 @@ Requester::~Requester() {
 
 vector<ArticleInfo> Requester::publication_request(const string &query) {
     string request = make_request(query);
-	char * buffer = curl_perform(request);
+    char * buffer = curl_perform(request);
 
     vector<ArticleInfo> articles;
     articles = parse_response(buffer);
