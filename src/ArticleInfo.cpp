@@ -4,7 +4,7 @@ using std::vector;
 using std::string;
 
 ArticleInfo::ArticleInfo(string const &title, vector<string> const &authors,
-            	string const &venue, string const &volume, string const &number,
+                string const &venue, string const &volume, string const &number,
                 string const &pages, string const &year, string const &type, string const &url) {
     this->title = title;
     this->authors = authors;

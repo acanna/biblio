@@ -26,34 +26,34 @@ int PixInfo::get_y() const {
 //------------------------ >> Rectangle <<----------------------------------//
 
 Rectangle::Rectangle (int x, int y, int width, int height){
-	this->x = x;
-	this->y = y;
-	this->width = width;
-	this->height = height;
+    this->x = x;
+    this->y = y;
+    this->width = width;
+    this->height = height;
 }
 
 int Rectangle::get_x() const {
-	return this->x;
+    return this->x;
 }
 
 int Rectangle::get_y() const {
-	return this->y;
+    return this->y;
 }
 
 int Rectangle::get_height() const {
-	return this->height;
+    return this->height;
 }
 
 int Rectangle::get_width() const {
-	return this->width;
+    return this->width;
 }
 
 bool Rectangle::_smaller(const Rectangle &rect_1, const Rectangle &rect_2) {
-	if (rect_1.get_y() != rect_2.get_y()) {
-    	return rect_1.get_y() < rect_2.get_y();
-	} else {
-    	return rect_1.get_x() < rect_2.get_x();
-	}
+    if (rect_1.get_y() != rect_2.get_y()) {
+        return rect_1.get_y() < rect_2.get_y();
+    } else {
+        return rect_1.get_x() < rect_2.get_x();
+    }
 }
 
 //------------------------ >> PictureParser <<----------------------------------//
@@ -77,7 +77,7 @@ string const &PictureParser::get_title() {
 
 bool PictureParser::is_black(int x, int y) {
     int black = 60; // (color <= black) <=> (black pix)
-				    // (color > black) <=> (white pix)
+                    // (color > black) <=> (white pix)
 
     //	avoid other colors
     if ((((this->data[y * (this->width) * 4 + x * 4]) & 255) > black) ||
@@ -92,7 +92,7 @@ bool PictureParser::is_black(int x, int y) {
 
 bool PictureParser::is_white(int x, int y) {
     int white = 230; // (color >= white) <=> (white pix)
-				     // (color < white) <=> (black pix)
+                     // (color < white) <=> (black pix)
 
     return ( ((int) (this->data[y * (this->width) * 4 + x * 4]) & 255) *
              ((int) (this->data[y * (this->width) * 4 + x * 4 + 3]) & 255) / 255 >= white);
@@ -100,7 +100,7 @@ bool PictureParser::is_white(int x, int y) {
 
 bool PictureParser::white_background(int x_start, int y) {
     int white_counter = 0;
-	int const enough_white_space = 10;
+    int const enough_white_space = 10;
 
     for (int x = x_start; x < (int)(this->width / 2); x++){
         if (is_white(x, y)) {
@@ -115,19 +115,19 @@ bool PictureParser::white_background(int x_start, int y) {
 }
 
 void PictureParser::draw_title_rectangle(){
-	int const white = 115;
-	int x = this->title_x;
-	int y = this->title_y;
-	int width = this->title_width;
-	int height = this->title_height;
+    int const white = 115;
+    int x = this->title_x;
+    int y = this->title_y;
+    int width = this->title_width;
+    int height = this->title_height;
 
-	for (int x_ = x; x_ < x + width; x_++){
-		for (int y_ = y; y_ < y + height; y_++){
-			this->data[y_ * (this->width) * 4 + x_ * 4] = white;
-	        this->data[y_ * (this->width) * 4 + x_ * 4 + 1] = white;
-    	    this->data[y_ * (this->width) * 4 + x_ * 4 + 2] = white;
-		}
-	}
+    for (int x_ = x; x_ < x + width; x_++){
+        for (int y_ = y; y_ < y + height; y_++){
+            this->data[y_ * (this->width) * 4 + x_ * 4] = white;
+            this->data[y_ * (this->width) * 4 + x_ * 4 + 1] = white;
+            this->data[y_ * (this->width) * 4 + x_ * 4 + 2] = white;
+        }
+    }
 
 }
 
@@ -150,25 +150,25 @@ void PictureParser::find_title() {
     poppler::page_renderer renderer;
     poppler::image cur_image = renderer.render_page(mypage,
                          this->xres, this->yres, 0, 0, this->width, this->height);        
-	cur_image.save(this->imagename, this->format, this->dpi);
+    cur_image.save(this->imagename, this->format, this->dpi);
 
 
     this->data = cur_image.data();
 
-	//	select areas with text using opencv-lib
+    //	select areas with text using opencv-lib
     Mat rgb = imread(this->imagename);
-	vector<Rectangle> areas = select_areas (rgb);
+    vector<Rectangle> areas = select_areas (rgb);
 
-	// specify title area using row-by-row pix scanning
+    // specify title area using row-by-row pix scanning
     select_title_rectangle(areas);
 
-	poppler::image mod_image =  poppler::image(this->data, cur_image.width(), 
-			cur_image.height(), cur_image.format());
-	mod_image.save("_"+this->imagename, this->format, this->dpi);
+    poppler::image mod_image =  poppler::image(this->data, cur_image.width(),
+            cur_image.height(), cur_image.format());
+    mod_image.save("_"+this->imagename, this->format, this->dpi);
 
 
-	vector<poppler::font_info> fonts = doc->fonts();
-	// pdf as image
+    vector<poppler::font_info> fonts = doc->fonts();
+    // pdf as image
     if (fonts.size() == 0) {
         poppler::image rect_image = renderer.render_page(mypage,
                          this->xres, this->yres, this->title_x, this->title_y, this->title_width, this->title_height);
@@ -182,7 +182,7 @@ void PictureParser::find_title() {
         double height_rect = this->title_height * screen_res / this->yres;
         double width_rect = this->title_width * screen_res / this->xres;
         poppler::rectangle<double> rect = poppler::rectangle<double>(x_rect, 
-											y_rect, width_rect, height_rect);
+                                            y_rect, width_rect, height_rect);
         result = mypage->text(rect).to_latin1();
     }
     result = raw_to_formatted(result);
@@ -192,13 +192,13 @@ void PictureParser::find_title() {
 vector<Rectangle> PictureParser::select_areas(Mat & rgb_){
 
     // downsample and use it for processing
-	Mat rgb;
+    Mat rgb;
     pyrDown(rgb_, rgb);
 
-	double coefToPopplerX = 1.0*this->width/rgb.size().width;
-	double coefToPopplerY = 1.0*this->height/rgb.size().height;
+    double coefToPopplerX = 1.0*this->width/rgb.size().width;
+    double coefToPopplerY = 1.0*this->height/rgb.size().height;
 
-	vector<Rectangle> areas = {};
+    vector<Rectangle> areas = {};
     Mat small;
     cvtColor(rgb, small, CV_BGR2GRAY);
 
@@ -233,54 +233,54 @@ vector<Rectangle> PictureParser::select_areas(Mat & rgb_){
         drawContours(mask, contours, idx, Scalar(255, 255, 255), CV_FILLED);
         // ratio of non-zero pixels in the filled region
         double r = (double)countNonZero(maskROI)/(rect.width*rect.height);
-		// assume at least 45% of the area is filled if it contains text & constraints on region size 
+        // assume at least 45% of the area is filled if it contains text & constraints on region size
         if (r > 0.45 &&  (rect.height > 8 && rect.width > 8)){ 
-			rectangle(rgb, rect, Scalar(0, 0, 0), 2);
-	        int x_rect = (int) (rect.x * coefToPopplerX);
-	        int y_rect = (int) (rect.y * coefToPopplerY);
-    	    int height_rect = (int) (rect.height * coefToPopplerX);
-        	int width_rect = (int) (rect.width * coefToPopplerY);
+            rectangle(rgb, rect, Scalar(0, 0, 0), 2);
+            int x_rect = (int) (rect.x * coefToPopplerX);
+            int y_rect = (int) (rect.y * coefToPopplerY);
+            int height_rect = (int) (rect.height * coefToPopplerX);
+            int width_rect = (int) (rect.width * coefToPopplerY);
 
-			// delete unnecessary elements
-			double square_ratio = 0.4;		
-			double row_ratio = 50;		
-			double col_ratio = 3;		
+            // delete unnecessary elements
+            double square_ratio = 0.4;
+            double row_ratio = 50;
+            double col_ratio = 3;
 
-			// delete squares	
-			if ((((double) rect.height/rect.width > square_ratio) && 
-						((double) rect.height/rect.width < 1/square_ratio)) || 
-			    (((double) rect.height/rect.width < square_ratio) && 
-						((double)rect.height/rect.width > 1/square_ratio)))  {
-				make_white_rectangle (x_rect, y_rect, width_rect, height_rect);	
+            // delete squares
+            if ((((double) rect.height/rect.width > square_ratio) &&
+                        ((double) rect.height/rect.width < 1/square_ratio)) ||
+                (((double) rect.height/rect.width < square_ratio) &&
+                        ((double)rect.height/rect.width > 1/square_ratio)))  {
+                make_white_rectangle (x_rect, y_rect, width_rect, height_rect);
 
-			// delete rows
-			} else if ((double) rect.width/rect.height > row_ratio) {
-				make_white_rectangle (x_rect, y_rect, width_rect, height_rect);	
+            // delete rows
+            } else if ((double) rect.width/rect.height > row_ratio) {
+                make_white_rectangle (x_rect, y_rect, width_rect, height_rect);
 
-			// delete columns
-			} else if ((double) rect.height/rect.width > col_ratio) {
-				make_white_rectangle (x_rect, y_rect, width_rect, height_rect);		
-		
-			} else {
-		        Rectangle rect_text = Rectangle(x_rect, y_rect, width_rect, height_rect);
-				areas.push_back(rect_text);
-			}
+            // delete columns
+            } else if ((double) rect.height/rect.width > col_ratio) {
+                make_white_rectangle (x_rect, y_rect, width_rect, height_rect);
+
+            } else {
+                Rectangle rect_text = Rectangle(x_rect, y_rect, width_rect, height_rect);
+                areas.push_back(rect_text);
+            }
         }
-		imwrite(this->imagename, rgb);
+        imwrite(this->imagename, rgb);
     }
     return areas;
 }
 
 void PictureParser::make_white_rectangle (int x, int y, int width, int height){
-	int white = 255;
+    int white = 255;
 
-	for (int x_ = x; x_ < x + width; x_++){
-		for (int y_ = y; y_ < y + height; y_++){
-			this->data[y_ * (this->width) * 4 + x_ * 4] = white;
-	        this->data[y_ * (this->width) * 4 + x_ * 4 + 1] = white;
-    	    this->data[y_ * (this->width) * 4 + x_ * 4 + 2] = white;
-		}
-	}
+    for (int x_ = x; x_ < x + width; x_++){
+        for (int y_ = y; y_ < y + height; y_++){
+            this->data[y_ * (this->width) * 4 + x_ * 4] = white;
+            this->data[y_ * (this->width) * 4 + x_ * 4 + 1] = white;
+            this->data[y_ * (this->width) * 4 + x_ * 4 + 2] = white;
+        }
+    }
 }
 
 // scannig row by row
@@ -328,8 +328,8 @@ void PictureParser::select_title_rectangle(vector<Rectangle> & areas) {
     int max_height = 0;
     for (unsigned int j = 0; j < black_rows.size(); j++) {
         vector<int> *cur_height = black_rows[j].get_heights();
-		sort (cur_height->begin(), cur_height->end());
-      	if (cur_height->back() > max_height) {
+        sort (cur_height->begin(), cur_height->end());
+        if (cur_height->back() > max_height) {
             max_height = cur_height->back();
         }
     }
@@ -337,7 +337,7 @@ void PictureParser::select_title_rectangle(vector<Rectangle> & areas) {
     // ============== find topmost possible title ==============
     max_height += 3; // height tolerance 5%
     max_height *= 0.88; // height tolerance 5%
-	int min_x = 10000;
+    int min_x = 10000;
     int min_y = 10000;
     int top_margin = this->height*0.05; // top margin 5% to avoid headers
 
@@ -367,40 +367,40 @@ void PictureParser::select_title_rectangle(vector<Rectangle> & areas) {
 
         vector<int> *cur_height = black_rows[j].get_heights();
         if ((cur_height->back() >= max_height) && (next_y > max_y) 
-								&& (next_y - max_y < 2 * max_height)) {
+                                && (next_y - max_y < 2 * max_height)) {
             max_y = next_y + max_height;
         }
     }
 
 
-	// final title area obtained by row-by-row scanning
-	this->title_x  = min_x - 140; // select title area only
+    // final title area obtained by row-by-row scanning
+    this->title_x  = min_x - 140; // select title area only
     this->title_y = min_y - 0.25 * max_height;
     this->title_height = max_y - min_y + 0.6 * max_height;
 
 
-	// ============== final title area correction ==============
-	// modify obtained title_width using info from areas obtained by opencv
-	
-	stable_sort(areas.begin(), areas.end(), Rectangle::_smaller);
+    // ============== final title area correction ==============
+    // modify obtained title_width using info from areas obtained by opencv
 
-	int max_width = 0;
-	double corr_ratio = 1.2;
+    stable_sort(areas.begin(), areas.end(), Rectangle::_smaller);
+
+    int max_width = 0;
+    double corr_ratio = 1.2;
 
     for (unsigned int i = 0; i < areas.size(); i++) {
-		Rectangle rect = areas[i];
-		if ((rect.get_y() >= title_y) && (rect.get_y() <= title_y+title_height)
-		&& (rect.get_x() >= title_x)) {
-			if (rect.get_width() + (rect.get_x()-title_x) > max_width) {
-				max_width = rect.get_width() + (rect.get_x()-title_x);
-			}
-		}
-	}
-	if (max_width == 0) {
-		this->title_width = this->width;
-	} else {
-		this->title_width = (int) max_width*corr_ratio;
-	}
+        Rectangle rect = areas[i];
+        if ((rect.get_y() >= title_y) && (rect.get_y() <= title_y+title_height)
+        && (rect.get_x() >= title_x)) {
+            if (rect.get_width() + (rect.get_x()-title_x) > max_width) {
+                max_width = rect.get_width() + (rect.get_x()-title_x);
+            }
+        }
+    }
+    if (max_width == 0) {
+        this->title_width = this->width;
+    } else {
+        this->title_width = (int) max_width*corr_ratio;
+    }
     return;
 }
 

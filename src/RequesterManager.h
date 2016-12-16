@@ -5,10 +5,10 @@
 
 class RequesterManager {
 private:
-	std::vector<Requester *> req;
-	
+    std::vector<Requester *> req;
+
 public:
-	RequesterManager();
-	~RequesterManager();
-	std::vector<Requester *> get_all_requesters();
+    RequesterManager();
+    ~RequesterManager();
+    std::vector<Requester *> get_all_requesters();
 };

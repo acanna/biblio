@@ -8,26 +8,26 @@ std::queue<std::string> BiblioThreadContext::in;
 std::vector<ArticleInfo> BiblioThreadContext::out;
 
 void BiblioThreadContext::my_push(ArticleInfo info) {
-    m_push.lock();
+    m_out.lock();
     out.push_back(info);
-    m_push.unlock();
+    m_out.unlock();
 }
 
 std::string BiblioThreadContext::my_pop() {
     std::string name;
-    m_pop.lock();
+    m_in.lock();
     name = in.front();
     in.pop();
     count++;
     std::cout << "Processing file " << count << " from " << size << ": " << name << std::endl;
-    m_pop.unlock();
+    m_in.unlock();
     return name;
 }
 
 bool BiblioThreadContext::my_empty() {
     bool empty;
-    m_empty.lock();
+    m_in.lock();
     empty = in.empty();
-    m_empty.unlock();
+    m_in.unlock();
     return empty;
 }
