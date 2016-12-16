@@ -133,6 +133,8 @@ void PictureParser::draw_title_rectangle(){
 
 
 void PictureParser::find_title() {
+
+
     int const screen_res = 72;
     int page_num = 0;
     string result = "";
@@ -152,7 +154,6 @@ void PictureParser::find_title() {
                          this->xres, this->yres, 0, 0, this->width, this->height);        
 	cur_image.save(this->imagename, this->format, this->dpi);
 
-
     this->data = cur_image.data();
 
 	//	select areas with text using opencv-lib
@@ -161,11 +162,6 @@ void PictureParser::find_title() {
 
 	// specify title area using row-by-row pix scanning
     select_title_rectangle(areas);
-
-	poppler::image mod_image =  poppler::image(this->data, cur_image.width(), 
-			cur_image.height(), cur_image.format());
-	mod_image.save("_"+this->imagename, this->format, this->dpi);
-
 
 	vector<poppler::font_info> fonts = doc->fonts();
 	// pdf as image
@@ -187,6 +183,7 @@ void PictureParser::find_title() {
     }
     result = raw_to_formatted(result);
     this->title = result;
+
 }
 
 vector<Rectangle> PictureParser::select_areas(Mat & rgb_){
@@ -423,6 +420,5 @@ string PictureParser::parse_image() {
 
 PictureParser::~PictureParser() {
     remove(imagename.c_str());
-    remove(("_" + imagename).c_str());
 }
 

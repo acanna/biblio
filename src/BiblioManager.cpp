@@ -13,8 +13,75 @@ using namespace std;
 
 std::vector<ArticleInfo> BiblioManager::search_requester(Requester &requester, std::string query) {
     transform(query.begin(), query.end(), query.begin(), ::tolower);
-    return requester.publication_request(query);;
-}
+
+    //EL: эти переменные все еще нужны? вроде нет.
+	vector<ArticleInfo> result = {};
+    vector<ArticleInfo> additional_result = {};
+
+
+	result = requester.publication_request(query);
+    vector<string> words = split(query, ' ');
+  
+	//EL: если это больше не надо, то давайте это удалим! 
+	// discard first word
+	string new_query = "";
+	for (unsigned int i = 1; i < words.size()-1; i++) {
+	 new_query += words[i] + " ";
+	}
+	new_query += words[words.size()-1];
+	additional_result = requester.publication_request(new_query);
+	result.insert(result.end(), additional_result.begin(), additional_result.end());
+	
+	// discard last word
+	new_query = "";
+	for (unsigned int i = 0; i < words.size()-2; i++) {
+	 new_query += words[i] + " ";
+	}
+	new_query += words[words.size()-2];
+	additional_result = requester.publication_request(new_query);
+	result.insert(result.end(), additional_result.begin(), additional_result.end());
+	
+	// discard first two words
+	new_query = "";
+	for (unsigned int i = 2; i < words.size()-1; i++) {
+	 new_query += words[i] + " ";
+	}
+	new_query += words[words.size()-1];
+	additional_result = requester.publication_request(new_query);
+	result.insert(result.end(), additional_result.begin(), additional_result.end());
+	
+	// discard last two words
+	new_query = "";
+	for (unsigned int i = 0; i < words.size()-3; i++) {
+		new_query += words[i] + " ";
+	}
+	new_query += words[words.size()-3];
+	additional_result = requester.publication_request(new_query);
+	result.insert(result.end(), additional_result.begin(), additional_result.end());
+	
+	if (words.size() > 10) {
+		// discard first five words
+		new_query = "";
+		for (unsigned int i = 5; i < words.size()-1; i++) {
+		 new_query += words[i] + " ";
+		}
+		new_query += words[words.size()-1];
+		additional_result = requester.publication_request(new_query);
+		result.insert(result.end(), additional_result.begin(), additional_result.end());
+		
+		// discard last five words
+		new_query = "";
+		for (unsigned int i = 0; i < words.size()-6; i++) {
+		 new_query += words[i] + " ";
+		}
+		new_query += words[words.size()-6];
+		additional_result = requester.publication_request(new_query);
+		result.insert(result.end(), additional_result.begin(), additional_result.end());
+     }
+     return result;
+ }
+    /*return requester.publication_request(query);
+}*/
 
 
 bool BiblioManager::greater(const ArticleInfo &info_1, const ArticleInfo &info_2) {
@@ -150,9 +217,7 @@ BiblioManager::search_distance(std::function<size_t(const std::string &,
 
     for(auto& thread : threads){
         thread.join();
-
     }
-
     return BiblioThreadContext::instance().get_output();
 }
 
@@ -165,6 +230,10 @@ BiblioManager::thread_function(std::function<size_t(const std::string &, const s
     bool found = false;
     while(!BiblioThreadContext::instance().my_empty()) {
         filename = BiblioThreadContext::instance().my_pop();
+		if (filename == "") {
+			break;
+		}
+
         PictureParser picture_parser = PictureParser(filename, 300, 300, get_random_filename() + ".png", "png", 700);
         picture_parser.find_title();
         string saved_title = picture_parser.get_title();

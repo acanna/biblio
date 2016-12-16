@@ -18,7 +18,7 @@ ScienceDirectRequester::ScienceDirectRequester(const string &url, const string &
 string ScienceDirectRequester::make_request(const string &query){
     regex re_frmt(" ");
 	string new_query = regex_replace(query, re_frmt, "%20");
-	return this->url + "{" + new_query + "}&count=5&sort=relevancy";
+	return this->url + "{" + new_query + "}&count=10&sort=relevancy";
 }
 
 vector<ArticleInfo> ScienceDirectRequester::parse_response(char * buffer)  {
@@ -30,7 +30,8 @@ vector<ArticleInfo> ScienceDirectRequester::parse_response(char * buffer)  {
 
     if (!parsingSuccessful) {
         string what = "ScienceDirect: Parser error: " + reader.getFormattedErrorMessages();
-        throw BiblioException(what);
+        cout << what << endl;
+		return articles;
     }
 
 	Json::Value entry = root["search-results"]["entry"];

@@ -24,7 +24,8 @@ vector<ArticleInfo> SpringerRequester::parse_response(char * buffer)  {
 
     if (!parsingSuccessful) {
         string what = "Springer: Parser error: " + reader.getFormattedErrorMessages();
-        throw BiblioException(what);
+        cout << what << endl;
+		return articles;
     }
 
 	int size = stoi(root["result"][0].get("total", "").asString());
@@ -34,16 +35,14 @@ vector<ArticleInfo> SpringerRequester::parse_response(char * buffer)  {
     for (int i = 0; i < size; i++) {
         Json::Value info = records[i];
 	    string title = info["title"].asString();
-		
-	    Json::Value authorsList = info["creators"];
+	    Json::Value authorsList = info.get("creators","");
 		vector<string> authors = {};	    
-
 		if (authorsList.size() > 0) {
 	        for (unsigned int j = 0; j < authorsList.size(); j++) {
 	            authors.push_back(authorsList[j].get("creator", "").asString());
 	        }
 	    } else {
-	        authors.push_back(info["creators"].get("creator", "").asString());
+	        authors.push_back("");
 	    }
 
 	    string venue = info.get("publicationName", "").asString();
@@ -56,7 +55,6 @@ vector<ArticleInfo> SpringerRequester::parse_response(char * buffer)  {
 	    year = year.substr(0,4);
 	    string type = info.get("issuetype","").asString();
 	    string art_url = info["url"][0].get("value","").asString();
-	
         articles.push_back(ArticleInfo(title, authors, venue, volume, 
 					number, pages, year, type, art_url));
     }

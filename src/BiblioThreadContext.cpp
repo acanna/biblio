@@ -16,6 +16,10 @@ void BiblioThreadContext::my_push(ArticleInfo info) {
 std::string BiblioThreadContext::my_pop() {
     std::string name;
     m_pop.lock();
+	if (in.empty()) {
+	    m_pop.unlock();
+		return "";
+	}
     name = in.front();
     in.pop();
     count++;
@@ -26,8 +30,8 @@ std::string BiblioThreadContext::my_pop() {
 
 bool BiblioThreadContext::my_empty() {
     bool empty;
-    m_empty.lock();
+    m_pop.lock();
     empty = in.empty();
-    m_empty.unlock();
+    m_pop.unlock();
     return empty;
 }
