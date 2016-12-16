@@ -7,9 +7,11 @@
 #include <vector>
 #include <exception>
 #include <stdexcept>
+
 #include <curl/curl.h>
 #include "../../lib/json/json.h"
 #include "../../lib/json/value.h"
+
 #include "../ArticleInfo.h"
 #include "../BiblioException.h"
 

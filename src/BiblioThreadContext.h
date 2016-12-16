@@ -2,10 +2,14 @@
 
 #include <mutex>
 #include <queue>
+
 #include "ArticleInfo.h"
 
 class BiblioThreadContext {
 private:
+    std::mutex m_empty;
+    std::mutex m_push;
+    std::mutex m_pop;
     static size_t size;
     static size_t count;
     static std::queue<std::string> in;
@@ -13,8 +17,8 @@ private:
 
     BiblioThreadContext() {};
     ~BiblioThreadContext() {};
-    BiblioThreadContext(BiblioThreadContext const &);
-    BiblioThreadContext& operator= (BiblioThreadContext const &);
+    BiblioThreadContext(BiblioThreadContext const &) = delete;
+    BiblioThreadContext& operator= (BiblioThreadContext const &) = delete;
 
 public:
     static void init(std::queue<std::string> &_in) {

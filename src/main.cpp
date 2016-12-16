@@ -7,6 +7,7 @@
 #include "Requesters/Requester.h"
 #include "BiblioManager.h"
 #include "BiblioThreadContext.h"
+#include "Config.h"
 
 using namespace std;
 
