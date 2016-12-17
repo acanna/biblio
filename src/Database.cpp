@@ -94,8 +94,8 @@ ArticleInfo * Database::get_data(std::string filename) {
             string year = string(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 8)));
             string type = string(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 9)));
             string url = string(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 10)));
-
-            ArticleInfo * info = new ArticleInfo(title, authors, venue, volume,
+                      
+           ArticleInfo * info = new ArticleInfo(title, authors, venue, volume,
                         number, pages, year, type, url);
             info->set_filename(filename);
             sqlite3_finalize(stmt);

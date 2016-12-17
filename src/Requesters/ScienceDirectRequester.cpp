@@ -7,8 +7,7 @@ using namespace std;
 ScienceDirectRequester::ScienceDirectRequester(const string &url, const string &apikey): Requester() {
     this->url = url;
     this->apikey = apikey;
-
-    struct curl_slist *chunk = NULL;
+    chunk = NULL;
     chunk = curl_slist_append(chunk, "Accept: application/json");
     string api = "X-ELS-APIKey: " + apikey;
     chunk = curl_slist_append(chunk, api.c_str());
