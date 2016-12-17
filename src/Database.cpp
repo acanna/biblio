@@ -5,9 +5,6 @@
 
 using namespace std;
 
-//EL: постоянно делается open/close db, это не тру!
-//EL: один раз в начале программы октрыли (например, в конструкторе)
-//EL: в конце закрыли (например, в деструкторе)
 Database::Database(const string &db_filename){
     int rc = sqlite3_open(db_filename.c_str(), &(this->db));
     if (rc != SQLITE_OK) {
@@ -61,6 +58,7 @@ ArticleInfo * Database::get_data(std::string filename) {
     string request = "";
 
     request = "SELECT name FROM sqlite_master WHERE type='table'";
+
     int is_table = check_status(request.c_str(), &stmt);
     sqlite3_finalize(stmt);
 
@@ -69,6 +67,7 @@ ArticleInfo * Database::get_data(std::string filename) {
     } else {
 
         request = "SELECT * FROM Data WHERE filename = \'" + filename + "\'";
+
         int is_paper = check_status(request.c_str(), &stmt);
         if (is_paper == 0) {
             sqlite3_finalize(stmt);
@@ -80,7 +79,6 @@ ArticleInfo * Database::get_data(std::string filename) {
         stat(filename.c_str(), &t_stat);
         struct tm * timeinfo = localtime(&t_stat.st_mtim.tv_sec);
         string lastmod_file = asctime(timeinfo);
-
 
         if (lastmod_file <= lastmod_db){
 
@@ -104,73 +102,14 @@ ArticleInfo * Database::get_data(std::string filename) {
             sqlite3_finalize(stmt);
 
             request = "DELETE FROM Data WHERE id = " + to_string(id);
+
             check_status(request.c_str(), &stmt);
             sqlite3_finalize(stmt);
             return nullptr;
         }
     }
 }
-/*
-void Database::add_data(string filename, ArticleInfo info) {
-    sqlite3_stmt *stmt = nullptr;
-    string request = "";
 
-    request = "SELECT name FROM sqlite_master WHERE type='table'";
-    int is_table = check_status(request.c_str(), &stmt);
-    sqlite3_finalize(stmt);
-
-    if (is_table == 0) {
-        request = "CREATE TABLE Data(id INTEGER PRIMARY KEY AUTOINCREMENT, "
-        "filename TEXT, title TEXT, authors TEXT, venue TEXT, "
-        "volume TEXT, number TEXT, pages TEXT, year TEXT, "
-        "type TEXT, url TEXT, lastmod TEXT);";
-
-        check_status(request.c_str(), &stmt);
-        sqlite3_finalize(stmt);
-    }
-    
-    request = "DELETE FROM DATA WHERE filename = \'" +  filename + "\';";
-
-    check_status(request.c_str(), &stmt);
-    sqlite3_finalize(stmt);
-
-    struct stat t_stat;
-    stat(filename.c_str(), &t_stat);
-    struct tm * timeinfo = localtime(&t_stat.st_mtim.tv_sec);
-    string lastmod_file = asctime(timeinfo);
-    string title = info.get_title();
-    vector<string> authors = info.get_authors();
-
-    string author = "";
-    if (authors.size() > 0) {
-        for (unsigned int i = 0; i < authors.size()-1; i++){
-            author += authors[i] + "|";
-        }
-        author += authors[authors.size() -1];
-    }
-    string venue = info.get_venue();
-    string volume = info.get_volume();
-    string number = info.get_number();
-    string pages = info.get_pages();
-    string year = info.get_year();
-    string type = info.get_type();
-    string url  = info.get_url();
-
-    request = "INSERT INTO Data(filename, title, authors, venue, "
-        "volume, number, pages, year, type, url, lastmod) VALUES ( \'" +
-        filename + "\', \'" + title + "\', \'" + author + "\', \'" + venue+ "\', \'" +
-        volume + "\', \'" + number + "\', \'" + pages + "\', \'" + year + "\', \'" + type + "\', \'" +
-        url+ "\', \'" +  lastmod_file + "\');";
-
-
-    check_status(request.c_str(), &stmt);
-
-    sqlite3_finalize(stmt);
-}*/
-
-//EL: если сделать нормальное открытие/закрытие db и реализовать этот метод
-//не через copy-paste, а вызовом в цикле Database::add_data(string filename, ArticleInfo info) 
-//то будет короче и лучше
 void Database::add_data(const std::vector<ArticleInfo> &data) {
     size_t  data_size = data.size();
     if (data_size == 0) {
@@ -180,6 +119,7 @@ void Database::add_data(const std::vector<ArticleInfo> &data) {
     string request = "";
 
     request = "SELECT name FROM sqlite_master WHERE type='table'";
+
     int is_table = check_status(request.c_str(), &stmt);
     sqlite3_finalize(stmt);
 

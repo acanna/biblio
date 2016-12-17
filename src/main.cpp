@@ -3,6 +3,7 @@
 
 #include <tclap/CmdLine.h>
 #include <unistd.h>
+#include <ctime>
 
 #include "Requesters/Requester.h"
 #include "BiblioManager.h"
@@ -46,7 +47,9 @@ int main(int argc, char **argv) {
         bool offline = offlineSwitch.getValue();
         bool purge = purgeSwitch.getValue();
         bool without_db = dbSwitch.getValue();
-        
+
+        srand(time(NULL));        
+
         if (curl_global_init(CURL_GLOBAL_ALL) != 0) {
             throw new BiblioException("Curl global init failed.\n");
         }

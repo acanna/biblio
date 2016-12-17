@@ -152,7 +152,6 @@ void PictureParser::find_title() {
                          this->xres, this->yres, 0, 0, this->width, this->height);        
     cur_image.save(this->imagename, this->format, this->dpi);
 
-
     this->data = cur_image.data();
 
     //	select areas with text using opencv-lib
