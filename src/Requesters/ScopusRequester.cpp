@@ -18,7 +18,7 @@ ScopusRequester::ScopusRequester(const string &url, const string &apikey): Reque
 string ScopusRequester::make_request(const string &query){
     regex re_frmt(" ");
     string new_query = regex_replace(query, re_frmt, "%20");
-	return this->url + "{" + new_query + "}&count=10&sort=relevancy";
+	return this->url + "{" + new_query + "}&sort=relevancy";
 }
 
 std::vector<ArticleInfo> ScopusRequester::parse_response() {
