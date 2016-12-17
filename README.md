@@ -1,5 +1,5 @@
 # **biblio**
-This tool helps to find bibliographic information for your pdf files. It generates .bib and .html files for youк single file or directory.
+This tool helps to find bibliographic information for your pdf files. It generates .bib and .html files for your single file or directory.
 
 **USAGE:**
 
