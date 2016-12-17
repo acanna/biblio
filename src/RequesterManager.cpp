@@ -10,6 +10,11 @@ using namespace std;
 
 RequesterManager::RequesterManager() {
     req = {};
+    if (Config::get_instance().exists("scopus") && Config::get_instance().lookup("scopus.enabled")) {
+        string url = Config::get_instance().lookup("scopus.url");
+        string apikey = Config::get_instance().lookup("scopus.apikey");
+        req.push_back(new ScopusRequester(url, apikey));
+    }
     if (Config::get_instance().exists("dblp") && Config::get_instance().lookup("dblp.enabled")) {
         string url = Config::get_instance().lookup("dblp.url");
         req.push_back(new DBLPRequester(url));
@@ -31,11 +36,6 @@ RequesterManager::RequesterManager() {
         string url = Config::get_instance().lookup("sciencedirect.url");
         string apikey = Config::get_instance().lookup("sciencedirect.apikey");
         req.push_back(new ScienceDirectRequester(url, apikey));
-    }
-    if (Config::get_instance().exists("scopus") && Config::get_instance().lookup("scopus.enabled")) {
-        string url = Config::get_instance().lookup("scopus.url");
-        string apikey = Config::get_instance().lookup("scopus.apikey");
-        req.push_back(new ScopusRequester(url, apikey));
     }
 }
 

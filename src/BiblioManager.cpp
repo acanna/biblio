@@ -248,6 +248,7 @@ BiblioManager::thread_function(std::function<size_t(const std::string &, const s
                 stable_sort(result.begin(), result.end(), greater);
                 if (result[0].get_precision() > 90) {
                     result[0].set_filename(filename);
+                    result[0].set_title(raw_to_formatted(result[0].get_title()));
                     BiblioThreadContext::instance().my_push(result[0]);
                     found = true;
                     break;
@@ -270,7 +271,7 @@ void BiblioManager::cout_not_found_articles(std::vector<ArticleInfo> &result) {
     cout << "=========================================================================" << endl << endl;
     size_t result_size = result.size(), found = result_size;
     for (size_t k = 0; k < result_size; k++) {
-        if (result[k].get_authors().size() == 0) {
+        if (result[k].get_year() == "") {
             found--;
             cout << "filename: " << result[k].get_filename() << endl;
             cout << "title: " << result[k].get_title() << endl << endl;
