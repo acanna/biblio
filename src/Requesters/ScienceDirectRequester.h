@@ -14,5 +14,5 @@ protected:
 
 public:
     ScienceDirectRequester(const std::string &url, const std::string &apikey);
-    ~ScienceDirectRequester() { if (chunk != NULL) delete chunk;};
+    ~ScienceDirectRequester() { if (chunk != NULL)  curl_slist_free_all(chunk);};
 };
