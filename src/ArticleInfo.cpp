@@ -18,36 +18,6 @@ ArticleInfo::ArticleInfo(string const &title, vector<string> const &authors,
     this->precision = 0;
 }
 
-ArticleInfo::ArticleInfo(Json::Value const &info) {
-    this->title = info["title"].asString();
-    Json::Value authorsList = info["authors"].get("author", "");
-    if (authorsList.size() > 0) {
-        for (unsigned int i = 0; i < authorsList.size(); i++) {
-            this->authors.push_back(authorsList[i].asString());
-        }
-    } else {
-        this->authors.push_back(info["authors"].get("author", "").asString());
-    }
-    string venue = "";
-    Json::Value venueList = info.get("venue", "");
-    if (venueList.size() > 0) {
-        for (unsigned int i = 0; i < venueList.size(); i++) {
-            venue += venueList[i].asString();
-            venue += " ";
-        }
-    } else {
-        venue = info.get("venue", "").asString();
-    }
-    this->venue = venue;
-    this->volume = info["volume"].asString();
-    this->number = info["number"].asString();
-    this->pages = info["pages"].asString();
-    this->year = info["year"].asString();
-    this->type = info["type"].asString();
-    this->url = info["url"].asString();
-    this->precision = 0;
-}
-
 ArticleInfo::ArticleInfo(std::string const &title, std::string const &filename) {
     this->filename = filename;
     this->title = title;

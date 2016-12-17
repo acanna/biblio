@@ -23,7 +23,7 @@ std::string BiblioThreadContext::my_pop() {
     name = in.front();
     in.pop();
     count++;
-    std::cout << "Processing file " << count << " from " << size << ": " << name << std::endl;
+    std::cout << "Processing file " << count << "/" << size << ": " << name << std::endl;
     m_in.unlock();
     return name;
 }

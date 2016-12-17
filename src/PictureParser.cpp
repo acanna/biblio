@@ -71,10 +71,6 @@ PictureParser::PictureParser(string const &filename, int const xres, int const y
     this->title = "";
 }
 
-string const &PictureParser::get_title() {
-    return this->title;
-}
-
 bool PictureParser::is_black(int x, int y) {
     int black = 60; // (color <= black) <=> (black pix)
                     // (color > black) <=> (white pix)
@@ -132,7 +128,10 @@ void PictureParser::draw_title_rectangle(){
 }
 
 
-void PictureParser::find_title() {
+const std::string& PictureParser::find_title() {
+    if (title != "") {
+        return title;
+    }
     int const screen_res = 72;
     int page_num = 0;
     string result = "";
@@ -181,6 +180,7 @@ void PictureParser::find_title() {
     }
     result = raw_to_formatted(result);
     this->title = result;
+    return title;
 }
 
 vector<Rectangle> PictureParser::select_areas(Mat & rgb_){
