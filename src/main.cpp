@@ -58,12 +58,15 @@ int main(int argc, char **argv) {
         BiblioManager::start_print_html(out_html);
         ofstream out_bib("biblio.bib");
 
+        Database * db;
         if (purge) {
-            Database::purge();
+            db = Database::connect_database();
+            if(db!= nullptr) {
+                db->purge();
+            }
         } else {	
             bool using_db = false; 
             try {
-                Database * db;
                 if (!without_db){
                     db = Database::connect_database();
                     if (db != nullptr) {
@@ -72,26 +75,24 @@ int main(int argc, char **argv) {
                 }     
                 vector<string> filenames_to_search = {};
                 vector<ArticleInfo> data_from_db ={};
-                ArticleInfo *result_ptr = nullptr;
+
         
                 for (const auto &filename : filenames) {	
+                    ArticleInfo *result_ptr = nullptr;
                     if (using_db) {
                         result_ptr = db->get_data(filename);
-                    } 
-                    if (result_ptr != nullptr) {
-                        if (! need_to_complete_data(result_ptr)) {
+                        if ((result_ptr != nullptr) && (! need_to_complete_data(result_ptr))) {
                             data_from_db.push_back(*result_ptr);
-                            //здесь бы сделать deleter result_ptr
-                            //ведь копия уже создана
+                            delete result_ptr;
                         } else {
                             filenames_to_search.push_back(filename);
                         }
-                    }
-                    else if ((!using_db) || (result_ptr == nullptr)) {
+                    } 
+                    else {
                         filenames_to_search.push_back(filename);
                     }
                 }
-                queue<string, deque<string>> in(deque<string>(filenames.begin(), filenames.end()));
+                queue<string, deque<string>> in(deque<string>(filenames_to_search.begin(), filenames_to_search.end()));
                 BiblioThreadContext::init(in);
                 vector<ArticleInfo> result = manager.search_distance(levenshtein_distance, offline);
                 BiblioManager::cout_not_found_articles(result);
@@ -102,7 +103,6 @@ int main(int argc, char **argv) {
     
                 if ((using_db)&&(!without_db)) {
                     db->add_data(result);
-                    delete db;
                 }
             } catch (const BiblioException &e) {
                 cerr << e.what() << '\n';
@@ -111,6 +111,9 @@ int main(int argc, char **argv) {
             out_html.close();
             out_bib.close();          
         } 
+        if(db != nullptr) {
+            delete db;
+        }
     }
     catch (TCLAP::ArgException &e) {
             std::cerr << "error: " << e.error() << " for arg " << e.argId() << std::endl;

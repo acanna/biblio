@@ -13,16 +13,11 @@ using namespace std;
 
 std::vector<ArticleInfo> BiblioManager::search_requester(Requester &requester, std::string query) {
     transform(query.begin(), query.end(), query.begin(), ::tolower);
-
-    //EL: ��� ���������� ��� ��� �����? ����� ���.
 	vector<ArticleInfo> result = {};
     vector<ArticleInfo> additional_result = {};
-
-
 	result = requester.publication_request(query);
     vector<string> words = split(query, ' ');
-  
-	//EL: ���� ��� ������ �� ����, �� ������� ��� ������! 
+
 	// discard first word
 	string new_query = "";
 	for (unsigned int i = 1; i < words.size()-1; i++) {
@@ -80,8 +75,6 @@ std::vector<ArticleInfo> BiblioManager::search_requester(Requester &requester, s
      }
      return result;
  }
-    /*return requester.publication_request(query);
-}*/
 
 
 bool BiblioManager::greater(const ArticleInfo &info_1, const ArticleInfo &info_2) {
