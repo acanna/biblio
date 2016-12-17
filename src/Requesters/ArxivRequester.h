@@ -8,7 +8,7 @@ class ArxivRequester: public Requester {
 protected:
     std::string url;
 
-    std::vector<ArticleInfo> parse_response(char * buffer);
+    std::vector<ArticleInfo> parse_response();
     std::string make_request(const std::string &query);
 
 public:

@@ -15,7 +15,7 @@ string SpringerRequester::make_request(const string &query){
     return this->url + "\"" + new_query + "\"&api_key=" + this->apikey;
 }
 
-vector<ArticleInfo> SpringerRequester::parse_response(char * buffer)  {
+std::vector<ArticleInfo> SpringerRequester::parse_response() {
     Json::Reader reader;
     Json::Value root;
 

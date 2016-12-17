@@ -21,7 +21,7 @@ string ScienceDirectRequester::make_request(const string &query){
 	return this->url + "{" + new_query + "}&count=10&sort=relevancy";
 }
 
-vector<ArticleInfo> ScienceDirectRequester::parse_response(char * buffer)  {
+std::vector<ArticleInfo> ScienceDirectRequester::parse_response() {
     Json::Reader reader;
     Json::Value root;
 

@@ -4,17 +4,17 @@ using namespace std;
 
 
 size_t Requester::writeData(void *webBuffer, const size_t size, const size_t nmemb, void *userp) {
-    //EL: если тут сделать  Requester *req = (Requesrer)userp, а потом пользоваться req, то код станет понятней
+    Requester *req = (Requester*)userp;
     size_t segSize = size * nmemb;
-    int bufferIndex = (*(Requester *) userp).bufferIndex;
+    int bufferIndex = req->bufferIndex;
     if (bufferIndex + segSize > MAX_BUF) {
-        (*(Requester *) userp).errorCode = 1;
+        req->errorCode = 1;
         return 0;
     }
-    memcpy((void *) &(*(Requester *) userp).buffer[bufferIndex], webBuffer, segSize);
+    memcpy((void *) &(req->buffer[bufferIndex]), webBuffer, segSize);
     bufferIndex += segSize;
-    (*(Requester *) userp).bufferIndex += segSize;
-    (*(Requester *) userp).buffer[bufferIndex] = 0;
+    req->bufferIndex += segSize;
+    req->buffer[bufferIndex] = 0;
     return segSize;
 }
 
@@ -32,7 +32,7 @@ void Requester::curl_clean_up(){
     curl_easy_cleanup(curl);
 }
 
-char * Requester::curl_perform(const string &request) {
+void Requester::curl_perform(const string &request) {
     errorCode = 0;
     bufferIndex = 0;
     for (unsigned int i = 0; i < MAX_BUF; i++) {
@@ -65,8 +65,6 @@ char * Requester::curl_perform(const string &request) {
         }
         throw BiblioException(what);
     }
-    //EL: зачем здесь возвращается буфер? это же поле этого же класса
-    return buffer;
 }
 
 Requester::Requester() {
@@ -81,11 +79,8 @@ Requester::~Requester() {
 
 vector<ArticleInfo> Requester::publication_request(const string &query) {
     string request = make_request(query);
-    char * buffer = curl_perform(request);
-
-    vector<ArticleInfo> articles;
-    articles = parse_response(buffer);
-    return articles;
+    curl_perform(request);
+    return parse_response();
 }
 
 Requester::Requester(const Requester &r) {

@@ -171,7 +171,7 @@ void Database::add_data(string filename, ArticleInfo info) {
 //EL: если сделать нормальное открытие/закрытие db и реализовать этот метод
 //не через copy-paste, а вызовом в цикле Database::add_data(string filename, ArticleInfo info) 
 //то будет короче и лучше
-void Database::add_data(std::vector<ArticleInfo> &data) {
+void Database::add_data(const std::vector<ArticleInfo> &data) {
     size_t  data_size = data.size();
     if (data_size == 0) {
         return;

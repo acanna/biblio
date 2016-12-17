@@ -13,7 +13,7 @@ string DBLPRequester::make_request(const string &query){
     return this->url + new_query;
 }
 
-vector<ArticleInfo> DBLPRequester::parse_response(char * buffer) {
+std::vector<ArticleInfo> DBLPRequester::parse_response() {
     Json::Reader reader;
     Json::Value root;
 

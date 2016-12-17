@@ -14,7 +14,7 @@ string NatureRequester::make_request(const string &query){
     return s;
 }
 
-vector<ArticleInfo> NatureRequester::parse_response(char * buffer) {
+std::vector<ArticleInfo> NatureRequester::parse_response() {
     Json::Reader reader;
     Json::Value root;
 

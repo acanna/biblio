@@ -21,7 +21,7 @@ string ScopusRequester::make_request(const string &query){
 	return this->url + "{" + new_query + "}&count=10&sort=relevancy";
 }
 
-vector<ArticleInfo> ScopusRequester::parse_response(char * buffer)  {
+std::vector<ArticleInfo> ScopusRequester::parse_response() {
     Json::Reader reader;
     Json::Value root;
 

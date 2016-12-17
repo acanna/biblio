@@ -27,7 +27,7 @@ public:
     ArticleInfo * get_data(std::string filename);
     //const & (особенно у info)
     //void add_data(std::string filename, ArticleInfo info);
-    void add_data(std::vector<ArticleInfo> &data);
+    void add_data(const std::vector<ArticleInfo> &data);
     void purge();
 };
 

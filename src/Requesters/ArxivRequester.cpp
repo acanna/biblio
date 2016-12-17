@@ -14,7 +14,7 @@ string ArxivRequester::make_request(const string &query){
     return this->url + "\"" + new_query + "\"&start=0&max_results=5";
 }
 
-vector<ArticleInfo> ArxivRequester::parse_response(char * buffer) {
+std::vector<ArticleInfo> ArxivRequester::parse_response() {
     vector<ArticleInfo> articles = {};
     XMLDocument doc;
     doc.Parse(buffer);
