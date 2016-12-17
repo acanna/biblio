@@ -14,5 +14,5 @@ protected:
 
 public:
     ScopusRequester(const std::string &url, const std::string &apikey);
-    ~ScopusRequester() { if (chunk != NULL) delete chunk;};
+    ~ScopusRequester() { if (chunk != NULL)  curl_slist_free_all(chunk);};
 };

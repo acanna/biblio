@@ -154,6 +154,7 @@ std::string letters_to_lower(std::string s) {
 
 std::string get_random_filename() {
     std::ostringstream oss;
+    srand(time(NULL));
     oss << rand() << rand();
     return oss.str();
 }
