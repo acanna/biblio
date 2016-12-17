@@ -230,6 +230,7 @@ BiblioManager::thread_function(std::function<size_t(const std::string &, const s
         PictureParser picture_parser = PictureParser(filename, 300, 300, get_random_filename() + ".png", "png", 700);
         picture_parser.find_title();
         string saved_title = picture_parser.get_title();
+        saved_title = raw_to_formatted(saved_title);
         string title = low_letters_only(saved_title);
         if (offline || title.size() == 0) {
             BiblioThreadContext::instance().my_push(ArticleInfo(saved_title, filename));
@@ -240,7 +241,8 @@ BiblioManager::thread_function(std::function<size_t(const std::string &, const s
             result = search_requester(*requesters[k], saved_title);
             if (result.size() > 0) {
                 for (size_t i = 0; i < result.size(); i++) {
-                    string cur_title = low_letters_only(result[i].get_title());
+                    string cur_title = raw_to_formatted(result[i].get_title());
+                    cur_title = low_letters_only(cur_title);
                     size_t distance = dist(cur_title, title);
                     int precision = 100 - (int) (100 * distance / max(title.size(), cur_title.size()));
                     result[i].set_precision(precision);
