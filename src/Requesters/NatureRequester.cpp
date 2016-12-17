@@ -4,7 +4,7 @@
 
 using namespace std;
 
-NatureRequester::NatureRequester(string url):Requester() {
+NatureRequester::NatureRequester(const string& url):Requester() {
     this->url = url;
 }
 

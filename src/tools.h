@@ -25,4 +25,5 @@ size_t levenshtein_distance(const std::string &s, const std::string &t);
 std::vector<std::string> read_pdf_files_recursive(std::string &path);
 void read_pdf_files(std::vector<std::string>& v, std::string& path);
 std::string get_random_filename();
-
+std::string mark_quote(const std::string& s);
+std::string unmark_quote(const std::string& s);

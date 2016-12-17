@@ -158,4 +158,15 @@ std::string get_random_filename() {
     return oss.str();
 }
 
+std::string mark_quote(const std::string &s) {
+    regex re_quote("([\"\'])");
+    return regex_replace(s, re_quote, "$1$1");
+}
+
+std::string unmark_quote(const std::string &s) {
+    regex re_quote("(\')(\')|(\")(\")");
+    return regex_replace(s, re_quote, "$1");
+}
+
+
 

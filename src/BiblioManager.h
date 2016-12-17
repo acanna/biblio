@@ -26,7 +26,7 @@ public:
                                               const std::string &)> dist, bool offline);
     static void start_print_html(std::ostream &out);
     static void end_print_html(std::ostream &out);
-    static void print_html(std::ostream &out, std::vector<ArticleInfo> &result);
-    static void cout_not_found_articles(std::vector<ArticleInfo> &result);
-    void print_bib(std::ostream &out, std::vector<ArticleInfo> &result);
+    static void print_html(std::ostream &out, const std::vector<ArticleInfo> &result);
+    static void cout_not_found_articles(const std::vector<ArticleInfo> &result);
+    void print_bib(std::ostream &out, const std::vector<ArticleInfo> &result);
 };

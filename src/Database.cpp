@@ -82,16 +82,16 @@ ArticleInfo * Database::get_data(std::string filename) {
 
         if (lastmod_file <= lastmod_db){
 
-            string title = string(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2)));
-            string author_string = string(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3)));
+            string title = unmark_quote(string(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2))));
+            string author_string = unmark_quote(string(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3))));
             vector <string> authors = split(author_string, '|');
-            string venue = string(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 4)));
-            string volume = string(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 5)));
-            string number = string(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 6)));
-            string pages = string(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 7)));
-            string year = string(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 8)));
-            string type = string(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 9)));
-            string url = string(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 10)));
+            string venue = unmark_quote(string(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 4))));
+            string volume = unmark_quote(string(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 5))));
+            string number = unmark_quote(string(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 6))));
+            string pages = unmark_quote(string(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 7))));
+            string year = unmark_quote(string(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 8))));
+            string type = unmark_quote(string(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 9))));
+            string url = unmark_quote(string(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 10))));
                       
            ArticleInfo * info = new ArticleInfo(title, authors, venue, volume,
                         number, pages, year, type, url);
@@ -136,26 +136,26 @@ void Database::add_data(const std::vector<ArticleInfo> &data) {
     struct stat t_stat;
     for (size_t i = 0; i < data_size; i++) {
 
-        string filename = data[i].get_filename();
-        string venue = data[i].get_venue();
-        string volume = data[i].get_volume();
-        string number = data[i].get_number();
-        string pages = data[i].get_pages();
-        string year = data[i].get_year();
-        string type = data[i].get_type();
-        string url = data[i].get_url();
+        string filename = mark_quote(data[i].get_filename());
+        string venue = mark_quote(data[i].get_venue());
+        string volume = mark_quote(data[i].get_volume());
+        string number = mark_quote(data[i].get_number());
+        string pages = mark_quote(data[i].get_pages());
+        string year = mark_quote(data[i].get_year());
+        string type = mark_quote(data[i].get_type());
+        string url = mark_quote(data[i].get_url());
 
         stat(filename.c_str(), &t_stat);
         struct tm *timeinfo = localtime(&t_stat.st_mtim.tv_sec);
         string lastmod_file = asctime(timeinfo);
-        string title = data[i].get_title();
+        string title = mark_quote(data[i].get_title());
         vector<string> authors = data[i].get_authors();
         string author = "";
         if (authors.size() > 0) {
             for (size_t k = 0; k < authors.size() - 1; k++) {
-                author += authors[k] + "|";
+                author += mark_quote(authors[k]) + "|";
             }
-            author += authors[authors.size() - 1];
+            author += mark_quote(authors[authors.size() - 1]);
         }
         request = "DELETE FROM DATA WHERE filename = \'" +  filename + "\';";
 

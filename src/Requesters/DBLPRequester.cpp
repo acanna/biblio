@@ -3,7 +3,7 @@
 
 using namespace std;
 
-DBLPRequester::DBLPRequester(string url):Requester() {
+DBLPRequester::DBLPRequester(const string &url): Requester() {
     this->url = url;
 }
 

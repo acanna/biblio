@@ -7,7 +7,7 @@ size_t BiblioThreadContext::count;
 std::queue<std::string> BiblioThreadContext::in;
 std::vector<ArticleInfo> BiblioThreadContext::out;
 
-void BiblioThreadContext::my_push(ArticleInfo info) {
+void BiblioThreadContext::my_push(const ArticleInfo &info) {
     m_out.lock();
     out.push_back(info);
     m_out.unlock();

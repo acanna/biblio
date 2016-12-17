@@ -13,65 +13,65 @@ using namespace std;
 
 std::vector<ArticleInfo> BiblioManager::search_requester(Requester &requester, std::string query) {
     transform(query.begin(), query.end(), query.begin(), ::tolower);
-	vector<ArticleInfo> result = {};
+    vector<ArticleInfo> result = {};
     vector<ArticleInfo> additional_result = {};
-	result = requester.publication_request(query);
+    result = requester.publication_request(query);
     vector<string> words = split(query, ' ');
 
-	// discard first word
-	string new_query = "";
-	for (unsigned int i = 1; i < words.size()-1; i++) {
-	 new_query += words[i] + " ";
-	}
-	new_query += words[words.size()-1];
-	additional_result = requester.publication_request(new_query);
-	result.insert(result.end(), additional_result.begin(), additional_result.end());
-	
-	// discard last word
-	new_query = "";
-	for (unsigned int i = 0; i < words.size()-2; i++) {
-	 new_query += words[i] + " ";
-	}
-	new_query += words[words.size()-2];
-	additional_result = requester.publication_request(new_query);
-	result.insert(result.end(), additional_result.begin(), additional_result.end());
-	
-	// discard first two words
-	new_query = "";
-	for (unsigned int i = 2; i < words.size()-1; i++) {
-	 new_query += words[i] + " ";
-	}
-	new_query += words[words.size()-1];
-	additional_result = requester.publication_request(new_query);
-	result.insert(result.end(), additional_result.begin(), additional_result.end());
-	
-	// discard last two words
-	new_query = "";
-	for (unsigned int i = 0; i < words.size()-3; i++) {
-		new_query += words[i] + " ";
-	}
-	new_query += words[words.size()-3];
-	additional_result = requester.publication_request(new_query);
-	result.insert(result.end(), additional_result.begin(), additional_result.end());
-	
-	if (words.size() > 10) {
-		// discard first five words
-		new_query = "";
-		for (unsigned int i = 5; i < words.size()-1; i++) {
-		 new_query += words[i] + " ";
-		}
-		new_query += words[words.size()-1];
-		additional_result = requester.publication_request(new_query);
-		result.insert(result.end(), additional_result.begin(), additional_result.end());
-		
-		// discard last five words
-		new_query = "";
-		for (unsigned int i = 0; i < words.size()-6; i++) {
-		 new_query += words[i] + " ";
-		}
-		new_query += words[words.size()-6];
-		additional_result = requester.publication_request(new_query);
-		result.insert(result.end(), additional_result.begin(), additional_result.end());
+    // discard first word
+    string new_query = "";
+    for (unsigned int i = 1; i < words.size()-1; i++) {
+    new_query += words[i] + " ";
+    }
+    new_query += words[words.size()-1];
+    additional_result = requester.publication_request(new_query);
+    result.insert(result.end(), additional_result.begin(), additional_result.end());
+
+    // discard last word
+    new_query = "";
+    for (unsigned int i = 0; i < words.size()-2; i++) {
+     new_query += words[i] + " ";
+    }
+    new_query += words[words.size()-2];
+    additional_result = requester.publication_request(new_query);
+    result.insert(result.end(), additional_result.begin(), additional_result.end());
+
+    // discard first two words
+    new_query = "";
+    for (unsigned int i = 2; i < words.size()-1; i++) {
+     new_query += words[i] + " ";
+    }
+    new_query += words[words.size()-1];
+    additional_result = requester.publication_request(new_query);
+    result.insert(result.end(), additional_result.begin(), additional_result.end());
+
+    // discard last two words
+    new_query = "";
+    for (unsigned int i = 0; i < words.size()-3; i++) {
+        new_query += words[i] + " ";
+    }
+    new_query += words[words.size()-3];
+    additional_result = requester.publication_request(new_query);
+    result.insert(result.end(), additional_result.begin(), additional_result.end());
+
+    if (words.size() > 10) {
+        // discard first five words
+        new_query = "";
+        for (unsigned int i = 5; i < words.size()-1; i++) {
+         new_query += words[i] + " ";
+        }
+        new_query += words[words.size()-1];
+        additional_result = requester.publication_request(new_query);
+        result.insert(result.end(), additional_result.begin(), additional_result.end());
+
+        // discard last five words
+        new_query = "";
+        for (unsigned int i = 0; i < words.size()-6; i++) {
+         new_query += words[i] + " ";
+        }
+        new_query += words[words.size()-6];
+        additional_result = requester.publication_request(new_query);
+        result.insert(result.end(), additional_result.begin(), additional_result.end());
      }
      return result;
  }
@@ -81,7 +81,7 @@ bool BiblioManager::greater(const ArticleInfo &info_1, const ArticleInfo &info_2
     return (info_1.get_precision() > info_2.get_precision());
 }
 
-void BiblioManager::print_bib(std::ostream &out, vector<ArticleInfo> &result) {
+void BiblioManager::print_bib(ostream &out, const vector<ArticleInfo> &result) {
     for (size_t k = 0; k < result.size(); k++) {
         if (result[k].get_authors().size() > 0) {
             vector<string> authors = result[k].get_authors();
@@ -133,7 +133,7 @@ void BiblioManager::print_bib(std::ostream &out, vector<ArticleInfo> &result) {
     }
 }
 
-void BiblioManager::start_print_html(std::ostream &out) {
+void BiblioManager::start_print_html(ostream &out) {
     out << "<!DOCTYPE html>\n";
     out << "<html>\n";
     out << "\t<head>\n";
@@ -144,13 +144,13 @@ void BiblioManager::start_print_html(std::ostream &out) {
     out << "\t\t<table border=\"1\" width=\"100%\" cellpadding=\"5\" bgcolor=\"#42D6FF\">\n";
 }
 
-void BiblioManager::end_print_html(std::ostream &out) {
+void BiblioManager::end_print_html(ostream &out) {
     out << "\t\t</table>" << endl;
     out << "\t</body>\n";
     out << "</html>\n";
 }
 
-void BiblioManager::print_html(std::ostream &out, std::vector<ArticleInfo> &result) {
+void BiblioManager::print_html(ostream &out, const vector<ArticleInfo> &result) {
     for (size_t i = 0; i < result.size(); i++) {
         out << "\t\t\t<tr>\n";
         out << "\t\t\t\t<td align=\"center\"><a href=\"" << result[i].get_filename() << "\">" << result[i].get_filename() << "</a></td>\n";
@@ -223,9 +223,9 @@ BiblioManager::thread_function(std::function<size_t(const std::string &, const s
     bool found = false;
     while(!BiblioThreadContext::instance().my_empty()) {
         filename = BiblioThreadContext::instance().my_pop();
-		if (filename == "") {
-			break;
-		}
+        if (filename == "") {
+            break;
+        }
 
         PictureParser picture_parser = PictureParser(filename, 300, 300, get_random_filename() + ".png", "png", 700);
         string saved_title = raw_to_formatted(picture_parser.find_title());
@@ -248,7 +248,6 @@ BiblioManager::thread_function(std::function<size_t(const std::string &, const s
                 stable_sort(result.begin(), result.end(), greater);
                 if (result[0].get_precision() > 90) {
                     result[0].set_filename(filename);
-                    result[0].set_title(raw_to_formatted(result[0].get_title()));
                     BiblioThreadContext::instance().my_push(result[0]);
                     found = true;
                     break;
@@ -265,7 +264,7 @@ BiblioManager::BiblioManager() {
     threads_num = 1;
 }
 
-void BiblioManager::cout_not_found_articles(std::vector<ArticleInfo> &result) {
+void BiblioManager::cout_not_found_articles(const vector<ArticleInfo> &result) {
     cout << "=========================================================================" << endl;
     cout << "                       Start not found articles                          " << endl;
     cout << "=========================================================================" << endl << endl;

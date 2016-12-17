@@ -40,7 +40,6 @@ public:
     std::string const &get_url() const;
     int get_precision() const;
     void set_precision(int precision);
-    void set_title(const std::string& title) {this->title = title;};
     void set_filename(std::string const& filename);
     std::string to_string();
 };

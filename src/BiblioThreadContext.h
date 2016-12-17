@@ -29,7 +29,7 @@ public:
         static BiblioThreadContext biblio;
         return biblio;
     };
-    void my_push(ArticleInfo info);
+    void my_push(const ArticleInfo &info);
     std::string my_pop();
     bool my_empty();
     std::vector<ArticleInfo> get_output() {return out;};

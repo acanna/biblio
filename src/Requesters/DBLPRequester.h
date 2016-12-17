@@ -11,6 +11,5 @@ protected:
     std::string make_request(const std::string &query);
 
 public:
-    //EL: const &
-    DBLPRequester(std::string url);
+    DBLPRequester(const std::string &url);
 };
