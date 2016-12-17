@@ -228,9 +228,7 @@ BiblioManager::thread_function(std::function<size_t(const std::string &, const s
 		}
 
         PictureParser picture_parser = PictureParser(filename, 300, 300, get_random_filename() + ".png", "png", 700);
-        picture_parser.find_title();
-        string saved_title = picture_parser.get_title();
-        saved_title = raw_to_formatted(saved_title);
+        string saved_title = raw_to_formatted(picture_parser.find_title());
         string title = low_letters_only(saved_title);
         if (offline || title.size() == 0) {
             BiblioThreadContext::instance().my_push(ArticleInfo(saved_title, filename));
