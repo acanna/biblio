@@ -1,3 +1,104 @@
+2.pdf	Structure and electronic properties of InN and In-rich group III-nitride alloys
+3.pdf	InGaN: An overview of the growth kinetics, physical properties and emission mechanisms
+5.pdf	An On-Demand Secure Routing Protocol Resilient to Byzantine Failures
+8.pdf	SEAD: Secure Efficient Distance Vector Routing for Mobile Wireless Ad Hoc Networks
+9.pdf	Ariadne: A Secure On-Demand Routing Protocol for Ad Hoc Networks
+11.pdf	Secure Routing for Mobile Ad hoc Networks
+13.pdf	Electric-field-induced band bending on GaN: in situ effects of electron beam irradiation on time-dependent cathodoluminescence
+17.pdf	Securing Ad hoc Routing Protocols
+18.pdf	BISS: Building Secure Routing out of an Incomplete Set of Security Associations
+20.pdf	Rushing Attacks and Defense in Wireless Ad Hoc Network Routing Protocols
+22.pdf	ANODR: ANonymous On Demand Routing with Untraceable Routes for Mobile Ad-hoc Networks
+23.pdf	Secure Link State Routing for Mobile Ad Hoc Networks
+24.pdf	How to Misuse AODV: A Case Study of Insider Attacks against Mobile Ad-hoc Routing Protocols
+26.pdf	SOLVING CROSSWORD PUZZLES VIA THE GOOGLE API
+29.pdf	Spatial Inhomogeneity of Luminescence in III-Nitride Compounds
+30.pdf	Polarization fields of III-nitrides grown in different crystal orientations
+31.pdf	Analytical model for the quantum-confined Stark effect including electric field screening by non-equilibrium carriers
+32.pdf	A surface trap model and its application to analysis of III-nitride HEMT performance
+34.pdf	PRACTICAL CROSSWORD GENERATION WITH CHECKPOINT SEARCH
+36.pdf	Wordnet Enhanced Automatic Crossword Generation	
+39.pdf	The influence of the p - n junction induced electric field on the optical properties of InGaN/GaN/AlGaN light emitting diode
+48.pdf	Towards a survivable security architecture for ad-hoc networks
+51.pdf	Disseminating Messages among Highly Mobile Hosts based on Inter-Vehicle Communication
+52.pdf	Nodes Bearing Grudges: Towards Routing Security, Fairness, and Robustness in Mobile Ad Hoc Networks
+57.pdf	Review: Two- and three-dimensional growth modes of nitride layers
+60.pdf	Simulation study of the capacity effects of dispersity routing for fault tolerant realtime channels
+62.pdf	Revocation Schemes for Delegated Authorities
+68.pdf	Strain relaxation in AlGaN/GaN superlattices grown on GaN
+72.pdf	Photoluminescence studies of Si-doped AlN epilayers
+74.pdf	In situ measurements of the critical thickness for strain relaxation in AlGaN/GaN heterostructures
+75.pdf	High quality AlGaN growth by changing growth pressure and insertion of AlN/GaN superlattice interlayer
+77.pdf	Acceptor-bound exciton transition in Mg-doped AlN epilayer
+78.pdf	Near-bandedge cathodoluminescence of an AlN homoepitaxial film
+94.pdf	SECURING PERSONAL AREA NETWORKS
+95.pdf	Enforcing Service Availability in Mobile Ad-Hoc WANs
+96.pdf	Internet on the Road via Inter-Vehicle Communications
+104.pdf	A Micro-Payment Scheme Encouraging Collaboration in Multi-Hop Cellular Networks
+115.pdf	Microstructures produced during the epitaxial growth of InGaN alloys
+117.pdf	Polarization Potentials in InGaN/GaN Semiconductor Quantum Dots
+118.pdf	Kinetic effects in recombination of optical excitations in disordered quantum heterostructures: Theory and experiment
+119.pdf	Spectral characterization of bulk and nanostructured aluminum nitride
+120.pdf	Microstructure and polarization fields in nitride semiconductors
+122.pdf	Photoionization spectroscopy of deep defects responsible for current collapse in nitride-based field effect transistors
+126.pdf	Reducing Certificate Revocation Cost using NPKI
+129.pdf	Mitigating Routing Misbehavior in Mobile Ad Hoc Networks
+139.pdf	Nodes Bearing Grudges: Towards Routing Security, Fairness, and Robustness in Mobile Ad Hoc Networks
+144.pdf	Efficient Dispersal of Information for Security, Load Balancing, and Fault Tolerance
+147.pdf	Secure message transmission in mobile ad hoc networks
+149.pdf	Packet Leashes: A Defense against Wormhole Attacks in Wireless Networks
+150.pdf	On Security Study of Two Distance Vector Routing Protocols for Mobile Ad Hoc Networks
+151.pdf	Defect formation near GaN surfaces and interfaces
+152.pdf	Direct experimental evidence for the role of oxygen in the luminescent properties of GaN
+202.pdf	Reinforcement learning of a simple control task using the spike response model
+203.pdf	Matrix decomposition algorithms for the finite element Galerkin method with piecewise Hermite cubics
+204.pdf	A simple proof of logarithmic convexity of extended mean values
+205.pdf	On an improved local convergence analysis for the Secant method
+206.pdf	Some new applications of truncated Gauss-Laguerre quadrature formulas
+207.pdf	Variable-precision recurrence coefficients for nonstandard orthogonal polynomials
+208.pdf	Assessing the Exceptionality of Network Motifs
+209.pdf	A new approach to discover interlacing data structures in high-dimensional space
+210.pdf	Semantic distances for technology landscape visualization
+211.pdf	Extensions and relationships of some existing lower-bound functions for dynamic time warping
+212.pdf	Temporal Coupling Verification in Time Series Databases
+214.pdf	Affordance-based individuation of junctions in Open Street Map
+215.pdf	A Simple Algorithm for the Planar Multiway Cut Problem
+217.pdf	Approximation algorithms for partial covering problems
+218.pdf	Relational semantics for full linear logic
+220.pdf	Group announcement logic
+221.pdf	Defining answer classes using resolution refutation
+222.pdf	Paraconsistent Informational Logic
+223.pdf	Geocoding location expressions in Twitter messages: A preference learning method
+224.pdf	Road network selection for small-scale maps using an improved centrality-based algorithm
+227.pdf	Invariant spatial information in sketch maps — a study of survey sketch maps of urban areas
+229.pdf	Inferring the location of authors from words in their texts
+230.pdf	Unsupervised Dialogue Act Induction using Gaussian Mixtures
+231.pdf	Exploring Different Dimensions of Attention for Uncertainty Detection
+232.pdf	Quantum states cannot be transmitted efficiently classically
+233.pdf	A Note on Pointwise Dimensions
+234.pdf	Similarity preserving compressions of high dimensional sparse data
+236.pdf	Codes correcting deletions in oblivious and random models
+238.pdf	Flows in nonequilibrium quantum systems and quantum photosynthesis
+239.pdf	Quantum Key Distribution with High Order Fibonacci-like Orbital Angular Momentum States
+240.pdf	Quantizing polaritons in inhomogeneous dissipative systems
+241.pdf	Influence of the external pressure on the quantum correlations of molecular magnets
+242.pdf	Quantum quenches during inflation
+243.pdf	On entanglement spreading from holography
+244.pdf	Holographic duality and applications
+245.pdf	Inverse spectral analysis for a class of infinite band symmetric matrices
+246.pdf	Exponential Stability of Subspaces for Quantum Stochastic Master Equations
+247.pdf	Phase transitions and coarse-graining for a system of particles in the continuum
+248.pdf	Study of the Formation of Silicon Nanoclusters in Silicon Dioxide during Electron Beam Irradiation
+250.pdf	Baric Properties of InAs Quantum Dots
+251.pdf	Temperature Evolution of Spin-Polaron In-Gap States in Undoped Antiferromagnetic Cuprates
+252.pdf	Comparative Analysis of Sensory Rhodopsin II Structures in Complex with a Transducer and without It
+253.pdf	Surface Morphology and Optical and Magnetic Properties of Polyelectrolyte/Magnetite Nanoparticles Nanofilms
+254.pdf	Periodic Domain Structures in Stoichiometric Lithium Niobate: Formation by Electron Beam
+255.pdf	Principles of XRay Diffractometry of Surface Acoustic Waves
+256.pdf	Vertical Heterostructures Based on Graphene and Other 2D Materials
+257.pdf	Crystallization Induced by Thermal Annealing with Millisecond Pulses in SilicononInsulator Films Implanted with High Doses of Hydrogen Ions 
+258.pdf	Effect of Surface Scattering of Carriers in the Photoconductivity Spectra of CdS
+259.pdf	DomainSize Evolution upon Switching of the States of a OneDimensional System with Defects
 test_1.pdf	Towards QoE-aware Video Streaming using SDN
 test_2.pdf	Deep Tracking on the Move: Learning to Track the World from a Moving Vehicle using Recurrent Neural Networks
 test_3.pdf	Fast Large-Scale Approximate Graph Construction for NLP
@@ -7,15 +108,6 @@ test_6.pdf	A Fast Factorization-based Approach to Robust PCA
 test_8.pdf	Improving Distributional Similarity with Lessons Learned from Word Embeddings
 test_9.pdf	A Survey of Energy Efficient Network Protocols for Wireless Networks
 test_11.pdf	Contextual RNN-GANs for Abstract Reasoning Diagram Generation
-test_23.pdf	Foundations of Statistical Natural Language Processing
-test_25.pdf	Measure prediction capability of data for collaborative filtering
-test_26.pdf	Suzuki-invariant codes from the Suzuki curve
-test_27.pdf	Machine Learning Approach for Correcting Preposition Errors using SVD Features
-test_28.pdf	Mobile Device-controlled Live Streaming Traffic Transfer for Multi-Screen Services
-test_29.pdf	Occlusion-Aware Stereo Matching
-test_30.pdf	A Riemannian Bayesian Framework for Estimating Diffusion Tensor Images
-test_7.pdf	gPhoton: the GALEX Photon Data Archive
-test_10.pdf	Community-based Participatory Research: Policy Recommendations for Promoting a Partnership Approach in Health Research
 test_12.pdf	Partial Strong Converse for the Non-Degraded Wiretap Channel
 test_13.pdf	On Probabilistic Checking in Perfect Zero Knowledge
 test_14.pdf	Secrecy in MIMO Networks with No Eavesdropper CSIT
@@ -28,31 +120,30 @@ test_20.pdf	Cross-Device User Matching Based on Massive Browse Logs: The Runner-
 test_21.pdf	Vector Lyapunov Functions for Stability and Stabilization of Differential Repetitive Processes
 test_22.pdf	An Algebraic Criterion for Detecting the Fact and Time a Fault Occurs in Control Systems of Dynamic Plants
 test_24.pdf	Analytical Synthesis of Robust Controllers of the Given Accuracy under External Perturbations
+test_25.pdf	Measure prediction capability of data for collaborative filtering
+test_26.pdf	Suzuki-invariant codes from the Suzuki curve
+test_27.pdf	Machine Learning Approach for Correcting Preposition Errors using SVD Features
+test_28.pdf	Mobile Device-controlled Live Streaming Traffic Transfer for Multi-Screen Services
+test_29.pdf	Occlusion-Aware Stereo Matching
 test_31.pdf	Experiments on Union-Find Algorithms for the Disjoint-Set Data Structure
 test_70.pdf	AlGaN Nanostructures with Extremely High Room-Temperature Internal Quantum Efficiency of Emission Below 300 nm
 test_71.pdf	Solar-Blind UV Photocathodes Based on AlGaN Heterostructures with a 300- to 330-nm Spectral Sensitivity Threshold
-test_72.pdf	Growth and applications of Group III-nitrides
 test_73.pdf	Long-lasting photoluminescence in freestanding GaN templates
 test_74.pdf	Development and synthesis of durable self-glowing crystals doped with plutonium
 test_75.pdf	Development of new generation of durable radio-luminescence emitters based on actinide-doped crystals
 test_76.pdf	Confocal microscopy and spectroscopy of InGaN epilayers on sapphire
-test_77.pdf	High Optical Quality Nanoporous GaN Prepared by Photoelectrochemical Etching
-test_78_color_title.pdf	Equilibrium critical thickness for misfit dislocations in III-nitrides
 test_79.pdf	Effects of phase separation and decomposition on the minority carrier diffusion length in AlxGa1-xN films
 test_80.pdf	Ternary AlGaN Alloys with High Al Content and Enhanced Compositional Homogeneity Grown by Plasma-Assisted Molecular Beam Epitaxy
 test_81.pdf	Features of the Spatial Distribution of Indium in InGaN Epitaxial Layers Grown by Plasma-Assisted Molecular Beam Epitaxy
 test_82.pdf	Structural analysis of InGaN epilayers
 test_83.pdf	Spontaneous and Stimulated Emission in the Mid-Ultraviolet Range of Quantum-Well Heterostructures Based on AlGaN Compounds Grown by Molecular Beam Epitaxy on c-Sapphire Substrates
-test_84.pdf	OPTICAL CHARACTERIZATION OF STRAINS IN ALN/GAN HETEROSTRUCTURES
 test_85.pdf	Indium incorporation and surface segregation during InGaN growth by molecular beam epitaxy: experiment and theory
 test_86.pdf	Control of threading dislocation density at the initial growth stage of AlN on c-sapphire in plasma-assisted MBE
 test_87.pdf	Intentional and unintentional localization in InGaN
 test_88_i.pdf	Point-defect energies in the nitrides of aluminum, gallium, and indium
 test_89.pdf	Spontaneous Formation of Indium-Rich Nanostructures on InGaN(0001) Surfaces
-test_90.pdf	Band Gap of Hexagonal InN and InGaN Alloys
 test_91.pdf	Investigation of charge trapping at the oxide/semiconductor interface for MBE-grown GaN films
 test_92.pdf	Application of the electron probe microanalysis in nitride-based heterostructures investigation
-test_93.pdf	Chemical bonding and optical bowing in III-nitrides solid solutions
 test_94.pdf	Investigation of surface properties of Si-doped GaN films by electric force microscopy and photoluminescence
 test_95.pdf	Core-shell monodisperse spherical mSiO2/Gd2O3:Eu3+@mSiO2 particles as potential multifunctional theranostic agents
 test_96.pdf	A Microwave Photon Detector

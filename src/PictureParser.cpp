@@ -140,6 +140,7 @@ const std::string& PictureParser::find_title() {
     int page_num = 0;
     string result = "";
 
+
     poppler::document *doc = poppler::document::load_from_file(this->filename);
     const int pages_nbr = doc->pages();
     if (page_num > pages_nbr) {
@@ -417,7 +418,6 @@ string PictureParser::parse_image() {
     api->End();
     pixDestroy(&image);
     delete out_text;
-    cout << result << endl;
     return result;
 }
 

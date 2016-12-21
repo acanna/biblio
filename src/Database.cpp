@@ -167,7 +167,6 @@ void Database::add_data(const std::vector<ArticleInfo> &data) {
                   filename + "\', \'" + title + "\', \'" + author + "\', \'" + venue + "\', \'" +
                   volume + "\', \'" + number + "\', \'" + pages + "\', \'" + year + "\', \'" + type + "\', \'" +
                   url + "\', \'" + lastmod_file + "\');";
-        cout << request << endl;
         check_status(request.c_str(), &stmt);
         sqlite3_finalize(stmt);
     }
