@@ -81,7 +81,7 @@ bool BiblioManager::greater(const ArticleInfo &info_1, const ArticleInfo &info_2
     return (info_1.get_precision() > info_2.get_precision());
 }
 
-void BiblioManager::print_bib(ostream &out, const vector<ArticleInfo> &result) {
+void BiblioManager::print_bib(ostream &out,  vector<ArticleInfo> &result) {
     for (size_t k = 0; k < result.size(); k++) {
         if (result[k].get_authors().size() > 0) {
             vector<string> authors = result[k].get_authors();
@@ -150,7 +150,7 @@ void BiblioManager::end_print_html(ostream &out) {
     out << "</html>\n";
 }
 
-void BiblioManager::print_html(ostream &out, const vector<ArticleInfo> &result) {
+void BiblioManager::print_html(ostream &out,  vector<ArticleInfo> &result) {
     for (size_t i = 0; i < result.size(); i++) {
         out << "\t\t\t<tr>\n";
         out << "\t\t\t\t<td align=\"center\"><a href=\"" << result[i].get_filename() << "\">" << result[i].get_filename() << "</a></td>\n";
@@ -264,7 +264,7 @@ BiblioManager::BiblioManager() {
     threads_num = 1;
 }
 
-void BiblioManager::cout_not_found_articles(const vector<ArticleInfo> &result) {
+void BiblioManager::cout_not_found_articles( vector<ArticleInfo> &result) {
     cout << "=========================================================================" << endl;
     cout << "                       Start not found articles                          " << endl;
     cout << "=========================================================================" << endl << endl;

@@ -71,6 +71,10 @@ PictureParser::PictureParser(string const &filename, int const xres, int const y
     this->title = "";
 }
 
+string const &PictureParser::get_title() {
+    return this->title;
+}
+
 bool PictureParser::is_black(int x, int y) {
     int black = 60; // (color <= black) <=> (black pix)
                     // (color > black) <=> (white pix)
@@ -408,11 +412,13 @@ string PictureParser::parse_image() {
     api->SetImage(image);
 
     char *out_text = api->GetUTF8Text();
+    string result = (string) (out_text);
 
     api->End();
     pixDestroy(&image);
-
-    return out_text;
+    delete out_text;
+    cout << result << endl;
+    return result;
 }
 
 PictureParser::~PictureParser() {
