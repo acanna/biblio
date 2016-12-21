@@ -30,7 +30,7 @@ Database * Database::connect_database() {
 }
 
 
-int Database::check_status (const char * request, sqlite3_stmt **stmt) {
+int Database::check_status(const char * request, sqlite3_stmt **stmt) {
     int rc = sqlite3_prepare(db, request, -1, stmt, NULL);
     if(rc != SQLITE_OK) {
         cout << "status: " << rc << endl;
@@ -167,7 +167,6 @@ void Database::add_data(const std::vector<ArticleInfo> &data) {
                   filename + "\', \'" + title + "\', \'" + author + "\', \'" + venue + "\', \'" +
                   volume + "\', \'" + number + "\', \'" + pages + "\', \'" + year + "\', \'" + type + "\', \'" +
                   url + "\', \'" + lastmod_file + "\');";
-        cout << request << endl;
         check_status(request.c_str(), &stmt);
         sqlite3_finalize(stmt);
     }

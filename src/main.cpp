@@ -48,8 +48,6 @@ int main(int argc, char **argv) {
         bool purge = purgeSwitch.getValue();
         bool without_db = dbSwitch.getValue();
 
-        srand(time(NULL));        
-
         if (curl_global_init(CURL_GLOBAL_ALL) != 0) {
             throw new BiblioException("Curl global init failed.\n");
         }
